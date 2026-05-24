@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIENS Admin — Панель управления</title>
+<style>
+:root {
+  --gold: #D4AF37; --gold-light: #F0D060; --gold-dark: #A08820; --bg: #0A0A0F; --bg2: #12121A; --bg3: #1A1A28; --bg4: #20202E; --text: #FFFFFF; --text-muted: #8888AA; --text-dim: #CCCCDD; --border: rgba(212,175,55,0.2); --border-hover: rgba(212,175,55,0.5); --danger: #E74C3C; --success: #27AE60; --info: #2980B9; --card: rgba(26,26,40,0.95); --sidebar-w: 260px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); overflow:hidden; }
+#loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background: radial-gradient(ellipse at 50% 30%, rgba(212,175,55,0.08) 0%, transparent 60%), var(--bg); }
+.login-card { background:var(--bg2); border:1px solid var(--border); border-radius:24px; padding:40px 36px; width:100%; max-width:380px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.5); }
+.login-logo { font-size:3.5rem; margin-bottom:12px; filter:drop-shadow(0 0 12px var(--gold)); }
+.login-title { font-size:1.5rem; font-weight:800; color:var(--gold); margin-bottom:4px; letter-spacing:2px; }
+.login-sub { font-size:0.75rem; color:var(--text-muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:28px; }
+.form-group { margin-bottom:14px; text-align:left; }
+.form-label { font-size:0.7rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; display:block; }
+.form-input { width:100%; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:0.9rem; outline:none; transition:border-color 0.25s, box-shadow 0.25s; }
+.form-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,175,55,0.12); }
+.login-btn { width:100%; padding:14px; border-radius:12px; margin-top:8px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; font-size:0.95rem; font-weight:800; border:none; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition:all 0.25s; box-shadow:0 4px 16px rgba(212,175,55,0.3); }
+.login-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(212,175,55,0.4); }
+.login-error { color:var(--danger); font-size:0.78rem; margin-top:10px; display:none; }
+#adminApp { display:none; height:100vh; flex-direction:row; overflow:hidden; }
+.sidebar { width:var(--sidebar-w); background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+.sidebar::-webkit-scrollbar { width:3px; }
+.sidebar::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+.sidebar-header { padding:20px 18px 16px; border-bottom:1px solid var(--border); background:linear-gradient(135deg,rgba(212,175,55,0.06),transparent); }
+.sidebar-logo { font-size:1.8rem; filter:drop-shadow(0 0 8px var(--gold)); }
+.sidebar-title { font-size:1rem; font-weight:800; color:var(--gold); letter-spacing:1px; }
+.sidebar-sub { font-size:0.62rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; }
+.sidebar-badge { display:inline-block; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; font-size:0.55rem; font-weight:700; padding:2px 6px; border-radius:8px; margin-top:4px; letter-spacing:1px; }
+.nav-section-label { font-size:0.58rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; padding:16px 18px 6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:11px 18px; cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; color:var(--text-dim); font-size:0.85rem; font-weight:500; text-decoration:none; }
+.nav-item:hover { background:rgba(212,175,55,0.06); color:var(--text); }
+.nav-item.active { background:rgba(212,175,55,0.1); border-left-color:var(--gold); color:var(--gold); font-weight:700; }
+.nav-item-icon { font-size:1.1rem; width:22px; text-align:center; }
+.nav-badge { margin-left:auto; background:var(--gold); color:#000; font-size:0.58rem; font-weight:700; padding:2px 6px; border-radius:8px; }
+.sidebar-footer { margin-top:auto; padding:16px 18px; border-top:1px solid var(--border); }
+.logout-btn { width:100%; padding:10px; border-radius:10px; background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.3); color:var(--danger); font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.25s; letter-spacing:0.5px; }
+.logout-btn:hover { background:rgba(231,76,60,0.2); }
+.main-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.topbar { padding:14px 24px; background:var(--bg2); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.topbar-title { font-size:1.1rem; font-weight:800; color:var(--text); }
+.topbar-sub { font-size:0.7rem; color:var(--text-muted); }
+.topbar-actions { display:flex; gap:8px; }
+.btn { padding:8px 16px; border-radius:10px; font-size:0.78rem; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; letter-spacing:0.5px; }
+.btn-gold { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; }
+.btn-gold:hover { box-shadow:0 4px 16px rgba(212,175,55,0.35); transform:translateY(-1px); }
+.btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+.btn-danger { background:rgba(231,76,60,0.12); border:1px solid rgba(231,76,60,0.3); color:var(--danger); }
+.btn-danger:hover { background:rgba(231,76,60,0.22); }
+.btn-sm { padding:5px 12px; font-size:0.7rem; }
+.btn-success { background:rgba(39,174,96,0.12); border:1px solid rgba(39,174,96,0.3); color:var(--success); }
+.btn-success:hover { background:rgba(39,174,96,0.22); }
+.btn-info { background:rgba(41,128,185,0.12); border:1px solid rgba(41,128,185,0.3); color:#7FB3D3; }
+.btn-info:hover { background:rgba(41,128,185,0.22); }
+.main-content { flex:1; overflow-y:auto; padding:24px; }
+.main-content::-webkit-scrollbar { width:4px; }
+.main-content::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+.section { display:none; animation:fadeIn 0.3s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.stat-widget { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:18px; position:relative; overflow:hidden; }
+.stat-widget::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.stat-widget-val { font-size:1.8rem; font-weight:800; color:var(--gold); display:block; }
+.stat-widget-label { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+.stat-widget-icon { position:absolute; top:14px; right:14px; font-size:1.8rem; opacity:0.2; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:20px; }
+.card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:linear-gradient(135deg,rgba(212,175,55,0.04),transparent); }
+.card-title { font-size:0.9rem; font-weight:700; color:var(--gold); letter-spacing:1px; }
+.card-body { padding:0; }
+.data-table { width:100%; border-collapse:collapse; }
+.data-table th { padding:11px 16px; text-align:left; font-size:0.65rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
+.data-table td { padding:10px 16px; font-size:0.82rem; color:var(--text-dim); border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(212,175,55,0.03); }
+.price-cell { font-weight:700; color:var(--gold); }
+.cat-badge { padding:3px 10px; border-radius:20px; font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+.actions-cell { display:flex; gap:6px; flex-wrap:wrap; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-full { grid-column:1/-1; }
+.form-group-label { font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; display:block; }
+.form-ctrl { width:100%; padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:0.85rem; outline:none; transition:all 0.2s; font-family:inherit; }
+.form-ctrl:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,175,55,0.1); }
+.form-ctrl option { background:var(--bg3); }
+textarea.form-ctrl { resize:vertical; min-height:80px; }
+.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+.img-upload-tabs { display:flex; gap:0; margin-bottom:12px; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.img-tab-btn { flex:1; padding:9px; background:var(--bg3); border:none; color:var(--text-muted); font-size:0.75rem; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; }
+.img-tab-btn.active { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; }
+.img-panel { display:none; }
+.img-panel.active { display:block; }
+.img-dropzone { border:2px dashed var(--border); border-radius:12px; padding:28px 20px; text-align:center; cursor:pointer; transition:all 0.25s; position:relative; background:var(--bg3); }
+.img-dropzone:hover, .img-dropzone.dragover { border-color:var(--gold); background:rgba(212,175,55,0.05); }
+.img-dropzone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.img-dropzone-icon { font-size:2.2rem; display:block; margin-bottom:8px; }
+.img-dropzone-text { font-size:0.8rem; color:var(--text-muted); line-height:1.5; }
+.img-dropzone-text strong { color:var(--gold); }
+.img-preview-wrap { margin-top:12px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:var(--bg3); display:none; position:relative; }
+.img-preview-wrap.has-img { display:block; }
+.img-preview-wrap img { width:100%; max-height:200px; object-fit:cover; display:block; }
+.img-preview-remove { position:absolute; top:8px; right:8px; background:rgba(231,76,60,0.85); border:none; color:#fff; font-size:0.8rem; padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:700; backdrop-filter:blur(4px); }
+.img-preview-remove:hover { background:var(--danger); }
+.img-url-row { display:flex; gap:8px; }
+.img-url-row .form-ctrl { flex:1; }
+.cat-manager { display:grid; gap:10px; }
+.cat-manager-item { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:12px 14px; display:flex; align-items:center; gap:12px; }
+.cat-manager-item .cat-emoji { font-size:1.4rem; }
+.cat-manager-item .cat-info { flex:1; }
+.cat-manager-item .cat-name { font-size:0.85rem; font-weight:700; color:var(--text); }
+.cat-manager-item .cat-slug { font-size:0.65rem; color:var(--text-muted); font-family:monospace; margin-top:2px; }
+.cat-manager-item .cat-count { font-size:0.72rem; color:var(--text-muted); }
+.cat-manager-item.builtin { border-color:rgba(212,175,55,0.15); }
+.cat-manager-item.custom { border-color:rgba(39,174,96,0.25); }
+.builtin-badge { font-size:0.6rem; padding:2px 7px; border-radius:8px; background:rgba(212,175,55,0.15); color:var(--gold); font-weight:600; letter-spacing:0.5px; }
+.custom-badge { font-size:0.6rem; padding:2px 7px; border-radius:8px; background:rgba(39,174,96,0.15); color:#52D68A; font-weight:600; letter-spacing:0.5px; }
+.add-cat-form { background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:16px; margin-top:4px; }
+.add-cat-row { display:grid; grid-template-columns:60px 1fr 1fr auto; gap:10px; align-items:end; }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; visibility:hidden; transition:all 0.25s; backdrop-filter:blur(4px); }
+.modal-overlay.open { opacity:1; visibility:visible; }
+.modal-box { background:var(--bg2); border:1px solid var(--border); border-radius:20px; width:100%; max-width:580px; max-height:92vh; overflow-y:auto; transform:scale(0.95); transition:transform 0.25s; }
+.modal-box::-webkit-scrollbar { width:3px; }
+.modal-box::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+.modal-overlay.open .modal-box { transform:scale(1); }
+.modal-header { padding:20px 24px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--bg2); z-index:10; }
+.modal-title-text { font-size:1rem; font-weight:700; color:var(--gold); }
+.modal-close-btn { background:rgba(255,255,255,0.06); border:none; color:var(--text-muted); font-size:1.1rem; width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+.modal-close-btn:hover { background:rgba(255,255,255,0.14); color:var(--text); }
+.modal-body { padding:20px 24px 24px; }
+.review-admin-card { background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.review-admin-info { flex:1; }
+.review-admin-name { font-size:0.85rem; font-weight:700; color:var(--text); margin-bottom:4px; }
+.review-admin-stars { color:var(--gold); font-size:0.75rem; margin-bottom:6px; }
+.review-admin-text { font-size:0.78rem; color:var(--text-muted); line-height:1.5; }
+.review-admin-actions { display:flex; gap:6px; flex-shrink:0; }
+.admin-toast { position:fixed; top:20px; right:20px; z-index:9000; padding:12px 18px; border-radius:12px; font-size:0.82rem; font-weight:600; transform:translateX(120%); transition:transform 0.35s cubic-bezier(.4,0,.2,1); box-shadow:0 8px 24px rgba(0,0,0,0.3); max-width:320px; }
+.admin-toast.show { transform:translateX(0); }
+.admin-toast.success { background:linear-gradient(135deg,#1a4a2a,#1e5c32); border:1px solid rgba(39,174,96,0.4); color:#52D68A; }
+.admin-toast.error { background:linear-gradient(135deg,#4a1a1a,#5c1e1e); border:1px solid rgba(231,76,60,0.4); color:#E97070; }
+.admin-toast.info { background:linear-gradient(135deg,#1a2a4a,#1e3a5c); border:1px solid rgba(41,128,185,0.4); color:#7FB3D3; }
+.search-row { display:flex; gap:10px; align-items:center; margin-bottom:16px; }
+.search-input { flex:1; padding:9px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:0.82rem; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--gold); }
+.product-thumb { width:44px; height:44px; border-radius:10px; object-fit:cover; border:1px solid var(--border); }
+.product-thumb-emoji { width:44px; height:44px; border-radius:10px; background:var(--bg3); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+.sec-divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+@media(max-width:900px) { .stats-grid{grid-template-columns:1fr 1fr;} .sidebar{width:200px;} }
+@media(max-width:680px) { .sidebar{display:none;} .stats-grid{grid-template-columns:1fr 1fr;} .form-grid{grid-template-columns:1fr;} .add-cat-row{grid-template-columns:50px 1fr; grid-template-rows:auto auto auto;} }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🌿</div>
+    <div class="login-title">TIENS Admin</div>
+    <div class="login-sub">Панель управления</div>
+    <div class="form-group">
+      <label class="form-label">Логин</label>
+      <input class="form-input" type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Пароль</label>
+      <input class="form-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Войти в систему</button>
+    <div class="login-error" id="loginErr">⚠️ Неверный логин или пароль</div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp" style="display:none;flex-direction:row;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div class="sidebar-logo">🌿</div>
+        <div>
+          <div class="sidebar-title">TIENS</div>
+          <div class="sidebar-sub">Черкесск</div>
+        </div>
+      </div>
+      <div class="sidebar-badge">ADMIN PANEL</div>
+    </div>
+
+    <div class="nav-section-label">Управление</div>
+    <div class="nav-item active" onclick="showSection('dashboard',this)">
+      <span class="nav-item-icon">📊</span> Дашборд
+    </div>
+    <div class="nav-item" onclick="showSection('products',this)">
+      <span class="nav-item-icon">📦</span> Продукты
+      <span class="nav-badge" id="productCountBadge">8</span>
+    </div>
+    <div class="nav-item" onclick="showSection('categories',this)">
+      <span class="nav-item-icon">🏷</span> Категории
+      <span class="nav-badge" id="catCountBadge">4</span>
+    </div>
+    <div class="nav-item" onclick="showSection('content',this)">
+      <span class="nav-item-icon">✏️</span> Контент
+    </div>
+    <div class="nav-item" onclick="showSection('reviews',this)">
+      <span class="nav-item-icon">⭐</span> Отзывы
+      <span class="nav-badge" id="reviewCountBadge">6</span>
+    </div>
+    <div class="nav-item" onclick="showSection('contacts',this)">
+      <span class="nav-item-icon">📞</span> Контакты
+    </div>
+
+    <div class="nav-section-label">Система</div>
+    <div class="nav-item" onclick="showSection('settings',this)">
+      <span class="nav-item-icon">⚙️</span> Настройки
+    </div>
+    <div class="nav-item" onclick="showSection('export',this)">
+      <span class="nav-item-icon">💾</span> Экспорт
+    </div>
+
+    <div class="sidebar-footer">
+      <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:10px">
+        Администратор<br>
+        <span style="font-size:0.62rem;color:var(--text-muted)" id="sessionTime"></span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">🚪 Выйти</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle">📊 Дашборд</div>
+        <div class="topbar-sub">TIENS Черкесск — Панель управления</div>
+      </div>
+      <div class="topbar-actions">
+        <a href="index.html" target="_blank" class="btn btn-outline">🔗 Открыть App</a>
+        <button class="btn btn-gold" id="saveAllBtn" onclick="saveAll()">💾 Сохранить всё</button>
+      </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-widget">
+            <span class="stat-widget-icon">📦</span>
+            <span class="stat-widget-val" id="dTotal">0</span>
+            <div class="stat-widget-label">Всего товаров</div>
+          </div>
+          <div class="stat-widget">
+            <span class="stat-widget-icon">🏷</span>
+            <span class="stat-widget-val" id="dCats">0</span>
+            <div class="stat-widget-label">Категорий</div>
+          </div>
+          <div class="stat-widget">
+            <span class="stat-widget-icon">💰</span>
+            <span class="stat-widget-val" id="dAvgPrice">0</span>
+            <div class="stat-widget-label">Средняя цена, ₽</div>
+          </div>
+          <div class="stat-widget">
+            <span class="stat-widget-icon">⭐</span>
+            <span class="stat-widget-val" id="dReviews">0</span>
+            <div class="stat-widget-label">Отзывов</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📦 Последние товары</span>
+            <button class="btn btn-gold btn-sm" onclick="navTo('products')">Управлять</button>
+          </div>
+          <div class="card-body">
+            <table class="data-table" id="dashProductTable"></table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 Товары по категориям</span></div>
+          <div class="card-body" style="padding:16px 20px">
+            <div id="catChart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="section" id="sec-products">
+        <div class="search-row">
+          <input class="search-input" type="text" placeholder="🔍 Поиск по названию..." oninput="searchProducts(this.value)">
+          <button class="btn btn-gold" onclick="openProductModal()">➕ Добавить товар</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📦 Каталог товаров</span>
+            <span style="font-size:0.72rem;color:var(--text-muted)" id="productTableInfo">Всего: 0</span>
+          </div>
+          <div class="card-body">
+            <table class="data-table" id="productsTable">
+              <thead>
+                <tr>
+                  <th>#</th><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="section" id="sec-categories">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header">
+            <span class="card-title">🏷 Список категорий</span>
+            <span style="font-size:0.72rem;color:var(--text-muted)" id="catTotalInfo"></span>
+          </div>
+          <div class="card-body" style="padding:16px 20px">
+            <div class="cat-manager" id="catManagerList"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">➕ Добавить категорию</span></div>
+          <div class="card-body" style="padding:16px 20px">
+            <div class="add-cat-row">
+              <div>
+                <label class="form-group-label">Emoji</label>
+                <input class="form-ctrl" type="text" id="nc_emoji" placeholder="🌿" maxlength="4">
+              </div>
+              <div>
+                <label class="form-group-label">Название категории</label>
+                <input class="form-ctrl" type="text" id="nc_name" placeholder="Например: Суставы">
+              </div>
+              <div>
+                <label class="form-group-label">Slug (латиницей)</label>
+                <input class="form-ctrl" type="text" id="nc_slug" placeholder="joints" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+              </div>
+              <div>
+                <label class="form-group-label" style="opacity:0">.</label>
+                <button class="btn btn-gold" onclick="addCategory()" style="width:100%">➕ Создать</button>
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:0.72rem;color:var(--text-muted)">
+              Slug — уникальный код категории (только строчные латинские буквы и цифры).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="section" id="sec-content">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header"><span class="card-title">🏠 Главная страница</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-group-label">Заголовок</label>
+                <input class="form-ctrl" type="text" id="c_mainTitle" value="TIENS">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Подзаголовок</label>
+                <input class="form-ctrl" type="text" id="c_mainSub" value="Черкесск · Официальный дистрибьютор">
+              </div>
+              <div class="form-group form-full">
+                <label class="form-group-label">Описание компании</label>
+                <textarea class="form-ctrl" id="c_mainDesc">Биологически активные добавки мирового класса для вашего здоровья и долголетия. Работаем в Карачаево-Черкесии с гарантией качества.</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Кол-во клиентов</label>
+                <input class="form-ctrl" type="number" id="c_statClients" value="5000">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Лет опыта</label>
+                <input class="form-ctrl" type="number" id="c_statYears" value="10">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="saveContent()">💾 Сохранить</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🔬 Страница "О нас"</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label class="form-group-label">Описание тестирования</label>
+                <textarea class="form-ctrl" id="c_aboutDesc">Мы проводим профессиональную диагностику состояния вашего здоровья с помощью современных методик и многолетнего опыта специалистов TIENS.</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Цена: Первичный (₽)</label>
+                <input class="form-ctrl" type="number" id="c_price1" value="1500">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Время (мин)</label>
+                <input class="form-ctrl" type="number" id="c_time1" value="40">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Цена: Повторный (₽)</label>
+                <input class="form-ctrl" type="number" id="c_price2" value="500">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Время (мин)</label>
+                <input class="form-ctrl" type="number" id="c_time2" value="20">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="saveContent()">💾 Сохранить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="section" id="sec-reviews">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+          <button class="btn btn-gold" onclick="openReviewModal()">➕ Добавить отзыв</button>
+        </div>
+        <div id="reviewsList"></div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="section" id="sec-contacts">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📞 Контактные данные</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label class="form-group-label">📍 Адрес</label>
+                <input class="form-ctrl" type="text" id="c_address" value="г. Черкесск, КЧР">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">✈️ Telegram</label>
+                <input class="form-ctrl" type="text" id="c_telegram" value="@Tiens_KCHR">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">💬 WhatsApp</label>
+                <input class="form-ctrl" type="text" id="c_whatsapp" value="+7 (900) 000-00-00">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">⭐ BIP</label>
+                <input class="form-ctrl" type="text" id="c_bip" value="@Tiens_KCHR">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">🕐 Время работы</label>
+                <input class="form-ctrl" type="text" id="c_hours" value="Пн–Пт: 9:00–18:00">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="saveContacts()">💾 Сохранить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="section" id="sec-settings">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header"><span class="card-title">🔒 Безопасность</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-group-label">Новый логин</label>
+                <input class="form-ctrl" type="text" id="s_login" placeholder="admin">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Новый пароль</label>
+                <input class="form-ctrl" type="password" id="s_pass" placeholder="••••••••">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="changeCredentials()">🔑 Изменить</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header"><span class="card-title">💳 Реквизиты</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-group-label">Банк</label>
+                <input class="form-ctrl" type="text" id="s_bank" placeholder="Сбербанк">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Номер карты</label>
+                <input class="form-ctrl" type="text" id="s_card" placeholder="0000 0000 0000 0000">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Получатель</label>
+                <input class="form-ctrl" type="text" id="s_cardOwner" placeholder="Иванов Иван И.">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Телефон СБП</label>
+                <input class="form-ctrl" type="text" id="s_sbp" placeholder="+7 900 000-00-00">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="saveSettings()">💾 Сохранить</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🤖 Настройки бота</span></div>
+          <div class="card-body" style="padding:20px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-group-label">Bot Token</label>
+                <input class="form-ctrl" type="password" id="s_botToken" placeholder="1234567890:AABBcc...">
+              </div>
+              <div class="form-group">
+                <label class="form-group-label">Chat ID</label>
+                <input class="form-ctrl" type="text" id="s_chatId" placeholder="-100123456789">
+              </div>
+              <div class="form-group form-full">
+                <label class="form-group-label">URL Mini App</label>
+                <input class="form-ctrl" type="text" id="s_appUrl" placeholder="https://yourdomain.com/index.html">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-gold" onclick="saveSettings()">💾 Сохранить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="section" id="sec-export">
+        <div class="card">
+          <div class="card-header"><span class="card-title">💾 Экспорт / Импорт данных</span></div>
+          <div class="card-body" style="padding:20px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+                <div style="font-size:2.2rem;margin-bottom:8px">📦</div>
+                <div style="font-weight:700;color:var(--text);margin-bottom:4px">Каталог товаров</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:14px">JSON со всеми полями и фото</div>
+                <button class="btn btn-gold btn-sm" onclick="exportProducts()">Скачать JSON</button>
+              </div>
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+                <div style="font-size:2.2rem;margin-bottom:8px">🏷</div>
+                <div style="font-weight:700;color:var(--text);margin-bottom:4px">Категории</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:14px">Все категории (включая кастомные)</div>
+                <button class="btn btn-gold btn-sm" onclick="exportCategories()">Скачать JSON</button>
+              </div>
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+                <div style="font-size:2.2rem;margin-bottom:8px">⭐</div>
+                <div style="font-weight:700;color:var(--text);margin-bottom:4px">Отзывы</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:14px">Экспорт в JSON</div>
+                <button class="btn btn-gold btn-sm" onclick="exportReviews()">Скачать JSON</button>
+              </div>
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+                <div style="font-size:2.2rem;margin-bottom:8px">🗃</div>
+                <div style="font-weight:700;color:var(--text);margin-bottom:4px">Полный бэкап</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:14px">Все данные одним файлом</div>
+                <button class="btn btn-gold btn-sm" onclick="exportAll()">Скачать JSON</button>
+              </div>
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;grid-column:1/-1">
+                <div style="font-size:2.2rem;margin-bottom:8px">📥</div>
+                <div style="font-weight:700;color:var(--text);margin-bottom:4px">Импорт данных</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:14px">Загрузить ранее сохранённый JSON бэкап</div>
+                <label class="btn btn-outline" style="cursor:pointer;display:inline-block">
+                  📂 Выбрать файл
+                  <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /main-area -->
+</div><!-- /adminApp -->
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModalOverlay" onclick="closeProductModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="productModalTitle">➕ Добавить товар</div>
+      <button class="modal-close-btn" onclick="closeProductModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-group-label">Emoji иконка</label>
+          <input class="form-ctrl" type="text" id="pm_emoji" placeholder="🌿" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">Категория</label>
+          <select class="form-ctrl" id="pm_cat"></select>
+        </div>
+        <div class="form-group form-full">
+          <label class="form-group-label">Название товара</label>
+          <input class="form-ctrl" type="text" id="pm_name" placeholder="Название продукта TIENS">
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">Цена (₽)</label>
+          <input class="form-ctrl" type="number" id="pm_price" placeholder="2000">
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">ID (авто)</label>
+          <input class="form-ctrl" type="number" id="pm_id" disabled style="opacity:0.5">
+        </div>
+        <div class="form-group form-full">
+          <label class="form-group-label">Описание товара</label>
+          <textarea class="form-ctrl" id="pm_desc" rows="3" placeholder="Подробное описание продукта..."></textarea>
+        </div>
+
+        <!-- IMAGE BLOCK -->
+        <div class="form-group form-full">
+          <label class="form-group-label">🖼 Фото товара</label>
+          <div class="img-upload-tabs">
+            <button class="img-tab-btn active" onclick="switchImgTab('upload',this)" type="button">📁 Загрузить файл</button>
+            <button class="img-tab-btn" onclick="switchImgTab('url',this)" type="button">🔗 Вставить URL</button>
+            <button class="img-tab-btn" onclick="switchImgTab('none',this)" type="button">❌ Без фото</button>
+          </div>
+
+          <div class="img-panel active" id="imgPanel_upload">
+            <div class="img-dropzone" id="imgDropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+              <input type="file" accept="image/*" onchange="handleFileSelect(event)" id="imgFileInput">
+              <span class="img-dropzone-icon">📷</span>
+              <div class="img-dropzone-text">
+                <strong>Нажмите или перетащите файл</strong><br>
+                PNG, JPG, WebP до 5 МБ
+              </div>
+            </div>
+          </div>
+
+          <div class="img-panel" id="imgPanel_url">
+            <div class="img-url-row">
+              <input class="form-ctrl" type="url" id="pm_img_url" placeholder="https://example.com/product.jpg" oninput="previewFromUrl(this.value)">
+              <button class="btn btn-info btn-sm" onclick="previewFromUrl(document.getElementById('pm_img_url').value)" type="button">👁 Просмотр</button>
+            </div>
+            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:6px">Вставьте прямую ссылку на изображение</div>
+          </div>
+
+          <div class="img-panel" id="imgPanel_none">
+            <div style="padding:16px;text-align:center;color:var(--text-muted);font-size:0.8rem;background:var(--bg3);border-radius:10px;border:1px dashed var(--border)">
+              Фото не будет — в карточке отобразится только emoji
+            </div>
+          </div>
+
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <img id="imgPreviewImg" src="" alt="Предпросмотр">
+            <button class="img-preview-remove" onclick="clearImage()" type="button">✕ Удалить</button>
+            <div style="padding:6px 10px;background:rgba(0,0,0,0.5);font-size:0.65rem;color:#aaa;text-align:center" id="imgPreviewLabel"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-outline" onclick="closeProductModal()" type="button">Отмена</button>
+        <button class="btn btn-gold" id="saveProductBtn" onclick="saveProduct()" type="button">💾 Сохранить товар</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="reviewModalOverlay" onclick="closeReviewModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="reviewModalTitle">➕ Добавить отзыв</div>
+      <button class="modal-close-btn" onclick="closeReviewModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-group-label">Имя клиента</label>
+          <input class="form-ctrl" type="text" id="rm_name" placeholder="Аминат К.">
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">Рейтинг</label>
+          <select class="form-ctrl" id="rm_stars">
+            <option value="5">★★★★★ (5)</option>
+            <option value="4">★★★★☆ (4)</option>
+            <option value="3">★★★☆☆ (3)</option>
+            <option value="2">★★☆☆☆ (2)</option>
+            <option value="1">★☆☆☆☆ (1)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">Страница</label>
+          <select class="form-ctrl" id="rm_page">
+            <option value="home">🏠 Главная</option>
+            <option value="about">🔬 О нас</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-group-label">Инициал (аватар)</label>
+          <input class="form-ctrl" type="text" id="rm_initial" placeholder="А" maxlength="2">
+        </div>
+        <div class="form-group form-full">
+          <label class="form-group-label">Текст отзыва</label>
+          <textarea class="form-ctrl" id="rm_text" rows="4" placeholder="Текст отзыва клиента..."></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-outline" onclick="closeReviewModal()">Отмена</button>
+        <button class="btn btn-gold" onclick="saveReview()">💾 Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script>
+// ============================================================
+// КОНФИГ СЕРВЕРА
+// ============================================================
+const API_URL   = 'api.php';
+const ADMIN_KEY = 'tiens_server_key_2026'; // ⚠️ Поменяйте перед деплоем!
+
+// ============================================================
+// STATE
+// ============================================================
+const BUILTIN_CATS = [
+  {slug:'vitamins', name:'БАДы',  emoji:'💊', builtin:true},
+  {slug:'immunity', name:'Приборы', emoji:'🛡', builtin:true},
+  {slug:'tea',      name:'Чаи',       emoji:'🍵', builtin:true},
+  {slug:'detox',    name:'Текстиль',    emoji:'✨', builtin:true}
+];
+
+let products         = [];
+let customCategories = [];
+let reviews          = [];
+let editProductId    = null;
+let editReviewId     = null;
+let currentImgData   = '';
+let currentImgMode   = 'upload';
+
+const CREDS_KEY = 'tiens_admin_creds';
+
+const DEFAULT_PRODUCTS = [
+  {id:1,emoji:'💊',name:'Кальций ТЯНЬШИ',   price:2800,cat:'vitamins',img:'',desc:'Органический кальций высшей степени очистки. Укрепляет кости, суставы и зубы.'},
+  {id:2,emoji:'🛡',name:'Жир акулы',         price:3200,cat:'immunity',img:'',desc:'Натуральный жир глубоководной акулы, богатый скваленом и омега-3. Мощный иммуностимулятор.'},
+  {id:3,emoji:'💊',name:'Глюконат кальция',  price:1500,cat:'vitamins',img:'',desc:'Доступная форма кальция для ежедневного применения.'},
+  {id:4,emoji:'🍵',name:'Антилипидный чай',  price:1800,cat:'tea',     img:'',desc:'Уникальный фиточай на основе 7 растительных компонентов. Снижает холестерин.'},
+  {id:5,emoji:'🌿',name:'Спирулина',          price:2400,cat:'detox',  img:'',desc:'Концентрат синезелёных водорослей — природный суперфуд.'},
+  {id:6,emoji:'🍵',name:'Женьшеневый чай',   price:2100,cat:'tea',     img:'',desc:'Премиальный чай с экстрактом корейского женьшеня.'},
+  {id:7,emoji:'🌊',name:'Хитозан',            price:2600,cat:'detox',  img:'',desc:'Природный полисахарид из панциря морских ракообразных. Выводит токсины.'},
+  {id:8,emoji:'⭐',name:'Вита-мин Плюс',      price:3500,cat:'vitamins',img:'',desc:'Комплексный мультивитаминный препарат. 23 витамина и минерала.'}
+];
+
+const DEFAULT_REVIEWS = [
+  {id:1,name:'Аминат К.',  stars:5,initial:'А',page:'home', text:'Принимаю кальций ТЯНЬШИ уже полгода — суставы перестали болеть!'},
+  {id:2,name:'Марьям Т.',  stars:5,initial:'М',page:'home', text:'Тестирование помогло выявить проблемы, о которых я не знала.'},
+  {id:3,name:'Зарина Б.',  stars:5,initial:'З',page:'about',text:'Антилипидный чай творит чудеса! За 3 месяца холестерин пришёл в норму.'},
+  {id:4,name:'Руслан М.',  stars:5,initial:'Р',page:'about',text:'Спирулина — просто находка для спортсменов!'},
+  {id:5,name:'Фатима Д.',  stars:5,initial:'Ф',page:'about',text:'Прошла тестирование — узнала много нового о здоровье.'},
+  {id:6,name:'Ислам Х.',   stars:5,initial:'И',page:'about',text:'Жир акулы помог с иммунитетом — зимой болел значительно реже.'}
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getAllCats()      { return [...BUILTIN_CATS, ...customCategories]; }
+function catLabel(slug)    { const c = getAllCats().find(x=>x.slug===slug); return c?c.name:slug; }
+function catEmoji(slug)    { const c = getAllCats().find(x=>x.slug===slug); return c?c.emoji:'📦'; }
+function catLabelFull(slug){ const c = getAllCats().find(x=>x.slug===slug); return c?c.emoji+' '+c.name:slug; }
+function catColor(slug) {
+  const palette = {vitamins:'#5DADE2',immunity:'#E97070',tea:'#52D68A',detox:'#C39BD3'};
+  if (palette[slug]) return palette[slug];
+  let hash=0; for(let i=0;i<slug.length;i++) hash=slug.charCodeAt(i)+((hash<<5)-hash);
+  return `hsl(${Math.abs(hash)%360},60%,65%)`;
+}
+function catBadgeStyle(slug) { const c=catColor(slug); return `background:${c}22;color:${c};border:1px solid ${c}55;`; }
+
+// ============================================================
+// СЕРВЕРНЫЕ ФУНКЦИИ
+// ============================================================
+
+/** Загружает данные с сервера и обновляет стейт */
+async function loadFromServer() {
+  try {
+    const resp = await fetch(API_URL + '?_=' + Date.now(), {
+      cache: 'no-store',
+      headers: {'Accept': 'application/json'}
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    if (Array.isArray(data.products) && data.products.length > 0) {
+      products = data.products;
+      localStorage.setItem('tiens_products', JSON.stringify(products));
+    }
+
+    if (Array.isArray(data.categories) && data.categories.length > 0) {
+      const slugsBuiltin = BUILTIN_CATS.map(c => c.slug);
+      customCategories = data.categories.filter(c => !slugsBuiltin.includes(c.slug));
+      localStorage.setItem('tiens_custom_cats', JSON.stringify(customCategories));
+    }
+
+    if (Array.isArray(data.reviews) && data.reviews.length > 0) {
+      reviews = data.reviews;
+      localStorage.setItem('tiens_reviews', JSON.stringify(reviews));
+    }
+
+    if (data.content && Object.keys(data.content).length > 0) {
+      localStorage.setItem('tiens_content', JSON.stringify(data.content));
+    }
+    if (data.contacts && Object.keys(data.contacts).length > 0) {
+      localStorage.setItem('tiens_contacts', JSON.stringify(data.contacts));
+    }
+
+    showToast('🌐 Данные загружены с сервера', 'info');
+  } catch (err) {
+    console.warn('[Admin] loadFromServer:', err.message);
+    showToast('⚠️ Сервер недоступен — работаем офлайн', 'error');
+  }
+}
+
+/** Сохраняет payload на сервер */
+async function saveToServer(payload) {
+  const url  = API_URL + '?adminKey=' + encodeURIComponent(ADMIN_KEY);
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json; charset=utf-8'},
+    body: JSON.stringify(payload)
+  });
+  const data = await resp.json();
+  if (!resp.ok || !data.success) {
+    throw new Error(data.error || (data.errors||[]).join(', ') || 'Server error ' + resp.status);
+  }
+  return data;
+}
+
+/** Загружает файл изображения на сервер, возвращает URL */
+async function uploadImageToServer(file) {
+  const url = API_URL + '?action=upload&adminKey=' + encodeURIComponent(ADMIN_KEY);
+  const fd  = new FormData();
+  fd.append('image', file);
+  const resp = await fetch(url, {method: 'POST', body: fd});
+  const data = await resp.json();
+  if (!resp.ok || !data.success) throw new Error(data.error || 'Upload failed');
+  return data.url;
+}
+
+/** Формирует полный payload из текущего стейта и полей форм */
+function _buildFullPayload() {
+  const content = {
+    mainTitle:   document.getElementById('c_mainTitle')?.value   || '',
+    mainSub:     document.getElementById('c_mainSub')?.value     || '',
+    mainDesc:    document.getElementById('c_mainDesc')?.value    || '',
+    statClients: document.getElementById('c_statClients')?.value || '',
+    statYears:   document.getElementById('c_statYears')?.value   || '',
+    aboutDesc:   document.getElementById('c_aboutDesc')?.value   || '',
+    price1:      document.getElementById('c_price1')?.value      || '',
+    time1:       document.getElementById('c_time1')?.value       || '',
+    price2:      document.getElementById('c_price2')?.value      || '',
+    time2:       document.getElementById('c_time2')?.value       || '',
+  };
+  const contacts = {
+    address:  document.getElementById('c_address')?.value  || '',
+    telegram: document.getElementById('c_telegram')?.value || '',
+    whatsapp: document.getElementById('c_whatsapp')?.value || '',
+    bip:      document.getElementById('c_bip')?.value      || '',
+    hours:    document.getElementById('c_hours')?.value    || '',
+  };
+  localStorage.setItem('tiens_content',  JSON.stringify(content));
+  localStorage.setItem('tiens_contacts', JSON.stringify(contacts));
+  return {
+    products:   products,
+    categories: customCategories,
+    reviews:    reviews,
+    content:    content,
+    contacts:   contacts,
+  };
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function getCredentials() {
+  const s = localStorage.getItem(CREDS_KEY);
+  return s ? JSON.parse(s) : {login:'admin', pass:'admin123'};
+}
+
+function doLogin() {
+  const l     = document.getElementById('loginUser').value.trim();
+  const p     = document.getElementById('loginPass').value;
+  const creds = getCredentials();
+  if (l === creds.login && p === creds.pass) {
+    localStorage.setItem('tiens_admin_session', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display    = 'flex';
+    initAdmin();
+  } else {
+    const err = document.getElementById('loginErr');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+function doLogout() { localStorage.removeItem('tiens_admin_session'); location.reload(); }
+
+function changeCredentials() {
+  const l = document.getElementById('s_login').value.trim();
+  const p = document.getElementById('s_pass').value;
+  if (!l || !p) return showToast('Заполните логин и пароль', 'error');
+  localStorage.setItem(CREDS_KEY, JSON.stringify({login:l, pass:p}));
+  showToast('✅ Данные входа обновлены', 'success');
+  document.getElementById('s_login').value = '';
+  document.getElementById('s_pass').value  = '';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function initAdmin() {
+  // Загружаем из localStorage (быстро)
+  products         = JSON.parse(localStorage.getItem('tiens_products')    || 'null') || DEFAULT_PRODUCTS;
+  customCategories = JSON.parse(localStorage.getItem('tiens_custom_cats') || '[]');
+  reviews          = JSON.parse(localStorage.getItem('tiens_reviews')     || 'null') || DEFAULT_REVIEWS;
+
+  renderProductsTable();
+  renderDashboard();
+  renderReviews();
+  renderCategoryManager();
+  populateCatSelects();
+  loadSettings();
+  document.getElementById('sessionTime').textContent = 'Вход: ' + new Date().toLocaleTimeString('ru');
+
+  // Затем загружаем с сервера и обновляем
+  loadFromServer().then(() => {
+    renderProductsTable();
+    renderDashboard();
+    renderReviews();
+    renderCategoryManager();
+    populateCatSelects();
+    loadSettings();
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('tiens_admin_session')) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display    = 'flex';
+    initAdmin();
+  }
+});
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const titles = {
+    dashboard:'📊 Дашборд', products:'📦 Управление товарами',
+    categories:'🏷 Управление категориями', content:'✏️ Редактор контента',
+    reviews:'⭐ Управление отзывами', contacts:'📞 Контакты и соцсети',
+    settings:'⚙️ Настройки системы', export:'💾 Экспорт / Импорт'
+  };
+  document.getElementById('topbarTitle').textContent = titles[id] || id;
+  if (id === 'dashboard')  renderDashboard();
+  if (id === 'categories') renderCategoryManager();
+}
+
+function navTo(id) {
+  const nav = document.querySelector(`.nav-item[onclick*="${id}"]`);
+  showSection(id, nav);
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const allCats = getAllCats();
+  document.getElementById('dTotal').textContent    = products.length;
+  document.getElementById('dReviews').textContent  = reviews.length;
+  document.getElementById('dCats').textContent     = allCats.length;
+  const avg = products.length ? Math.round(products.reduce((a,b)=>a+b.price,0)/products.length) : 0;
+  document.getElementById('dAvgPrice').textContent = avg.toLocaleString('ru');
+
+  const tbl = document.getElementById('dashProductTable');
+  tbl.innerHTML = `<thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th></tr></thead>`;
+  const tbody = document.createElement('tbody');
+  products.slice(0, 5).forEach(p => {
+    const tr    = document.createElement('tr');
+    const thumb = p.img
+      ? `<img src="${p.img}" class="product-thumb" onerror="this.style.display='none';">`
+      : `<div class="product-thumb-emoji">${p.emoji}</div>`;
+    tr.innerHTML = `<td>${thumb}</td><td style="font-weight:600;color:var(--text)">${p.name}</td><td><span class="cat-badge" style="${catBadgeStyle(p.cat)}">${catEmoji(p.cat)} ${catLabel(p.cat)}</span></td><td class="price-cell">${p.price.toLocaleString('ru')} ₽</td>`;
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+
+  const catCounts = {};
+  products.forEach(p => catCounts[p.cat] = (catCounts[p.cat] || 0) + 1);
+  const chart = document.getElementById('catChart');
+  chart.innerHTML = '';
+  if (!products.length) { chart.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px">Нет товаров</div>'; return; }
+  Object.entries(catCounts).forEach(([cat, count]) => {
+    const pct   = Math.round(count / products.length * 100);
+    const color = catColor(cat);
+    const row   = document.createElement('div');
+    row.style.marginBottom = '10px';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px">
+        <span style="color:var(--text-dim)">${catLabelFull(cat)}</span>
+        <span style="color:var(--text-muted)">${count} шт · ${pct}%</span>
+      </div>
+      <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width 0.5s"></div>
+      </div>`;
+    chart.appendChild(row);
+  });
+
+  document.getElementById('productCountBadge').textContent = products.length;
+  document.getElementById('reviewCountBadge').textContent  = reviews.length;
+  document.getElementById('catCountBadge').textContent     = allCats.length;
+  document.getElementById('productTableInfo').textContent  = 'Всего: ' + products.length;
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+function renderCategoryManager() {
+  const list    = document.getElementById('catManagerList');
+  const allCats = getAllCats();
+  list.innerHTML = '';
+  allCats.forEach(cat => {
+    const count     = products.filter(p => p.cat === cat.slug).length;
+    const isBuiltin = cat.builtin;
+    const div       = document.createElement('div');
+    div.className   = 'cat-manager-item ' + (isBuiltin ? 'builtin' : 'custom');
+    div.innerHTML   = `
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div class="cat-info">
+        <div class="cat-name">${cat.name} <span class="${isBuiltin?'builtin-badge':'custom-badge'}">${isBuiltin?'СТАНДАРТНАЯ':'СВОЯ'}</span></div>
+        <div class="cat-slug">slug: <code>${cat.slug}</code></div>
+      </div>
+      <div class="cat-count" style="color:var(--text-muted);font-size:0.78rem;min-width:70px;text-align:right">${count} товар${count===1?'':count>4?'ов':'а'}</div>
+      ${!isBuiltin ? `<button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat.slug}')">🗑</button>` : ''}`;
+    list.appendChild(div);
+  });
+  document.getElementById('catTotalInfo').textContent = `Всего: ${allCats.length} (${BUILTIN_CATS.length} стандартных + ${customCategories.length} своих)`;
+  document.getElementById('catCountBadge').textContent = allCats.length;
+}
+
+async function addCategory() {
+  const emoji = document.getElementById('nc_emoji').value.trim() || '📦';
+  const name  = document.getElementById('nc_name').value.trim();
+  const slug  = document.getElementById('nc_slug').value.trim();
+  if (!name || !slug) return showToast('Заполните название и slug', 'error');
+  if (getAllCats().find(c => c.slug === slug)) return showToast('Такой slug уже существует!', 'error');
+
+  customCategories.push({slug, name, emoji, builtin: false});
+  localStorage.setItem('tiens_custom_cats', JSON.stringify(customCategories));
+  document.getElementById('nc_emoji').value = '';
+  document.getElementById('nc_name').value  = '';
+  document.getElementById('nc_slug').value  = '';
+  renderCategoryManager();
+  populateCatSelects();
+  renderDashboard();
+  showToast(`✅ Категория "${name}" создана`, 'success');
+
+  try { await saveToServer(_buildFullPayload()); } catch(e) {}
+}
+
+async function deleteCategory(slug) {
+  const inUse = products.some(p => p.cat === slug);
+  if (inUse) return showToast('Сначала переназначьте товары из этой категории', 'error');
+  if (!confirm(`Удалить категорию "${catLabel(slug)}"?`)) return;
+
+  customCategories = customCategories.filter(c => c.slug !== slug);
+  localStorage.setItem('tiens_custom_cats', JSON.stringify(customCategories));
+  renderCategoryManager();
+  populateCatSelects();
+  renderDashboard();
+  showToast('🗑 Категория удалена', 'info');
+
+  try { await saveToServer(_buildFullPayload()); } catch(e) {}
+}
+
+function populateCatSelects() {
+  const sel  = document.getElementById('pm_cat');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  getAllCats().forEach(c => {
+    const opt      = document.createElement('option');
+    opt.value      = c.slug;
+    opt.textContent = c.emoji + ' ' + c.name;
+    sel.appendChild(opt);
+  });
+  if (prev) sel.value = prev;
+}
+
+// ============================================================
+// PRODUCTS TABLE
+// ============================================================
+function renderProductsTable(filter) {
+  const tbody = document.getElementById('productsTableBody');
+  const list  = filter ? products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())) : products;
+  tbody.innerHTML = '';
+  list.forEach((p, i) => {
+    const tr    = document.createElement('tr');
+    const thumb = p.img
+      ? `<img src="${p.img}" class="product-thumb" onerror="this.parentElement.innerHTML='<div class=product-thumb-emoji>${p.emoji}</div>'">`
+      : `<div class="product-thumb-emoji">${p.emoji}</div>`;
+    tr.innerHTML = `
+      <td style="color:var(--text-muted);font-size:0.72rem">${i+1}</td>
+      <td>${thumb}</td>
+      <td style="font-weight:600;color:var(--text);max-width:160px">${p.name}</td>
+      <td><span class="cat-badge" style="${catBadgeStyle(p.cat)}">${catEmoji(p.cat)} ${catLabel(p.cat)}</span></td>
+      <td class="price-cell">${p.price.toLocaleString('ru')} ₽</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn btn-outline btn-sm" onclick="editProduct(${p.id})">✏️ Ред.</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑</button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('productTableInfo').textContent = 'Всего: ' + list.length;
+}
+
+function searchProducts(q) { renderProductsTable(q); }
+
+async function saveProductsStore() {
+  localStorage.setItem('tiens_products', JSON.stringify(products));
+  renderProductsTable();
+  renderDashboard();
+  try { await saveToServer(_buildFullPayload()); } catch(e) { console.warn('auto-sync:', e.message); }
+}
+
+// ============================================================
+// IMAGE HANDLING
+// ============================================================
+function switchImgTab(mode, btn) {
+  currentImgMode = mode;
+  document.querySelectorAll('.img-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.img-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('imgPanel_' + mode).classList.add('active');
+  if (mode === 'none') clearImage();
+}
+
+function handleDragOver(e)  { e.preventDefault(); document.getElementById('imgDropzone').classList.add('dragover'); }
+function handleDragLeave(e) { document.getElementById('imgDropzone').classList.remove('dragover'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('imgDropzone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processImageFile(file);
+}
+function handleFileSelect(e) { const file = e.target.files[0]; if (file) processImageFile(file); }
+
+function processImageFile(file) {
+  if (!file.type.startsWith('image/')) return showToast('Выберите файл изображения', 'error');
+  if (file.size > 5 * 1024 * 1024)    return showToast('Файл слишком большой. Максимум 5 МБ', 'error');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentImgData = e.target.result; // base64 — будет загружен на сервер при сохранении
+    showImgPreview(currentImgData, `📁 ${file.name} (${(file.size/1024).toFixed(0)} КБ)`);
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewFromUrl(url) {
+  if (!url || !url.startsWith('http')) return;
+  currentImgData = url;
+  showImgPreview(url, `🔗 ${url.substring(0, 50)}${url.length > 50 ? '...' : ''}`);
+}
+
+function showImgPreview(src, label) {
+  const wrap = document.getElementById('imgPreviewWrap');
+  const img  = document.getElementById('imgPreviewImg');
+  const lbl  = document.getElementById('imgPreviewLabel');
+  img.src    = src;
+  img.onerror = () => { clearImage(); showToast('Не удалось загрузить изображение', 'error'); };
+  lbl.textContent = label || '';
+  wrap.classList.add('has-img');
+}
+
+function clearImage() {
+  currentImgData = '';
+  document.getElementById('imgPreviewWrap').classList.remove('has-img');
+  document.getElementById('imgPreviewImg').src = '';
+  document.getElementById('imgPreviewLabel').textContent = '';
+  document.getElementById('imgFileInput').value = '';
+  document.getElementById('pm_img_url').value   = '';
+}
+
+// ============================================================
+// PRODUCT MODAL
+// ============================================================
+function openProductModal(id) {
+  editProductId = id || null;
+  clearImage();
+  populateCatSelects();
+
+  document.querySelectorAll('.img-tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  document.querySelectorAll('.img-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('imgPanel_upload').classList.add('active');
+  currentImgMode = 'upload';
+
+  if (id) {
+    const p = products.find(x => x.id === id);
+    document.getElementById('productModalTitle').textContent = '✏️ Редактировать товар';
+    document.getElementById('pm_id').value    = p.id;
+    document.getElementById('pm_emoji').value = p.emoji;
+    document.getElementById('pm_name').value  = p.name;
+    document.getElementById('pm_price').value = p.price;
+    document.getElementById('pm_cat').value   = p.cat;
+    document.getElementById('pm_desc').value  = p.desc;
+    if (p.img) {
+      currentImgData = p.img;
+      if (p.img.startsWith('http')) {
+        document.getElementById('pm_img_url').value = p.img;
+        document.querySelectorAll('.img-tab-btn').forEach((b, i) => b.classList.toggle('active', i === 1));
+        document.querySelectorAll('.img-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('imgPanel_url').classList.add('active');
+        currentImgMode = 'url';
+      }
+      showImgPreview(p.img, p.img.startsWith('data:') ? '📁 Загруженное фото' : `🔗 ${p.img.substring(0, 50)}`);
+    }
+  } else {
+    document.getElementById('productModalTitle').textContent = '➕ Добавить товар';
+    document.getElementById('pm_id').value    = products.length ? Math.max(...products.map(x => x.id)) + 1 : 1;
+    ['pm_emoji','pm_name','pm_desc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pm_price').value = '';
+    document.getElementById('pm_cat').value   = getAllCats()[0]?.slug || 'vitamins';
+  }
+
+  document.getElementById('productModalOverlay').classList.add('open');
+}
+
+function closeProductModal()        { document.getElementById('productModalOverlay').classList.remove('open'); }
+function closeProductModalOutside(e){ if (e.target === document.getElementById('productModalOverlay')) closeProductModal(); }
+function editProduct(id)            { openProductModal(id); }
+
+async function saveProduct() {
+  const name  = document.getElementById('pm_name').value.trim();
+  const price = parseInt(document.getElementById('pm_price').value);
+  const emoji = document.getElementById('pm_emoji').value.trim() || '📦';
+  const cat   = document.getElementById('pm_cat').value;
+  const desc  = document.getElementById('pm_desc').value.trim();
+  if (!name || !price) return showToast('Заполните название и цену', 'error');
+
+  const btn      = document.getElementById('saveProductBtn');
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Сохранение...';
+  btn.disabled    = true;
+
+  try {
+    let img = currentImgMode === 'none' ? '' : (currentImgData || '');
+
+    // Если выбран файл локально (base64) — загружаем на сервер
+    const fileInput = document.getElementById('imgFileInput');
+    if (
+      currentImgMode === 'upload' &&
+      fileInput.files && fileInput.files[0] &&
+      img.startsWith('data:')
+    ) {
+      try {
+        showToast('⬆️ Загружаем изображение на сервер...', 'info');
+        img = await uploadImageToServer(fileInput.files[0]);
+        currentImgData = img;
+        showToast('✅ Изображение загружено', 'success');
+      } catch (uploadErr) {
+        showToast('⚠️ Фото не загружено на сервер: ' + uploadErr.message, 'error');
+        img = ''; // без фото если не загрузилось
+      }
+    }
+
+    if (editProductId) {
+      const idx = products.findIndex(p => p.id === editProductId);
+      products[idx] = {...products[idx], emoji, name, price, cat, desc, img};
+      showToast('✅ Товар обновлён: ' + name, 'success');
+    } else {
+      const newId = products.length ? Math.max(...products.map(x => x.id)) + 1 : 1;
+      products.push({id: newId, emoji, name, price, cat, desc, img});
+      showToast('✅ Товар добавлен: ' + name, 'success');
+    }
+
+    await saveProductsStore();
+    closeProductModal();
+
+  } catch (err) {
+    showToast('❌ Ошибка: ' + err.message, 'error');
+  } finally {
+    btn.textContent = origText;
+    btn.disabled    = false;
+  }
+}
+
+async function deleteProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!confirm(`Удалить "${p.name}"?`)) return;
+  products = products.filter(x => x.id !== id);
+  await saveProductsStore();
+  showToast('🗑 Товар удалён', 'info');
+}
+
+// ============================================================
+// REVIEWS
+// ============================================================
+function renderReviews() {
+  const container = document.getElementById('reviewsList');
+  if (!reviews.length) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px">Нет отзывов</div>';
+    return;
+  }
+  container.innerHTML = '';
+  reviews.forEach(r => {
+    const stars     = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+    const pageLabel = r.page === 'home' ? '🏠 Главная' : '🔬 О нас';
+    const el        = document.createElement('div');
+    el.className    = 'review-admin-card';
+    el.innerHTML    = `
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#000;flex-shrink:0">${r.initial}</div>
+      <div class="review-admin-info">
+        <div class="review-admin-name">${r.name} <span style="font-size:0.65rem;color:var(--text-muted);font-weight:400;margin-left:6px">${pageLabel}</span></div>
+        <div class="review-admin-stars">${stars}</div>
+        <div class="review-admin-text">${r.text}</div>
+      </div>
+      <div class="review-admin-actions">
+        <button class="btn btn-outline btn-sm" onclick="editReview(${r.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})">🗑</button>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+function openReviewModal(id) {
+  editReviewId = id || null;
+  if (id) {
+    const r = reviews.find(x => x.id === id);
+    document.getElementById('reviewModalTitle').textContent = '✏️ Редактировать отзыв';
+    document.getElementById('rm_name').value    = r.name;
+    document.getElementById('rm_stars').value   = r.stars;
+    document.getElementById('rm_page').value    = r.page;
+    document.getElementById('rm_initial').value = r.initial;
+    document.getElementById('rm_text').value    = r.text;
+  } else {
+    document.getElementById('reviewModalTitle').textContent = '➕ Добавить отзыв';
+    ['rm_name','rm_text','rm_initial'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('rm_stars').value = '5';
+    document.getElementById('rm_page').value  = 'home';
+  }
+  document.getElementById('reviewModalOverlay').classList.add('open');
+}
+
+function closeReviewModal()        { document.getElementById('reviewModalOverlay').classList.remove('open'); }
+function closeReviewModalOutside(e){ if (e.target === document.getElementById('reviewModalOverlay')) closeReviewModal(); }
+function editReview(id)            { openReviewModal(id); }
+
+async function saveReview() {
+  const name    = document.getElementById('rm_name').value.trim();
+  const text    = document.getElementById('rm_text').value.trim();
+  const stars   = parseInt(document.getElementById('rm_stars').value);
+  const page    = document.getElementById('rm_page').value;
+  const initial = document.getElementById('rm_initial').value.trim() || (name[0] || '?');
+  if (!name || !text) return showToast('Заполните имя и текст', 'error');
+
+  if (editReviewId) {
+    const idx = reviews.findIndex(r => r.id === editReviewId);
+    reviews[idx] = {...reviews[idx], name, text, stars, page, initial};
+    showToast('✅ Отзыв обновлён', 'success');
+  } else {
+    const newId = reviews.length ? Math.max(...reviews.map(x => x.id)) + 1 : 1;
+    reviews.push({id: newId, name, text, stars, page, initial});
+    showToast('✅ Отзыв добавлен', 'success');
+  }
+
+  localStorage.setItem('tiens_reviews', JSON.stringify(reviews));
+  renderReviews();
+  renderDashboard();
+  closeReviewModal();
+
+  try { await saveToServer(_buildFullPayload()); }
+  catch (err) { showToast('⚠️ Отзыв сохранён локально, сервер недоступен', 'error'); }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Удалить отзыв?')) return;
+  reviews = reviews.filter(r => r.id !== id);
+  localStorage.setItem('tiens_reviews', JSON.stringify(reviews));
+  renderReviews();
+  renderDashboard();
+  showToast('🗑 Отзыв удалён', 'info');
+  try { await saveToServer(_buildFullPayload()); } catch(e) {}
+}
+
+// ============================================================
+// CONTENT / CONTACTS / SETTINGS
+// ============================================================
+async function saveContent() {
+  try {
+    await saveToServer(_buildFullPayload());
+    showToast('✅ Контент сохранён на сервере', 'success');
+  } catch (err) {
+    showToast('❌ Ошибка: ' + err.message, 'error');
+  }
+}
+
+async function saveContacts() {
+  try {
+    await saveToServer(_buildFullPayload());
+    showToast('✅ Контакты сохранены на сервере', 'success');
+  } catch (err) {
+    showToast('❌ Ошибка: ' + err.message, 'error');
+  }
+}
+
+function saveSettings() {
+  localStorage.setItem('tiens_settings', JSON.stringify({
+    bank:      document.getElementById('s_bank').value,
+    card:      document.getElementById('s_card').value,
+    cardOwner: document.getElementById('s_cardOwner').value,
+    sbp:       document.getElementById('s_sbp').value,
+    botToken:  document.getElementById('s_botToken').value,
+    chatId:    document.getElementById('s_chatId').value,
+    appUrl:    document.getElementById('s_appUrl').value
+  }));
+  showToast('✅ Настройки сохранены', 'success');
+}
+
+async function saveAll() {
+  const btn      = document.getElementById('saveAllBtn');
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Сохранение...';
+  btn.disabled    = true;
+
+  try {
+    localStorage.setItem('tiens_products', JSON.stringify(products));
+    localStorage.setItem('tiens_reviews',  JSON.stringify(reviews));
+    const payload = _buildFullPayload();
+    const result  = await saveToServer(payload);
+    showToast(`✅ Сохранено: ${result.products} тов., ${result.reviews} отз.`, 'success');
+  } catch (err) {
+    showToast('❌ Ошибка сервера: ' + err.message, 'error');
+  } finally {
+    btn.textContent = origText;
+    btn.disabled    = false;
+  }
+}
+
+function loadSettings() {
+  const load = (key, map) => {
+    const d = JSON.parse(localStorage.getItem(key) || '{}');
+    Object.entries(map).forEach(([field, elId]) => {
+      if (d[field] && document.getElementById(elId)) document.getElementById(elId).value = d[field];
+    });
+  };
+  load('tiens_contacts', {address:'c_address',telegram:'c_telegram',whatsapp:'c_whatsapp',bip:'c_bip',hours:'c_hours'});
+  load('tiens_content',  {mainTitle:'c_mainTitle',mainSub:'c_mainSub',mainDesc:'c_mainDesc',statClients:'c_statClients',statYears:'c_statYears',aboutDesc:'c_aboutDesc',price1:'c_price1',time1:'c_time1',price2:'c_price2',time2:'c_time2'});
+  load('tiens_settings', {bank:'s_bank',card:'s_card',cardOwner:'s_cardOwner',sbp:'s_sbp',botToken:'s_botToken',chatId:'s_chatId',appUrl:'s_appUrl'});
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+function downloadJSON(data, fname) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  showToast('📥 Скачан: ' + fname, 'info');
+}
+
+function exportProducts()   { downloadJSON(products, 'tiens_products.json'); }
+function exportCategories() { downloadJSON({builtin: BUILTIN_CATS, custom: customCategories}, 'tiens_categories.json'); }
+function exportReviews()    { downloadJSON(reviews, 'tiens_reviews.json'); }
+function exportAll() {
+  downloadJSON({
+    products, reviews,
+    categories: {builtin: BUILTIN_CATS, custom: customCategories},
+    content:  JSON.parse(localStorage.getItem('tiens_content')  || '{}'),
+    contacts: JSON.parse(localStorage.getItem('tiens_contacts') || '{}'),
+    settings: JSON.parse(localStorage.getItem('tiens_settings') || '{}')
+  }, 'tiens_backup.json');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.products) { products = data.products; localStorage.setItem('tiens_products', JSON.stringify(products)); }
+      if (data.reviews)  { reviews  = data.reviews;  localStorage.setItem('tiens_reviews',  JSON.stringify(reviews)); }
+      if (data.categories?.custom) { customCategories = data.categories.custom; localStorage.setItem('tiens_custom_cats', JSON.stringify(customCategories)); }
+      if (data.content)  localStorage.setItem('tiens_content',  JSON.stringify(data.content));
+      if (data.contacts) localStorage.setItem('tiens_contacts', JSON.stringify(data.contacts));
+
+      renderProductsTable(); renderDashboard(); renderReviews(); renderCategoryManager(); populateCatSelects(); loadSettings();
+      showToast('✅ Данные импортированы!', 'success');
+
+      // Сохраняем импортированное на сервер
+      try { await saveToServer(_buildFullPayload()); showToast('✅ Импорт синхронизирован с сервером', 'success'); }
+      catch(err) { showToast('⚠️ Импортировано локально, сервер: ' + err.message, 'error'); }
+
+    } catch { showToast('❌ Ошибка формата файла', 'error'); }
+  };
+  reader.readAsText(file);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('adminToast');
+  t.textContent = msg;
+  t.className   = 'admin-toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>

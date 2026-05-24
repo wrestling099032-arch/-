@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TIENS Черкесск</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+--gold: #D4AF37; --gold-light: #F0D060; --gold-dark: #A08820; --bg: #0A0A0F; --bg2: #12121A; --bg3:
+#1A1A28; --text: #FFFFFF; --text-muted: #8888AA; --card-bg: rgba(26,26,40,0.9); --border:
+rgba(212,175,55,0.2);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+
+/* LOADER */
+#loader {
+position:fixed; inset:0; background:var(--bg); z-index:9999;
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#loader.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+.loader-logo { font-size:4rem; animation: pulse 1s ease-in-out infinite; }
+.loader-title { font-size:1.4rem; font-weight:700; color:var(--gold); margin-top:12px; letter-spacing:2px; }
+.loader-sub { font-size:0.8rem; color:var(--text-muted); margin-top:4px; }
+.loader-bar { width:180px; height:3px; background:rgba(212,175,55,0.2); border-radius:2px; margin-top:24px; overflow:hidden; }
+.loader-bar-fill { height:100%; background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light)); border-radius:2px; animation: loadfill 1.8s ease forwards; }
+@keyframes loadfill { from{width:0} to{width:100%} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+/* CANVAS */
+#particles-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* APP */
+#app { position:relative; z-index:1; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+/* HEADER */
+.header {
+background: linear-gradient(135deg, rgba(10,10,15,0.98) 0%, rgba(18,18,26,0.98) 100%);
+border-bottom: 1px solid var(--border);
+padding: 14px 16px 10px;
+flex-shrink:0;
+backdrop-filter: blur(20px);
+}
+.header-inner { display:flex; align-items:center; gap:10px; }
+.header-logo { font-size:1.6rem; filter: drop-shadow(0 0 8px var(--gold)); }
+.header-title { font-size:1.1rem; font-weight:700; color:var(--gold); letter-spacing:1px; }
+.header-sub { font-size:0.65rem; color:var(--text-muted); letter-spacing:2px; text-transform:uppercase; }
+.header-badge {
+margin-left:auto; background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+color:#000; font-size:0.6rem; font-weight:700; padding:3px 8px; border-radius:20px; letter-spacing:1px;
+}
+
+/* HEADER ICONS */
+.header-icons { display:flex; align-items:center; gap:8px; margin-left:auto; }
+.header-icon-btn {
+position:relative; background:rgba(212,175,55,0.1); border:1px solid var(--border);
+border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+cursor:pointer; font-size:1.1rem; transition:all 0.25s; flex-shrink:0;
+}
+.header-icon-btn:hover, .header-icon-btn:active { background:rgba(212,175,55,0.2); border-color:var(--gold); transform:scale(1.05); }
+.header-badge-count {
+position:absolute; top:-4px; right:-4px;
+background:linear-gradient(135deg,#E74C3C,#C0392B);
+color:#fff; font-size:0.55rem; font-weight:800;
+width:18px; height:18px; border-radius:50%;
+display:flex; align-items:center; justify-content:center;
+border:2px solid var(--bg); opacity:0; transform:scale(0);
+transition:all 0.3s cubic-bezier(.4,0,.2,1);
+}
+.header-badge-count.visible { opacity:1; transform:scale(1); }
+
+/* TABS */
+.tab-bar {
+display:flex; background:var(--bg2); border-bottom:1px solid var(--border);
+flex-shrink:0; position:relative;
+}
+.tab-btn {
+flex:1; padding:10px 4px 8px; background:none; border:none; color:var(--text-muted);
+font-size:0.6rem; font-weight:600; letter-spacing:0.5px; cursor:pointer;
+display:flex; flex-direction:column; align-items:center; gap:3px;
+transition: color 0.3s; position:relative; text-transform:uppercase;
+}
+.tab-btn .tab-icon { font-size:1.2rem; transition: transform 0.3s; }
+.tab-btn.active { color:var(--gold); }
+.tab-btn.active .tab-icon { transform: scale(1.15); filter: drop-shadow(0 0 6px var(--gold)); }
+.tab-indicator {
+position:absolute; bottom:0; height:2px;
+background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
+border-radius:2px 2px 0 0; transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s;
+box-shadow: 0 0 8px var(--gold);
+}
+
+/* CONTENT */
+.content { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+.content::-webkit-scrollbar { width:3px; }
+.content::-webkit-scrollbar-track { background:transparent; }
+.content::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+
+/* PAGES */
+.page { display:none; padding:16px; animation: fadeIn 0.4s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* HOME PAGE */
+.hero-section {
+background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(26,26,40,0.6) 100%);
+border: 1px solid var(--border); border-radius:20px; padding:24px 20px; text-align:center;
+margin-bottom:20px; position:relative; overflow:hidden;
+}
+.hero-section::before {
+content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+background: radial-gradient(circle at center, rgba(212,175,55,0.05) 0%, transparent 60%);
+animation: rotateBg 20s linear infinite;
+}
+@keyframes rotateBg { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.hero-logo { font-size:3.5rem; margin-bottom:8px; filter:drop-shadow(0 0 16px var(--gold)); animation: heroFloat 3s ease-in-out infinite; }
+@keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.hero-title { font-size:1.6rem; font-weight:800; color:var(--gold); letter-spacing:2px; margin-bottom:4px; }
+.hero-subtitle { font-size:0.75rem; color:var(--text-muted); letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.hero-desc { font-size:0.85rem; color:#CCCCDD; line-height:1.6; }
+.stats-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.stat-card {
+background: var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:16px;
+text-align:center; position:relative; overflow:hidden;
+animation: fadeIn 0.5s ease both;
+}
+.stat-card::after {
+content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.stat-num { font-size:1.6rem; font-weight:800; color:var(--gold); display:block; }
+.stat-label { font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
+.section-title {
+font-size:0.7rem; font-weight:700; color:var(--gold); letter-spacing:3px;
+text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;
+}
+.section-title::before { content:''; flex:0 0 20px; height:1px; background:var(--gold); }
+.section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--gold),transparent); }
+.quick-cards { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+.quick-card {
+background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:14px 8px;
+text-align:center; cursor:pointer; transition: all 0.3s; position:relative; overflow:hidden;
+}
+.quick-card:hover, .quick-card:active { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 24px rgba(212,175,55,0.2); }
+.quick-card-icon { font-size:1.8rem; margin-bottom:6px; display:block; }
+.quick-card-label { font-size:0.65rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+.reviews-grid { display:grid; gap:12px; margin-bottom:8px; }
+.review-card {
+background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:16px;
+position:relative;
+}
+.review-card::before { content:'"'; position:absolute; top:8px; right:14px; font-size:3rem;
+color:rgba(212,175,55,0.15); font-family:Georgia,serif; line-height:1; }
+.review-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.review-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center;
+font-size:1rem; font-weight:700; color:#000; flex-shrink:0; }
+.review-name { font-size:0.85rem; font-weight:600; color:var(--text); }
+.review-stars { color:var(--gold); font-size:0.7rem; }
+.review-text { font-size:0.8rem; color:#AAAACC; line-height:1.5; }
+
+/* PRODUCTS PAGE */
+.filter-bar { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:16px; scrollbar-width:none; }
+.filter-bar::-webkit-scrollbar { display:none; }
+.filter-btn {
+flex-shrink:0; padding:7px 14px; border-radius:20px; border:1px solid var(--border);
+background:var(--card-bg); color:var(--text-muted); font-size:0.72rem; font-weight:600;
+cursor:pointer; transition:all 0.25s; white-space:nowrap; letter-spacing:0.5px;
+}
+.filter-btn.active { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; border-color:var(--gold); box-shadow:0 4px 12px rgba(212,175,55,0.3); }
+.products-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.product-card {
+background:var(--card-bg); border:1px solid var(--border); border-radius:18px; padding:16px 12px;
+text-align:center; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden;
+animation: fadeIn 0.4s ease both;
+}
+.product-card::before {
+content:''; position:absolute; top:0; left:0; right:0; height:2px;
+background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:0;
+transition:opacity 0.3s;
+}
+.product-card:hover::before, .product-card:active::before { opacity:1; }
+.product-card:hover, .product-card:active { border-color:rgba(212,175,55,0.5); transform:translateY(-3px); box-shadow:0 10px 28px rgba(212,175,55,0.15); }
+.product-img-wrap { width:100%; aspect-ratio:1/1; border-radius:12px; overflow:hidden; margin-bottom:8px; background:var(--bg3); position:relative; }
+.product-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s; }
+.product-card:hover .product-img-wrap img { transform:scale(1.05); }
+.product-emoji-big { font-size:2.6rem; display:flex; align-items:center; justify-content:center; height:100%; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
+.product-name { font-size:0.78rem; font-weight:700; color:var(--text); margin-bottom:6px; line-height:1.3; }
+.product-price { font-size:1rem; font-weight:800; color:var(--gold); }
+.product-cat { font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
+.product-btn {
+margin-top:10px; width:100%; padding:7px; border-radius:10px;
+background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+color:#000; font-size:0.7rem; font-weight:700; border:none; cursor:pointer;
+letter-spacing:0.5px; transition:opacity 0.2s;
+}
+.product-btn:active { opacity:0.8; }
+
+/* FAVOURITE BUTTON ON CARD */
+.fav-btn-card {
+position:absolute; top:8px; right:8px;
+background:rgba(10,10,15,0.7); border:1px solid var(--border);
+border-radius:50%; width:30px; height:30px;
+display:flex; align-items:center; justify-content:center;
+font-size:0.9rem; cursor:pointer; transition:all 0.25s;
+z-index:2; backdrop-filter:blur(4px);
+}
+.fav-btn-card:hover { border-color:var(--gold); transform:scale(1.1); }
+.fav-btn-card.active { background:rgba(231,76,60,0.2); border-color:#E74C3C; }
+
+/* ABOUT PAGE */
+.about-hero {
+background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(26,26,40,0.8));
+border:1px solid var(--border); border-radius:20px; padding:22px; margin-bottom:20px; text-align:center;
+}
+.about-icon { font-size:3rem; margin-bottom:10px; display:block; }
+.about-title { font-size:1.2rem; font-weight:800; color:var(--gold); margin-bottom:8px; }
+.about-desc { font-size:0.82rem; color:#BBBBCC; line-height:1.6; }
+.check-list { display:grid; gap:8px; margin-bottom:20px; }
+.check-item {
+background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:12px 14px;
+display:flex; align-items:center; gap:10px;
+}
+.check-icon { font-size:1.2rem; flex-shrink:0; }
+.check-text { font-size:0.82rem; color:#CCCCDD; }
+.price-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.price-card { border-radius:18px; padding:20px 14px; text-align:center; position:relative; overflow:hidden; }
+.price-card.primary { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; }
+.price-card.secondary { background:var(--card-bg); border:1px solid var(--border); }
+.price-card-icon { font-size:1.8rem; margin-bottom:8px; display:block; }
+.price-card-type { font-size:0.65rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; opacity:0.8; margin-bottom:4px; }
+.price-card-price { font-size:1.5rem; font-weight:800; margin-bottom:2px; }
+.price-card.secondary .price-card-price { color:var(--gold); }
+.price-card-time { font-size:0.7rem; opacity:0.7; }
+
+/* CONTACTS PAGE */
+.contact-hero {
+background:linear-gradient(135deg,rgba(212,175,55,0.08),rgba(26,26,40,0.6));
+border:1px solid var(--border); border-radius:20px; padding:22px; margin-bottom:20px; text-align:center;
+}
+.contact-item {
+background:var(--card-bg); border:1px solid var(--border); border-radius:14px; padding:14px 16px;
+display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer;
+transition:all 0.25s; text-decoration:none; color:inherit;
+}
+.contact-item:hover, .contact-item:active { border-color:var(--gold); background:rgba(212,175,55,0.05); }
+.contact-item-icon { font-size:1.4rem; flex-shrink:0; width:40px; height:40px; border-radius:50%; background:rgba(212,175,55,0.1); display:flex; align-items:center; justify-content:center; }
+.contact-item-label { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
+.contact-item-value { font-size:0.88rem; font-weight:600; color:var(--text); }
+.social-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+.social-btn {
+border-radius:14px; padding:14px 8px; text-align:center; cursor:pointer;
+border:1px solid var(--border); background:var(--card-bg); transition:all 0.25s;
+text-decoration:none; display:block;
+}
+.social-btn:hover, .social-btn:active { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+.social-btn.tg { border-color:rgba(39,162,237,0.3); }
+.social-btn.tg:hover { border-color:#27A2ED; background:rgba(39,162,237,0.08); }
+.social-btn.wa { border-color:rgba(37,211,102,0.3); }
+.social-btn.wa:hover { border-color:#25D366; background:rgba(37,211,102,0.08); }
+.social-btn.bip { border-color:rgba(212,175,55,0.3); }
+.social-btn.bip:hover { border-color:var(--gold); background:rgba(212,175,55,0.08); }
+.social-btn-icon { font-size:1.8rem; display:block; margin-bottom:5px; }
+.social-btn-label { font-size:0.62rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
+.cta-btn {
+width:100%; padding:16px; border-radius:16px;
+background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,var(--gold-light) 100%);
+color:#000; font-size:0.95rem; font-weight:800; border:none; cursor:pointer;
+letter-spacing:1px; text-transform:uppercase; position:relative; overflow:hidden;
+box-shadow:0 6px 24px rgba(212,175,55,0.35); transition:all 0.3s; margin-top:8px;
+}
+.cta-btn:active { transform:scale(0.98); opacity:0.9; }
+.cta-btn::after {
+content:''; position:absolute; inset:0;
+background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%);
+transform:translateX(-100%); transition:transform 0.5s;
+}
+.cta-btn:hover::after { transform:translateX(100%); }
+
+/* MODAL */
+.modal-overlay {
+position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1000;
+display:flex; align-items:flex-end; justify-content:center;
+opacity:0; visibility:hidden; transition:all 0.3s; backdrop-filter:blur(4px);
+}
+.modal-overlay.active { opacity:1; visibility:visible; }
+.modal {
+background:var(--bg2); border:1px solid var(--border); border-radius:24px 24px 0 0;
+width:100%; max-width:480px; padding:24px; max-height:85vh; overflow-y:auto;
+transform:translateY(100%); transition:transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.modal-overlay.active .modal { transform:translateY(0); }
+.modal-handle { width:40px; height:4px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 20px; }
+.modal-product-img { width:100%; max-height:220px; object-fit:cover; border-radius:16px; margin-bottom:14px; display:block; border:1px solid var(--border); }
+.modal-emoji { font-size:3.5rem; text-align:center; display:block; margin-bottom:12px; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5)); }
+.modal-title { font-size:1.3rem; font-weight:800; color:var(--text); text-align:center; margin-bottom:6px; }
+.modal-price { font-size:1.8rem; font-weight:800; color:var(--gold); text-align:center; margin-bottom:16px; }
+.modal-cat-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:0.68rem; font-weight:600; margin:0 auto 14px; }
+.modal-desc { font-size:0.85rem; color:#AAAACC; line-height:1.6; margin-bottom:20px;
+background:rgba(212,175,55,0.04); border:1px solid var(--border); border-radius:12px; padding:14px; }
+.modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.08);
+border:none; color:var(--text-muted); font-size:1.2rem; width:32px; height:32px; border-radius:50%;
+cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+.modal-close:hover { background:rgba(255,255,255,0.15); color:var(--text); }
+.modal { position:relative; }
+
+/* MODAL ACTION BUTTONS */
+.modal-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:0; }
+.modal-fav-btn {
+padding:14px; border-radius:14px; border:1px solid var(--border);
+background:var(--card-bg); color:var(--text-muted); font-size:0.82rem; font-weight:700;
+cursor:pointer; transition:all 0.25s; display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.modal-fav-btn:hover { border-color:#E74C3C; color:#E74C3C; background:rgba(231,76,60,0.08); }
+.modal-fav-btn.active { border-color:#E74C3C; color:#E74C3C; background:rgba(231,76,60,0.12); }
+.modal-cart-btn {
+padding:14px; border-radius:14px;
+background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+color:#000; font-size:0.82rem; font-weight:800;
+border:none; cursor:pointer; transition:all 0.25s;
+display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.modal-cart-btn:active { transform:scale(0.97); }
+.modal-order-btn {
+margin-top:10px; width:100%; padding:16px; border-radius:16px;
+background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,var(--gold-light) 100%);
+color:#000; font-size:0.95rem; font-weight:800; border:none; cursor:pointer;
+letter-spacing:1px; text-transform:uppercase; position:relative; overflow:hidden;
+box-shadow:0 6px 24px rgba(212,175,55,0.35); transition:all 0.3s;
+}
+.modal-order-btn:active { transform:scale(0.98); opacity:0.9; }
+
+/* CART PANEL */
+.cart-panel-overlay {
+position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1100;
+display:flex; align-items:flex-end; justify-content:center;
+opacity:0; visibility:hidden; transition:all 0.3s; backdrop-filter:blur(4px);
+}
+.cart-panel-overlay.active { opacity:1; visibility:visible; }
+.cart-panel {
+background:var(--bg2); border:1px solid var(--border); border-radius:24px 24px 0 0;
+width:100%; max-width:480px; padding:24px; max-height:90vh;
+display:flex; flex-direction:column;
+transform:translateY(100%); transition:transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.cart-panel-overlay.active .cart-panel { transform:translateY(0); }
+.cart-panel-handle { width:40px; height:4px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 16px; flex-shrink:0; }
+.cart-panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-shrink:0; }
+.cart-panel-title { font-size:1.1rem; font-weight:800; color:var(--gold); }
+.cart-panel-close { background:rgba(255,255,255,0.08); border:none; color:var(--text-muted); font-size:1.2rem; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.cart-items { flex:1; overflow-y:auto; padding-right:4px; }
+.cart-items::-webkit-scrollbar { width:3px; }
+.cart-items::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+.cart-item {
+background:var(--card-bg); border:1px solid var(--border); border-radius:14px;
+padding:12px; margin-bottom:10px; display:flex; align-items:center; gap:12px;
+animation: fadeIn 0.3s ease;
+}
+.cart-item-emoji { font-size:1.8rem; flex-shrink:0; width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:var(--bg3); border-radius:10px; }
+.cart-item-img { width:44px; height:44px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.cart-item-info { flex:1; min-width:0; }
+.cart-item-name { font-size:0.82rem; font-weight:700; color:var(--text); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cart-item-price { font-size:0.78rem; color:var(--gold); font-weight:700; }
+.cart-item-controls { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.cart-qty-btn {
+width:28px; height:28px; border-radius:8px; border:1px solid var(--border);
+background:var(--bg3); color:var(--text); font-size:1rem; cursor:pointer;
+display:flex; align-items:center; justify-content:center; transition:all 0.2s; font-weight:700;
+}
+.cart-qty-btn:hover { border-color:var(--gold); color:var(--gold); }
+.cart-qty { font-size:0.9rem; font-weight:700; color:var(--text); min-width:20px; text-align:center; }
+.cart-item-del { width:28px; height:28px; border-radius:8px; border:1px solid rgba(231,76,60,0.3); background:rgba(231,76,60,0.08); color:#E74C3C; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+.cart-item-del:hover { background:rgba(231,76,60,0.2); }
+.cart-empty { text-align:center; padding:40px 20px; color:var(--text-muted); }
+.cart-empty-icon { font-size:3rem; display:block; margin-bottom:12px; }
+.cart-empty-text { font-size:0.85rem; line-height:1.5; }
+.cart-footer { flex-shrink:0; padding-top:16px; border-top:1px solid var(--border); margin-top:8px; }
+.cart-total-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.cart-total-label { font-size:0.85rem; color:var(--text-muted); }
+.cart-total-price { font-size:1.4rem; font-weight:800; color:var(--gold); }
+.cart-checkout-btn {
+width:100%; padding:16px; border-radius:16px;
+background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,var(--gold-light) 100%);
+color:#000; font-size:0.95rem; font-weight:800; border:none; cursor:pointer;
+letter-spacing:1px; text-transform:uppercase;
+box-shadow:0 6px 24px rgba(212,175,55,0.35); transition:all 0.3s;
+}
+.cart-checkout-btn:active { transform:scale(0.98); }
+.cart-clear-btn {
+width:100%; padding:10px; border-radius:12px; margin-top:8px;
+background:transparent; border:1px solid rgba(231,76,60,0.3);
+color:#E74C3C; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.cart-clear-btn:hover { background:rgba(231,76,60,0.08); }
+
+/* FAVOURITES PANEL */
+.fav-panel-overlay {
+position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1100;
+display:flex; align-items:flex-end; justify-content:center;
+opacity:0; visibility:hidden; transition:all 0.3s; backdrop-filter:blur(4px);
+}
+.fav-panel-overlay.active { opacity:1; visibility:visible; }
+.fav-panel {
+background:var(--bg2); border:1px solid var(--border); border-radius:24px 24px 0 0;
+width:100%; max-width:480px; padding:24px; max-height:90vh;
+display:flex; flex-direction:column;
+transform:translateY(100%); transition:transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.fav-panel-overlay.active .fav-panel { transform:translateY(0); }
+.fav-panel-handle { width:40px; height:4px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 16px; flex-shrink:0; }
+.fav-panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-shrink:0; }
+.fav-panel-title { font-size:1.1rem; font-weight:800; color:#E74C3C; }
+.fav-panel-close { background:rgba(255,255,255,0.08); border:none; color:var(--text-muted); font-size:1.2rem; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.fav-items { flex:1; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:start; padding-right:2px; }
+.fav-items::-webkit-scrollbar { width:3px; }
+.fav-items::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:2px; }
+.fav-item {
+background:var(--card-bg); border:1px solid var(--border); border-radius:16px;
+padding:12px 10px; text-align:center; position:relative; animation: fadeIn 0.3s ease;
+cursor:pointer; transition:all 0.25s;
+}
+.fav-item:hover { border-color:rgba(212,175,55,0.5); transform:translateY(-2px); }
+.fav-item-media { width:100%; aspect-ratio:1/1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:var(--bg3); display:flex; align-items:center; justify-content:center; }
+.fav-item-media img { width:100%; height:100%; object-fit:cover; }
+.fav-item-emoji { font-size:2rem; }
+.fav-item-name { font-size:0.72rem; font-weight:700; color:var(--text); margin-bottom:4px; line-height:1.3; }
+.fav-item-price { font-size:0.85rem; font-weight:800; color:var(--gold); margin-bottom:8px; }
+.fav-item-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.fav-item-cart-btn {
+padding:6px 4px; border-radius:8px;
+background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+color:#000; font-size:0.62rem; font-weight:700; border:none; cursor:pointer;
+}
+.fav-item-remove-btn {
+padding:6px 4px; border-radius:8px;
+background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.3);
+color:#E74C3C; font-size:0.62rem; font-weight:700; cursor:pointer; transition:all 0.2s;
+}
+.fav-empty { text-align:center; padding:40px 20px; color:var(--text-muted); grid-column:1/-1; }
+.fav-empty-icon { font-size:3rem; display:block; margin-bottom:12px; }
+.fav-empty-text { font-size:0.85rem; line-height:1.5; }
+
+/* TOAST */
+.toast {
+position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-80px);
+background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+color:#000; padding:12px 20px; border-radius:30px; font-size:0.82rem; font-weight:700;
+z-index:2000; transition:transform 0.4s cubic-bezier(.4,0,.2,1);
+box-shadow:0 8px 24px rgba(212,175,55,0.4); white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* RIPPLE */
+.ripple-container { position:relative; overflow:hidden; }
+.ripple {
+position:absolute; border-radius:50%; background:rgba(212,175,55,0.3);
+transform:scale(0); animation:ripple 0.6s linear; pointer-events:none;
+}
+@keyframes ripple { to{transform:scale(4);opacity:0} }
+
+/* SCROLL ANIMATIONS */
+.fade-in { opacity:0; transform:translateY(20px); transition:opacity 0.5s ease, transform 0.5s ease; }
+.fade-in.visible { opacity:1; transform:translateY(0); }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+<div class="loader-logo">🌿</div>
+<div class="loader-title">TIENS</div>
+<div class="loader-sub">Черкесск · КЧР</div>
+<div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- PARTICLES -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-logo">🌿</div>
+      <div>
+        <div class="header-title">TIENS Черкесск</div>
+        <div class="header-sub">Официальный дистрибьютор</div>
+      </div>
+      <div class="header-icons">
+        <div class="header-icon-btn" onclick="openFavPanel()" title="Избранное">
+          ❤️
+          <span class="header-badge-count" id="favCount">0</span>
+        </div>
+        <div class="header-icon-btn" onclick="openCartPanel()" title="Корзина">
+          🛒
+          <span class="header-badge-count" id="cartCount">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" onclick="switchTab(0)" id="tab0">
+      <span class="tab-icon">🏠</span>
+      <span>Главная</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab(1)" id="tab1">
+      <span class="tab-icon">🛍️</span>
+      <span>Продукция</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab(2)" id="tab2">
+      <span class="tab-icon">🔬</span>
+      <span>О нас</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab(3)" id="tab3">
+      <span class="tab-icon">📞</span>
+      <span>Контакты</span>
+    </button>
+    <div class="tab-indicator" id="tabIndicator"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="mainContent">
+
+    <!-- HOME PAGE -->
+    <div class="page active pb-safe" id="page0">
+      <div class="hero-section fade-in">
+        <div class="hero-logo">🌿</div>
+        <div class="hero-title" id="heroTitle">TIENS</div>
+        <div class="hero-subtitle" id="heroSubtitle">Черкесск · Официальный дистрибьютор</div>
+        <div class="hero-desc" id="heroDesc">
+          Биологически активные добавки мирового класса для вашего здоровья и долголетия. Работаем в Карачаево-Черкесии с гарантией качества.
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card fade-in" style="animation-delay:0.1s">
+          <span class="stat-num" id="counterClients">0</span>
+          <span class="stat-label">Клиентов</span>
+        </div>
+        <div class="stat-card fade-in" style="animation-delay:0.2s">
+          <span class="stat-num" id="counterYears">0</span>
+          <span class="stat-label">Лет опыта</span>
+        </div>
+      </div>
+
+      <div class="section-title">Навигация</div>
+      <div class="quick-cards">
+        <div class="quick-card ripple-container fade-in" onclick="switchTab(1); addRipple(event, this)" style="animation-delay:0.1s">
+          <span class="quick-card-icon">🛍️</span>
+          <span class="quick-card-label">Продукция</span>
+        </div>
+        <div class="quick-card ripple-container fade-in" onclick="switchTab(2); addRipple(event, this)" style="animation-delay:0.2s">
+          <span class="quick-card-icon">🔬</span>
+          <span class="quick-card-label">О нас</span>
+        </div>
+        <div class="quick-card ripple-container fade-in" onclick="switchTab(3); addRipple(event, this)" style="animation-delay:0.3s">
+          <span class="quick-card-icon">📞</span>
+          <span class="quick-card-label">Контакты</span>
+        </div>
+      </div>
+
+      <div class="section-title">Отзывы</div>
+      <div class="reviews-grid" id="homeReviewsGrid">
+        <div class="review-card fade-in" style="animation-delay:0.1s">
+          <div class="review-header">
+            <div class="review-avatar">А</div>
+            <div>
+              <div class="review-name">Аминат К.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Принимаю кальций ТЯНЬШИ уже полгода — суставы перестали болеть! Очень довольна результатом. Рекомендую всем знакомым.</div>
+        </div>
+        <div class="review-card fade-in" style="animation-delay:0.2s">
+          <div class="review-header">
+            <div class="review-avatar">М</div>
+            <div>
+              <div class="review-name">Марьям Т.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Тестирование помогло выявить проблемы, о которых я не знала. Специалисты очень внимательные и профессиональные. Спасибо!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS PAGE -->
+    <div class="page pb-safe" id="page1">
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div class="page pb-safe" id="page2">
+      <div class="about-hero fade-in">
+        <span class="about-icon">🔬</span>
+        <div class="about-title">Тестирование организма</div>
+        <div class="about-desc" id="aboutDesc">
+          Мы проводим профессиональную диагностику состояния вашего здоровья с помощью современных методик и многолетнего опыта специалистов TIENS.
+        </div>
+      </div>
+
+      <div class="section-title">Что проверяем</div>
+      <div class="check-list">
+        <div class="check-item fade-in" style="animation-delay:0.05s">
+          <span class="check-icon">❤️</span>
+          <span class="check-text">Состояние сердечно-сосудистой системы и кровообращение</span>
+        </div>
+        <div class="check-item fade-in" style="animation-delay:0.1s">
+          <span class="check-icon">🦴</span>
+          <span class="check-text">Плотность и состояние костной ткани, уровень кальция</span>
+        </div>
+        <div class="check-item fade-in" style="animation-delay:0.15s">
+          <span class="check-icon">🧠</span>
+          <span class="check-text">Нервная система и общее психоэмоциональное состояние</span>
+        </div>
+        <div class="check-item fade-in" style="animation-delay:0.2s">
+          <span class="check-icon">🛡️</span>
+          <span class="check-text">Иммунный статус и защитные функции организма</span>
+        </div>
+        <div class="check-item fade-in" style="animation-delay:0.25s">
+          <span class="check-icon">⚡</span>
+          <span class="check-text">Энергетический баланс и уровень жизненной силы</span>
+        </div>
+      </div>
+
+      <div class="section-title">Стоимость услуг</div>
+      <div class="price-cards">
+        <div class="price-card primary fade-in" style="animation-delay:0.1s">
+          <span class="price-card-icon">🩺</span>
+          <div class="price-card-type">Первичный приём</div>
+          <div class="price-card-price" id="price1">1 500 ₽</div>
+          <div class="price-card-time" id="time1">≈ 40 минут</div>
+        </div>
+        <div class="price-card secondary fade-in" style="animation-delay:0.2s">
+          <span class="price-card-icon">📋</span>
+          <div class="price-card-type" style="color:var(--text-muted)">Повторный приём</div>
+          <div class="price-card-price" id="price2">500 ₽</div>
+          <div class="price-card-time" id="time2" style="color:var(--text-muted)">≈ 20 минут</div>
+        </div>
+      </div>
+
+      <div class="section-title">Отзывы клиентов</div>
+      <div class="reviews-grid" id="aboutReviewsGrid">
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">З</div>
+            <div>
+              <div class="review-name">Зарина Б.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Антилипидный чай творит чудеса! За 3 месяца холестерин пришёл в норму. Врач тоже удивился результатам.</div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">Р</div>
+            <div>
+              <div class="review-name">Руслан М.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Спирулина — просто находка для спортсменов! Энергия на весь день, восстановление после тренировок намного быстрее.</div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">Ф</div>
+            <div>
+              <div class="review-name">Фатима Д.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Прошла тестирование — узнала много нового о своём здоровье. Специалисты подобрали идеальную программу именно для меня.</div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">И</div>
+            <div>
+              <div class="review-name">Ислам Х.</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="review-text">Жир акулы помог с иммунитетом — зимой болел значительно реже. Качество продукции TIENS на высоте, проверено!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACTS PAGE -->
+    <div class="page pb-safe" id="page3">
+      <div class="contact-hero fade-in">
+        <div style="font-size:3rem;margin-bottom:10px">📍</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--gold);margin-bottom:6px">Мы в Черкесске</div>
+        <div style="font-size:0.82rem;color:#BBBBCC" id="contactAddress">г. Черкесск, Карачаево-Черкесская Республика</div>
+      </div>
+
+      <div class="section-title">Адрес</div>
+      <div class="contact-item ripple-container" onclick="addRipple(event,this)">
+        <div class="contact-item-icon">📍</div>
+        <div>
+          <div class="contact-item-label">Местоположение</div>
+          <div class="contact-item-value" id="contactAddressVal">г. Черкесск, КЧР</div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:16px">Соцсети и мессенджеры</div>
+      <div class="social-grid">
+        <a class="social-btn tg" id="tgLink" href="https://t.me/Tiens_KCHR" target="_blank">
+          <span class="social-btn-icon">✈️</span>
+          <span class="social-btn-label">Telegram</span>
+        </a>
+        <a class="social-btn wa" id="waLink" href="https://wa.me/79000000000" target="_blank">
+          <span class="social-btn-icon">💬</span>
+          <span class="social-btn-label">WhatsApp</span>
+        </a>
+        <div class="social-btn bip" id="bipBtn" onclick="showToast('BIP: @Tiens_KCHR')">
+          <span class="social-btn-icon">⭐</span>
+          <span class="social-btn-label">BIP</span>
+        </div>
+      </div>
+
+      <div class="section-title">Контакты</div>
+      <div class="contact-item ripple-container" onclick="addRipple(event,this)" style="margin-bottom:10px">
+        <div class="contact-item-icon">✈️</div>
+        <div>
+          <div class="contact-item-label">Telegram</div>
+          <div class="contact-item-value" id="contactTelegram">@Tiens_KCHR</div>
+        </div>
+      </div>
+      <div class="contact-item ripple-container" onclick="addRipple(event,this)" style="margin-bottom:10px">
+        <div class="contact-item-icon">📱</div>
+        <div>
+          <div class="contact-item-label">WhatsApp</div>
+          <div class="contact-item-value" id="contactWhatsapp">+7 (900) 000-00-00</div>
+        </div>
+      </div>
+      <div class="contact-item ripple-container" onclick="addRipple(event,this)">
+        <div class="contact-item-icon">⭐</div>
+        <div>
+          <div class="contact-item-label">BIP Messenger</div>
+          <div class="contact-item-value" id="contactBip">@Tiens_KCHR</div>
+        </div>
+      </div>
+
+      <button class="cta-btn ripple-container" onclick="contactBot(); addRipple(event,this)" style="margin-top:24px">
+        Связаться через бота
+      </button>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- MODAL PRODUCT -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="productModal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-handle"></div>
+    <img id="modalImg" class="modal-product-img" src="" alt="" style="display:none">
+    <span class="modal-emoji" id="modalEmoji"></span>
+    <div class="modal-title" id="modalTitle"></div>
+    <div style="text-align:center"><span class="modal-cat-badge" id="modalCatBadge"></span></div>
+    <div class="modal-price" id="modalPrice"></div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-actions">
+      <button class="modal-fav-btn" id="modalFavBtn" onclick="toggleFavFromModal()">
+        ❤️ В избранное
+      </button>
+      <button class="modal-cart-btn" onclick="addToCartFromModal()">
+        🛒 В корзину
+      </button>
+    </div>
+    <button class="modal-order-btn ripple-container" onclick="orderProduct(); addRipple(event,this)" style="margin-top:10px;width:100%">
+      Заказать через бота
+    </button>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel-overlay" id="cartPanelOverlay" onclick="closeCartOutside(event)">
+  <div class="cart-panel">
+    <div class="cart-panel-handle"></div>
+    <div class="cart-panel-header">
+      <div class="cart-panel-title">🛒 Корзина</div>
+      <button class="cart-panel-close" onclick="closeCartPanel()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Итого:</span>
+        <span class="cart-total-price" id="cartTotal">0 ₽</span>
+      </div>
+      <button class="cart-checkout-btn ripple-container" onclick="checkoutCart(); addRipple(event,this)">
+        Оформить заказ
+      </button>
+      <button class="cart-clear-btn" onclick="clearCart()">🗑️ Очистить корзину</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAVOURITES PANEL -->
+<div class="fav-panel-overlay" id="favPanelOverlay" onclick="closeFavOutside(event)">
+  <div class="fav-panel">
+    <div class="fav-panel-handle"></div>
+    <div class="fav-panel-header">
+      <div class="fav-panel-title">❤️ Избранное</div>
+      <button class="fav-panel-close" onclick="closeFavPanel()">✕</button>
+    </div>
+    <div class="fav-items" id="favItems"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== TELEGRAM INIT =====
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('#0A0A0F');
+  tg.setBackgroundColor('#0A0A0F');
+}
+
+// ===== КОНСТАНТЫ =====
+const API_URL_INDEX = 'api.php';
+const BUILTIN_CATS = [
+  {slug:'vitamins', name:'БАДы',     emoji:'💊'},
+  {slug:'immunity', name:'Приборы',  emoji:'🔧'},
+  {slug:'tea',      name:'Чаи',      emoji:'🍵'},
+  {slug:'detox',    name:'Текстиль', emoji:'✨'}
+];
+const DEFAULT_PRODUCTS = [
+  {id:1, emoji:'💊', name:'Кальций ТЯНЬШИ',    price:2800, cat:'vitamins', img:'', desc:'Органический кальций высшей степени очистки на основе натурального сырья. Укрепляет кости, суставы и зубы. Незаменим при остеопорозе, переломах и дефиците кальция.'},
+  {id:2, emoji:'🦈', name:'Жир акулы',         price:3200, cat:'immunity', img:'', desc:'Натуральный жир глубоководной акулы, богатый скваленом и омега-3 жирными кислотами. Мощный иммуностимулятор и антиоксидант.'},
+  {id:3, emoji:'💊', name:'Глюконат кальция',  price:1500, cat:'vitamins', img:'', desc:'Доступная форма кальция в таблетках для ежедневного применения. Поддерживает нервную систему, мышечную функцию и здоровье костей.'},
+  {id:4, emoji:'🍵', name:'Антилипидный чай',  price:1800, cat:'tea',      img:'', desc:'Уникальный фиточай на основе 7 растительных компонентов. Снижает уровень холестерина, очищает сосуды, нормализует жировой обмен.'},
+  {id:5, emoji:'🌿', name:'Спирулина',         price:2400, cat:'detox',    img:'', desc:'Концентрат синезелёных водорослей — природный суперфуд с полным набором витаминов, минералов и аминокислот.'},
+  {id:6, emoji:'🍵', name:'Женьшеневый чай',   price:2100, cat:'tea',      img:'', desc:'Премиальный чай с экстрактом корейского женьшеня и адаптогенными растениями. Тонизирует, снимает усталость.'},
+  {id:7, emoji:'🌊', name:'Хитозан',           price:2600, cat:'detox',    img:'', desc:'Природный полисахарид из панциря морских ракообразных. Связывает и выводит жиры, токсины и тяжёлые металлы.'},
+  {id:8, emoji:'⭐', name:'Вита-мин Плюс',     price:3500, cat:'vitamins', img:'', desc:'Комплексный мультивитаминный препарат нового поколения. Содержит 23 витамина и минерала в оптимальных дозировках.'}
+];
+
+// ===== СОСТОЯНИЕ =====
+let products       = [];
+let currentFilter  = 'all';
+let currentProduct = null;
+let currentTab     = 0;
+let cart           = [];
+let favourites     = [];
+let _counterClientsTarget = 5000;
+let _counterYearsTarget   = 10;
+
+// ===== ХЕЛПЕРЫ =====
+function getAllCats() {
+  const custom = JSON.parse(localStorage.getItem('tiens_custom_cats') || '[]');
+  return [...BUILTIN_CATS, ...custom];
+}
+function catInfo(slug) {
+  return getAllCats().find(c => c.slug === slug) || {slug, name: slug, emoji:'🌿'};
+}
+function catColor(slug) {
+  const palette = {vitamins:'#5DADE2', immunity:'#E97070', tea:'#52D68A', detox:'#C39BD3'};
+  if (palette[slug]) return palette[slug];
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  return `hsl(${Math.abs(hash) % 360},55%,62%)`;
+}
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function getProducts() {
+  return JSON.parse(localStorage.getItem('tiens_products') || 'null') || DEFAULT_PRODUCTS;
+}
+
+// ===== КОРЗИНА — ХРАНИЛИЩЕ =====
+function saveCart() {
+  localStorage.setItem('tiens_cart', JSON.stringify(cart));
+}
+function loadCart() {
+  cart = JSON.parse(localStorage.getItem('tiens_cart') || '[]');
+}
+function getCartCount() {
+  return cart.reduce((sum, item) => sum + item.qty, 0);
+}
+function getCartTotal() {
+  return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+}
+
+// ===== КОРЗИНА — ДЕЙСТВИЯ =====
+function addToCart(productId) {
+  const p = products.find(x => x.id === productId);
+  if (!p) return;
+  const existing = cart.find(x => x.id === productId);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji, img: p.img, qty: 1 });
+  }
+  saveCart();
+  updateCartBadge();
+  showToast('🛒 ' + p.name + ' — добавлен в корзину!');
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(x => x.id !== productId);
+  saveCart();
+  updateCartBadge();
+  renderCartItems();
+}
+
+function changeQty(productId, delta) {
+  const item = cart.find(x => x.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    removeFromCart(productId);
+    return;
+  }
+  saveCart();
+  updateCartBadge();
+  renderCartItems();
+}
+
+function clearCart() {
+  cart = [];
+  saveCart();
+  updateCartBadge();
+  renderCartItems();
+}
+
+function checkoutCart() {
+  if (!cart.length) return;
+  const lines = cart.map(item => `• ${item.name} x${item.qty} = ${(item.price * item.qty).toLocaleString('ru')} ₽`).join('\n');
+  const total = getCartTotal();
+  const data = JSON.stringify({
+    action: 'cart_order',
+    items: cart.map(i => ({id: i.id, name: i.name, qty: i.qty, price: i.price})),
+    total: total
+  });
+  if (tg && tg.sendData) {
+    tg.sendData(data);
+  } else {
+    showToast('✅ Заказ на ' + total.toLocaleString('ru') + ' ₽ отправлен!');
+  }
+  closeCartPanel();
+  clearCart();
+  showToast('✅ Заказ оформлен на ' + total.toLocaleString('ru') + ' ₽');
+}
+
+function updateCartBadge() {
+  const count = getCartCount();
+  const badge = document.getElementById('cartCount');
+  badge.textContent = count;
+  badge.classList.toggle('visible', count > 0);
+}
+
+// ===== КОРЗИНА — РЕНДЕР =====
+function renderCartItems() {
+  const container = document.getElementById('cartItems');
+  const footer    = document.getElementById('cartFooter');
+  const totalEl   = document.getElementById('cartTotal');
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="cart-empty">
+        <span class="cart-empty-icon">🛒</span>
+        <div class="cart-empty-text">Корзина пуста.<br>Добавьте товары из каталога!</div>
+      </div>`;
+    footer.style.display = 'none';
+    return;
+  }
+
+  footer.style.display = 'block';
+  totalEl.textContent = getCartTotal().toLocaleString('ru') + ' ₽';
+
+  container.innerHTML = cart.map(item => {
+    const mediaHTML = item.img
+      ? `<img class="cart-item-img" src="${escapeHTML(item.img)}" alt="" onerror="this.outerHTML='<div class=cart-item-emoji>${item.emoji}</div>'">`
+      : `<div class="cart-item-emoji">${item.emoji}</div>`;
+    return `
+      <div class="cart-item">
+        ${mediaHTML}
+        <div class="cart-item-info">
+          <div class="cart-item-name">${escapeHTML(item.name)}</div>
+          <div class="cart-item-price">${(item.price * item.qty).toLocaleString('ru')} ₽</div>
+        </div>
+        <div class="cart-item-controls">
+          <button class="cart-qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+          <span class="cart-qty">${item.qty}</span>
+          <button class="cart-qty-btn" onclick="changeQty(${item.id}, +1)">+</button>
+          <button class="cart-item-del" onclick="removeFromCart(${item.id})">🗑</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ===== КОРЗИНА — ПАНЕЛЬ =====
+function openCartPanel() {
+  renderCartItems();
+  document.getElementById('cartPanelOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeCartPanel() {
+  document.getElementById('cartPanelOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function closeCartOutside(e) {
+  if (e.target === document.getElementById('cartPanelOverlay')) closeCartPanel();
+}
+
+// ===== ИЗБРАННОЕ — ХРАНИЛИЩЕ =====
+function saveFav() {
+  localStorage.setItem('tiens_fav', JSON.stringify(favourites));
+}
+function loadFav() {
+  favourites = JSON.parse(localStorage.getItem('tiens_fav') || '[]');
+}
+function isFav(productId) {
+  return favourites.some(x => x.id === productId);
+}
+
+// ===== ИЗБРАННОЕ — ДЕЙСТВИЯ =====
+function toggleFav(productId) {
+  const p = products.find(x => x.id === productId);
+  if (!p) return;
+  if (isFav(productId)) {
+    favourites = favourites.filter(x => x.id !== productId);
+    showToast('💔 Удалено из избранного');
+  } else {
+    favourites.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji, img: p.img });
+    showToast('❤️ Добавлено в избранное!');
+  }
+  saveFav();
+  updateFavBadge();
+  updateFavButtons(productId);
+}
+
+function removeFromFav(productId) {
+  favourites = favourites.filter(x => x.id !== productId);
+  saveFav();
+  updateFavBadge();
+  renderFavItems();
+  updateFavButtons(productId);
+}
+
+function updateFavBadge() {
+  const count = favourites.length;
+  const badge = document.getElementById('favCount');
+  badge.textContent = count;
+  badge.classList.toggle('visible', count > 0);
+}
+
+function updateFavButtons(productId) {
+  // Кнопка на карточке товара
+  const cardBtn = document.querySelector(`.fav-btn-card[data-id="${productId}"]`);
+  if (cardBtn) {
+    cardBtn.classList.toggle('active', isFav(productId));
+    cardBtn.title = isFav(productId) ? 'Убрать из избранного' : 'В избранное';
+    cardBtn.textContent = isFav(productId) ? '❤️' : '🤍';
+  }
+  // Кнопка в модалке
+  if (currentProduct && currentProduct.id === productId) {
+    const modalFavBtn = document.getElementById('modalFavBtn');
+    if (modalFavBtn) {
+      modalFavBtn.classList.toggle('active', isFav(productId));
+      modalFavBtn.innerHTML = isFav(productId) ? '❤️ В избранном' : '🤍 В избранное';
+    }
+  }
+}
+
+// ===== ИЗБРАННОЕ — РЕНДЕР =====
+function renderFavItems() {
+  const container = document.getElementById('favItems');
+  if (!favourites.length) {
+    container.innerHTML = `
+      <div class="fav-empty">
+        <span class="fav-empty-icon">❤️</span>
+        <div class="fav-empty-text">Избранное пусто.<br>Нажмите ❤️ на товаре, чтобы сохранить!</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = favourites.map(item => {
+    const mediaHTML = item.img
+      ? `<img src="${escapeHTML(item.img)}" alt="" onerror="this.outerHTML='<div class=fav-item-emoji>${item.emoji}</div>'">`
+      : `<div class="fav-item-emoji">${item.emoji}</div>`;
+    return `
+      <div class="fav-item" onclick="openModalFromFav(${item.id})">
+        <div class="fav-item-media">${mediaHTML}</div>
+        <div class="fav-item-name">${escapeHTML(item.name)}</div>
+        <div class="fav-item-price">${item.price.toLocaleString('ru')} ₽</div>
+        <div class="fav-item-actions" onclick="event.stopPropagation()">
+          <button class="fav-item-cart-btn" onclick="addToCart(${item.id}); showToast('🛒 Добавлено!')">🛒</button>
+          <button class="fav-item-remove-btn" onclick="removeFromFav(${item.id})">🗑️</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openModalFromFav(productId) {
+  closeFavPanel();
+  setTimeout(() => openModal(productId), 300);
+}
+
+// ===== ИЗБРАННОЕ — ПАНЕЛЬ =====
+function openFavPanel() {
+  renderFavItems();
+  document.getElementById('favPanelOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeFavPanel() {
+  document.getElementById('favPanelOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function closeFavOutside(e) {
+  if (e.target === document.getElementById('favPanelOverlay')) closeFavPanel();
+}
+
+// ===== МОДАЛЬНОЕ — ДЕЙСТВИЯ =====
+function toggleFavFromModal() {
+  if (!currentProduct) return;
+  toggleFav(currentProduct.id);
+}
+function addToCartFromModal() {
+  if (!currentProduct) return;
+  addToCart(currentProduct.id);
+}
+
+// ===== СЕРВЕРНАЯ ЗАГРУЗКА =====
+async function loadServerData() {
+  try {
+    const resp = await fetch(API_URL_INDEX + '?_=' + Date.now(), {
+      cache: 'no-store', headers: {'Accept': 'application/json'}
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    // --- Продукты ---
+    if (Array.isArray(data.products) && data.products.length > 0) {
+      products = data.products;
+      localStorage.setItem('tiens_products', JSON.stringify(products));
+    }
+
+    // --- Категории ---
+    if (Array.isArray(data.categories) && data.categories.length > 0) {
+      const slugsBuiltin = BUILTIN_CATS.map(c => c.slug);
+      const custom = data.categories.filter(c => !slugsBuiltin.includes(c.slug));
+      if (custom.length > 0) {
+        localStorage.setItem('tiens_custom_cats', JSON.stringify(custom));
+      }
+    }
+
+    // --- Контент ---
+    if (data.content && typeof data.content === 'object' && Object.keys(data.content).length > 0) {
+      const c = data.content;
+      const heroTitle = document.getElementById('heroTitle');
+      if (heroTitle && c.mainTitle) heroTitle.textContent = c.mainTitle;
+      const heroSub = document.getElementById('heroSubtitle');
+      if (heroSub && c.mainSub) heroSub.textContent = c.mainSub;
+      const heroDesc = document.getElementById('heroDesc');
+      if (heroDesc && c.mainDesc) heroDesc.textContent = c.mainDesc;
+      const aboutDesc = document.getElementById('aboutDesc');
+      if (aboutDesc && c.aboutDesc) aboutDesc.textContent = c.aboutDesc;
+      const p1el = document.getElementById('price1');
+      if (p1el && c.price1) p1el.textContent = Number(c.price1).toLocaleString('ru') + ' ₽';
+      const p2el = document.getElementById('price2');
+      if (p2el && c.price2) p2el.textContent = Number(c.price2).toLocaleString('ru') + ' ₽';
+      const t1el = document.getElementById('time1');
+      if (t1el && c.time1) t1el.textContent = '≈ ' + c.time1 + ' минут';
+      const t2el = document.getElementById('time2');
+      if (t2el && c.time2) t2el.textContent = '≈ ' + c.time2 + ' минут';
+      if (c.statClients) _counterClientsTarget = parseInt(c.statClients) || 5000;
+      if (c.statYears)   _counterYearsTarget   = parseInt(c.statYears)   || 10;
+    }
+
+    // --- Контакты ---
+    if (data.contacts && typeof data.contacts === 'object' && Object.keys(data.contacts).length > 0) {
+      const ct = data.contacts;
+      const addrHero = document.getElementById('contactAddress');
+      if (addrHero && ct.address) addrHero.textContent = ct.address;
+      const addrVal = document.getElementById('contactAddressVal');
+      if (addrVal && ct.address) addrVal.textContent = ct.address;
+      const tgVal = document.getElementById('contactTelegram');
+      if (tgVal && ct.telegram) tgVal.textContent = ct.telegram;
+      const waVal = document.getElementById('contactWhatsapp');
+      if (waVal && ct.whatsapp) waVal.textContent = ct.whatsapp;
+      const bipVal = document.getElementById('contactBip');
+      if (bipVal && ct.bip) bipVal.textContent = ct.bip;
+      if (ct.telegram) {
+        const tgLink = document.getElementById('tgLink');
+        if (tgLink) tgLink.href = 'https://t.me/' + ct.telegram.replace('@','');
+      }
+      if (ct.whatsapp) {
+        const waLink = document.getElementById('waLink');
+        if (waLink) {
+          const phone = ct.whatsapp.replace(/\D/g,'');
+          waLink.href = 'https://wa.me/' + phone;
+        }
+      }
+      if (ct.bip) {
+        const bipBtn = document.getElementById('bipBtn');
+        if (bipBtn) bipBtn.onclick = () => showToast('BIP: ' + ct.bip);
+      }
+    }
+
+    // --- Отзывы ---
+    if (Array.isArray(data.reviews) && data.reviews.length > 0) {
+      renderServerReviews(data.reviews);
+    }
+
+    console.log('[TIENS] Сервер: загружено', (data.products||[]).length, 'товаров');
+  } catch (err) {
+    console.warn('[TIENS] Сервер недоступен, используем локальные данные:', err.message);
+  }
+}
+
+// ===== ОТЗЫВЫ С СЕРВЕРА =====
+function renderServerReviews(reviews) {
+  function buildCard(r) {
+    const stars = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+    return `
+      <div class="review-card fade-in">
+        <div class="review-header">
+          <div class="review-avatar">${escapeHTML(r.initial || r.name[0] || '?')}</div>
+          <div>
+            <div class="review-name">${escapeHTML(r.name)}</div>
+            <div class="review-stars">${stars}</div>
+          </div>
+        </div>
+        <div class="review-text">${escapeHTML(r.text)}</div>
+      </div>`;
+  }
+  const homeReviews  = reviews.filter(r => r.page === 'home');
+  const aboutReviews = reviews.filter(r => r.page === 'about');
+  if (homeReviews.length > 0) {
+    const grid = document.getElementById('homeReviewsGrid');
+    if (grid) grid.innerHTML = homeReviews.map(buildCard).join('');
+  }
+  if (aboutReviews.length > 0) {
+    const grid = document.getElementById('aboutReviewsGrid');
+    if (grid) grid.innerHTML = aboutReviews.map(buildCard).join('');
+  }
+}
+
+// ===== ЧАСТИЦЫ =====
+function initParticles() {
+  const canvas = document.getElementById('particles-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W = canvas.width  = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  const particles = Array.from({length: 45}, () => ({
+    x: Math.random() * W, y: Math.random() * H,
+    r: Math.random() * 2 + 0.5,
+    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+    alpha: Math.random() * 0.5 + 0.1,
+    pulse: Math.random() * Math.PI * 2
+  }));
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.pulse += 0.02;
+      const a = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212,175,55,${a})`;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize', () => {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  });
+}
+
+// ===== ТАБЫ =====
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.page').forEach((p,i) => p.classList.toggle('active', i === idx));
+  updateIndicator(idx);
+  currentTab = idx;
+  document.getElementById('mainContent').scrollTop = 0;
+  if (idx === 1) {
+    products = getProducts();
+    buildFilterBar();
+    renderProducts(currentFilter);
+  }
+  triggerFadeIns();
+}
+function updateIndicator(idx) {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const ind  = document.getElementById('tabIndicator');
+  const tab  = tabs[idx];
+  ind.style.left  = tab.offsetLeft + 'px';
+  ind.style.width = tab.offsetWidth + 'px';
+}
+
+// ===== ФИЛЬТР-БАР =====
+function buildFilterBar() {
+  const bar = document.getElementById('filterBar');
+  bar.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn' + (currentFilter === 'all' ? ' active' : '');
+  allBtn.innerHTML = '🌿 Все';
+  allBtn.onclick = () => filterProducts('all', allBtn);
+  bar.appendChild(allBtn);
+  getAllCats().forEach(cat => {
+    const used = products.some(p => p.cat === cat.slug);
+    if (!used) return;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (currentFilter === cat.slug ? ' active' : '');
+    btn.innerHTML = cat.emoji + ' ' + cat.name;
+    btn.onclick = () => filterProducts(cat.slug, btn);
+    bar.appendChild(btn);
+  });
+}
+
+// ===== ПРОДУКТЫ =====
+function renderProducts(filter) {
+  const grid     = document.getElementById('productsGrid');
+  const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
+  grid.innerHTML = '';
+  if (!filtered.length) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px;font-size:0.85rem">Товары не найдены</div>';
+    return;
+  }
+  grid.style.gridTemplateColumns = '';
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'product-card ripple-container';
+    card.style.animationDelay = (i * 0.07) + 's';
+    const cat   = catInfo(p.cat);
+    const color = catColor(p.cat);
+    let mediaHTML = '';
+    if (p.img) {
+      mediaHTML = `<div class="product-img-wrap"><img src="${escapeHTML(p.img)}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=product-emoji-big>${p.emoji}</div>'"></div>`;
+    } else {
+      mediaHTML = `<div class="product-img-wrap"><div class="product-emoji-big">${p.emoji}</div></div>`;
+    }
+    const favActive = isFav(p.id);
+    card.innerHTML = `
+      <button class="fav-btn-card ${favActive ? 'active' : ''}" data-id="${p.id}"
+        onclick="event.stopPropagation(); toggleFav(${p.id})"
+        title="${favActive ? 'Убрать из избранного' : 'В избранное'}">
+        ${favActive ? '❤️' : '🤍'}
+      </button>
+      ${mediaHTML}
+      <div class="product-name">${escapeHTML(p.name)}</div>
+      <div style="font-size:0.58rem;color:${color};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${cat.emoji} ${escapeHTML(cat.name)}</div>
+      <div class="product-price">${p.price.toLocaleString('ru')} ₽</div>
+      <button class="product-btn" onclick="event.stopPropagation(); openModal(${p.id})">Подробнее</button>
+    `;
+    card.onclick = (e) => { addRipple(e, card); openModal(p.id); };
+    grid.appendChild(card);
+  });
+}
+
+function filterProducts(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+// ===== МОДАЛЬНОЕ ОКНО =====
+function openModal(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+
+  const modalImg   = document.getElementById('modalImg');
+  const modalEmoji = document.getElementById('modalEmoji');
+  if (p.img) {
+    modalImg.src          = p.img;
+    modalImg.style.display = 'block';
+    modalEmoji.style.display = 'none';
+    modalImg.onerror = () => {
+      modalImg.style.display   = 'none';
+      modalEmoji.style.display = 'block';
+      modalEmoji.textContent   = p.emoji;
+    };
+  } else {
+    modalImg.style.display   = 'none';
+    modalEmoji.style.display = 'block';
+    modalEmoji.textContent   = p.emoji;
+  }
+
+  const cat   = catInfo(p.cat);
+  const color = catColor(p.cat);
+  const badge = document.getElementById('modalCatBadge');
+  badge.textContent = cat.emoji + ' ' + cat.name;
+  badge.style.cssText = `background:${color}22;color:${color};border:1px solid ${color}55;padding:4px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;`;
+
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalPrice').textContent = p.price.toLocaleString('ru') + ' ₽';
+  document.getElementById('modalDesc').textContent  = p.desc;
+
+  // Кнопка избранного в модалке
+  const modalFavBtn = document.getElementById('modalFavBtn');
+  const favActive   = isFav(p.id);
+  modalFavBtn.classList.toggle('active', favActive);
+  modalFavBtn.innerHTML = favActive ? '❤️ В избранном' : '🤍 В избранное';
+
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  currentProduct = null;
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ===== ЗАКАЗ / КОНТАКТ =====
+function orderProduct() {
+  if (!currentProduct) return;
+  const data = JSON.stringify({action:'order', product: currentProduct.name, price: currentProduct.price});
+  if (tg && tg.sendData) {
+    tg.sendData(data);
+  } else {
+    showToast('✅ Заказ отправлен боту!');
+  }
+  closeModal();
+  showToast('✅ Заказ отправлен: ' + currentProduct.name);
+}
+
+function contactBot() {
+  const data = JSON.stringify({action:'contact', source:'mini_app'});
+  if (tg && tg.sendData) {
+    tg.sendData(data);
+  } else {
+    showToast('✅ Запрос отправлен боту!');
+  }
+}
+
+// ===== СЧЁТЧИКИ =====
+function animateCounter(el, target, suffix, duration) {
+  let start = 0;
+  const step  = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start).toLocaleString('ru') + suffix;
+  }, 16);
+}
+
+// ===== RIPPLE =====
+function addRipple(e, el) {
+  const rect = el.getBoundingClientRect();
+  const x    = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const y    = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  const size = Math.max(rect.width, rect.height) * 2;
+  const r    = document.createElement('span');
+  r.className = 'ripple';
+  r.style.cssText = `width:${size}px;height:${size}px;left:${x-size/2}px;top:${y-size/2}px`;
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== FADE IN =====
+function triggerFadeIns() {
+  setTimeout(() => {
+    document.querySelectorAll('.fade-in').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 1.1) el.classList.add('visible');
+    });
+  }, 50);
+}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+  initParticles();
+  loadCart();
+  loadFav();
+  updateCartBadge();
+  updateFavBadge();
+
+  products = getProducts();
+  buildFilterBar();
+  renderProducts('all');
+
+  const loaderPromise = new Promise(resolve => setTimeout(resolve, 1900));
+  const serverPromise = loadServerData();
+
+  Promise.all([loaderPromise, serverPromise]).then(() => {
+    products = getProducts();
+    buildFilterBar();
+    renderProducts(currentFilter);
+
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('app').style.display = 'flex';
+    updateIndicator(0);
+    triggerFadeIns();
+
+    setTimeout(() => {
+      animateCounter(document.getElementById('counterClients'), _counterClientsTarget, '+', 1500);
+      animateCounter(document.getElementById('counterYears'),   _counterYearsTarget,   ' лет', 1000);
+    }, 300);
+  });
+
+  document.getElementById('mainContent').addEventListener('scroll', triggerFadeIns);
+});
+</script>
+</body>
+</html>
