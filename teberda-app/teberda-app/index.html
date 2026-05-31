@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Теберда & Домбай — Всё для туриста</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#3b82f6;--blue-glow:#60a5fa;--orange:#f97316;--orange-glow:#fb923c;--green:#22c55e;--green-glow:#4ade80;--purple:#8b5cf6;--purple-glow:#a78bfa;--pink:#ec4899;--pink-glow:#f472b6;--red:#ef4444;--red-glow:#f87171;--yellow:#eab308;--yellow-glow:#facc15;--cyan:#06b6d4;--cyan-glow:#22d3ee;--teal:#14b8a6;--teal-glow:#2dd4bf;--glass-bg:rgba(255,255,255,0.06);--glass-border:rgba(255,255,255,0.10);--glass-hover:rgba(255,255,255,0.12);--card-shadow:0 8px 32px rgba(0,0,0,0.4);--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--bg:#0a0e1a;--nav-h:70px;--modal-bg:#151a28}
+[data-theme="light"]{--glass-bg:rgba(0,0,0,0.03);--glass-border:rgba(0,0,0,0.08);--glass-hover:rgba(0,0,0,0.06);--card-shadow:0 4px 16px rgba(0,0,0,0.06);--text-primary:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--bg:#f1f5f9;--modal-bg:#ffffff}
+body{font-family:-apple-system,'SF Pro Display','Segoe UI',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h) + 40px);transition:background .3s,color .3s}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse 600px 400px at 20% 10%,rgba(59,130,246,0.08) 0%,transparent 60%),radial-gradient(ellipse 500px 400px at 80% 90%,rgba(249,115,22,0.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+[data-theme="light"] body::before{background:radial-gradient(ellipse 600px 400px at 20% 10%,rgba(59,130,246,0.04) 0%,transparent 60%)}
+.particle{position:fixed;width:2px;height:2px;background:rgba(255,255,255,0.3);border-radius:50%;pointer-events:none;z-index:0;animation:twinkle 3s infinite ease-in-out}
+[data-theme="light"] .particle{display:none}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.7}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pd{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+@keyframes wf{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ci{to{opacity:1;transform:translateY(0)}}
+@keyframes co{to{opacity:0;transform:translateY(-12px) scale(.97)}}
+.container{max-width:480px;margin:0 auto;padding:0 16px 32px;position:relative;z-index:1}
+.pull-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-60px);z-index:600;background:var(--bg);border:1px solid var(--glass-border);border-radius:0 0 16px 16px;padding:10px 20px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);transition:transform .3s;box-shadow:var(--card-shadow)}
+.pull-indicator.show{transform:translateX(-50%) translateY(0)}
+.offline-banner{display:none;background:linear-gradient(135deg,rgba(234,179,8,0.15),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.25);border-radius:12px;padding:10px 16px;margin-bottom:12px;font-size:12px;color:var(--yellow-glow);align-items:center;gap:8px}
+.offline-banner.show{display:flex}
+.header{text-align:center;padding:28px 0 14px;position:relative}
+.header-logo{width:60px;height:60px;margin:0 auto 10px;background:linear-gradient(135deg,var(--blue),var(--orange));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 8px 32px rgba(59,130,246,0.3);animation:float 3s ease-in-out infinite}
+.header h1{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--text-primary),var(--text-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{font-size:11px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+.header-actions{position:absolute;top:28px;right:0;display:flex;gap:8px}
+.theme-toggle,.lang-toggle{width:36px;height:36px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.sunset-banner{background:linear-gradient(135deg,rgba(249,115,22,0.12),rgba(249,115,22,0.04));border:1px solid rgba(249,115,22,0.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--orange-glow)}
+.sunset-banner i{font-size:16px}.sunset-banner .sunset-time{font-weight:700;font-size:14px}
+.search-wrapper{position:relative;margin-bottom:14px}
+.search-input{width:100%;padding:13px 18px 13px 46px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;color:var(--text-primary);font-size:14px;outline:none;backdrop-filter:blur(20px);transition:all .3s}
+.search-input::placeholder{color:var(--text-muted)}
+.search-input:focus{border-color:rgba(59,130,246,0.4);box-shadow:0 0 20px rgba(59,130,246,0.1)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none}
+.search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,0.05);border:none;color:var(--text-muted);font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center}
+.search-results{position:absolute;top:calc(100%+6px);left:0;right:0;background:var(--modal-bg);border:1px solid var(--glass-border);border-radius:14px;max-height:280px;overflow-y:auto;z-index:500;display:none;box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.search-results.show{display:block}
+.sr-item{padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .2s;border-bottom:1px solid var(--glass-border)}
+.sr-item:last-child{border-bottom:none}.sr-item:hover{background:var(--glass-hover)}
+.sr-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sr-info{flex:1}.sr-title{font-size:13px;font-weight:600}.sr-sub{font-size:10px;color:var(--text-muted);margin-top:1px}
+.weather-widget{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:18px;padding:18px;backdrop-filter:blur(20px);box-shadow:var(--card-shadow);margin-bottom:8px;position:relative;overflow:hidden;transition:all .5s}
+.weather-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.weather-loc{display:flex;align-items:center;gap:7px}
+.w-dot{width:7px;height:7px;border-radius:50%;animation:pd 2s infinite}
+.tw .w-dot{background:var(--blue-glow);box-shadow:0 0 8px var(--blue)}
+.dw .w-dot{background:var(--orange-glow);box-shadow:0 0 8px var(--orange)}
+.aw .w-dot{background:var(--teal-glow);box-shadow:0 0 8px var(--teal)}
+.w-city{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.w-badge{font-size:9px;padding:3px 9px;border-radius:7px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.tw .w-badge{background:rgba(59,130,246,.12);color:var(--blue-glow);border:1px solid rgba(59,130,246,.2)}
+.dw .w-badge{background:rgba(249,115,22,.12);color:var(--orange-glow);border:1px solid rgba(249,115,22,.2)}
+.aw .w-badge{background:rgba(20,184,166,.12);color:var(--teal-glow);border:1px solid rgba(20,184,166,.2)}
+.w-main{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.w-icon-box{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.tw .w-icon-box{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(59,130,246,.05));border:1px solid rgba(59,130,246,.2);color:var(--blue-glow)}
+.dw .w-icon-box{background:linear-gradient(135deg,rgba(249,115,22,.18),rgba(249,115,22,.05));border:1px solid rgba(249,115,22,.2);color:var(--orange-glow)}
+.aw .w-icon-box{background:linear-gradient(135deg,rgba(20,184,166,.18),rgba(20,184,166,.05));border:1px solid rgba(20,184,166,.2);color:var(--teal-glow)}
+.w-icon-box i{animation:wf 3s ease-in-out infinite}
+.w-temp{font-size:34px;font-weight:800;line-height:1;letter-spacing:-2px}
+.w-temp .deg{font-size:16px;font-weight:400;color:var(--text-muted);vertical-align:super;margin-left:1px}
+.w-desc{font-size:13px;color:var(--text-secondary);font-weight:500;margin-top:2px}
+.w-details{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.w-det{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:8px 4px;text-align:center}
+.w-det i{font-size:12px;margin-bottom:3px;display:block}
+.tw .w-det i{color:rgba(96,165,250,.6)}.dw .w-det i{color:rgba(251,146,60,.6)}.aw .w-det i{color:rgba(45,212,191,.7)}
+.w-det-val{font-size:13px;font-weight:700;display:block}
+.w-det-lbl{font-size:8px;color:var(--text-muted);text-transform:uppercase}
+.forecast-row{display:flex;gap:5px;margin-top:12px;padding-top:10px;border-top:1px solid var(--glass-border);overflow-x:auto;scrollbar-width:none}
+.forecast-row::-webkit-scrollbar{display:none}
+.fc-day{flex:0 0 auto;min-width:56px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:8px 6px;text-align:center;font-size:10px}
+.fc-name{color:var(--text-muted);font-weight:600;margin-bottom:4px}
+.fc-day i{font-size:14px;margin-bottom:3px;display:block}
+.fc-temp{font-weight:700;font-size:12px}.fc-temp span{color:var(--text-muted);font-weight:400;font-size:10px}
+.w-status{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;padding-top:8px;border-top:1px solid var(--glass-border);font-size:9px;color:var(--text-muted)}
+.w-status .live{width:4px;height:4px;background:#22c55e;border-radius:50%;animation:pd 2s infinite}
+.w-status .off{width:4px;height:4px;background:#eab308;border-radius:50%}
+.weather-alert{margin-top:10px;padding:8px 12px;border-radius:10px;font-size:11px;display:none;align-items:center;gap:6px;font-weight:600}
+.weather-alert.show{display:flex}
+.weather-alert.warn{background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.2);color:var(--yellow-glow)}
+.weather-alert.good{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:var(--green-glow)}
+.weather-alert.bad{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2);color:var(--red-glow)}
+.emer{background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(239,68,68,.04));border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .3s}
+.emer-ico{width:40px;height:40px;border-radius:12px;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--red-glow);flex-shrink:0}
+.emer-text{flex:1}.emer-text h4{font-size:13px;font-weight:700;color:var(--red-glow)}.emer-text p{font-size:10px;color:var(--text-muted);margin-top:1px}
+.progress-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;padding:16px;margin-bottom:14px}
+.progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.progress-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.progress-pct{font-size:20px;font-weight:800;color:var(--blue-glow)}
+.progress-bar{width:100%;height:8px;background:var(--glass-bg);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .6s ease}
+.progress-stats{display:flex;gap:12px;font-size:10px;color:var(--text-muted)}.progress-stats span{display:flex;align-items:center;gap:4px}
+.achievement{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;margin-top:6px;margin-right:4px}
+.achievement.locked{background:var(--glass-bg);color:var(--text-muted);border:1px solid var(--glass-border)}
+.achievement.unlocked{background:rgba(234,179,8,.12);color:var(--yellow-glow);border:1px solid rgba(234,179,8,.2)}
+.sec-title{font-size:16px;font-weight:700;margin-bottom:12px;padding-left:2px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.sec-title i.ti{font-size:16px}
+.sec-title .badge{margin-left:auto;font-size:10px;font-weight:600;padding:3px 9px;border-radius:7px;background:var(--glass-bg);color:var(--text-muted)}
+.sec-title .arr{font-size:12px;color:var(--text-muted);transition:transform .3s;margin-left:6px}
+.services-section{margin-bottom:18px}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-height:2000px;opacity:1;transition:max-height .4s,opacity .3s}
+.svc-grid.collapsed{max-height:0;opacity:0;overflow:hidden}
+.svc-item{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:all .3s}
+.svc-item:hover{transform:translateY(-2px);background:var(--glass-hover)}
+.svc-item:active{transform:scale(.95)}
+.svc-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.svc-name{font-size:9px;font-weight:600;text-align:center;color:var(--text-secondary);line-height:1.3}
+.icon-blue{background:rgba(59,130,246,.15);color:var(--blue-glow);border:1px solid rgba(59,130,246,.2)}
+.icon-orange{background:rgba(249,115,22,.15);color:var(--orange-glow);border:1px solid rgba(249,115,22,.2)}
+.icon-green{background:rgba(34,197,94,.15);color:var(--green-glow);border:1px solid rgba(34,197,94,.2)}
+.icon-purple{background:rgba(139,92,246,.15);color:var(--purple-glow);border:1px solid rgba(139,92,246,.2)}
+.icon-pink{background:rgba(236,72,153,.15);color:var(--pink-glow);border:1px solid rgba(236,72,153,.2)}
+.icon-red{background:rgba(239,68,68,.15);color:var(--red-glow);border:1px solid rgba(239,68,68,.2)}
+.icon-yellow{background:rgba(234,179,8,.15);color:var(--yellow-glow);border:1px solid rgba(234,179,8,.2)}
+.icon-cyan{background:rgba(6,182,212,.15);color:var(--cyan-glow);border:1px solid rgba(6,182,212,.2)}
+.icon-teal{background:rgba(20,184,166,.15);color:var(--teal-glow);border:1px solid rgba(20,184,166,.2)}
+.filters-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.filters-row::-webkit-scrollbar{display:none}
+.filter-btn{flex:0 0 auto;padding:7px 14px;border-radius:10px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+.filter-btn.active{background:rgba(59,130,246,.15);color:var(--blue-glow);border-color:rgba(59,130,246,.3)}
+.filter-btn i{margin-right:4px}
+.sort-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none}
+.sort-row::-webkit-scrollbar{display:none}
+.sort-btn{flex:0 0 auto;padding:6px 12px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-muted);font-size:10px;font-weight:600;cursor:pointer;transition:all .3s}
+.sort-btn.active{background:rgba(139,92,246,.12);color:var(--purple-glow);border-color:rgba(139,92,246,.25)}
+.sort-label{font-size:10px;color:var(--text-muted);margin-right:4px;flex-shrink:0;display:flex;align-items:center}
+.gps-distance{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--green-glow);margin-top:2px}.gps-distance i{font-size:9px}
+.tabs-w{position:sticky;top:0;z-index:100;padding:8px 0;background:rgba(10,14,26,.88);backdrop-filter:blur(20px)}
+[data-theme="light"] .tabs-w{background:rgba(241,245,249,.92)}
+.tabs{display:flex;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:3px;gap:3px}
+.tab-btn{flex:1;padding:11px 12px;border:none;border-radius:9px;background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab-btn i{font-size:13px}
+.tab-btn.at{background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(59,130,246,.1));color:var(--blue-glow);border:1px solid rgba(59,130,246,.3)}
+.tab-btn.ad{background:linear-gradient(135deg,rgba(249,115,22,.25),rgba(249,115,22,.1));color:var(--orange-glow);border:1px solid rgba(249,115,22,.3)}
+.tab-btn.aa{background:linear-gradient(135deg,rgba(20,184,166,.25),rgba(20,184,166,.1));color:var(--teal-glow);border:1px solid rgba(20,184,166,.3)}
+.route-counter{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 6px;font-size:12px;color:var(--text-muted)}
+.route-counter .count{color:var(--text-secondary);font-weight:600}
+.cards{display:flex;flex-direction:column;gap:12px;min-height:200px}
+.rc{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:18px;box-shadow:var(--card-shadow);transition:all .3s;position:relative;overflow:hidden;animation:ci .4s ease forwards;opacity:0;transform:translateY(16px);cursor:pointer}
+.rc:hover{transform:translateY(-2px)}
+.rc.visited{border-color:rgba(34,197,94,.3)!important}.rc.visited .v-badge{display:flex}
+.card-leaving{animation:co .25s ease forwards}
+.c-img{width:100%;height:260px;position:relative;overflow:hidden}
+.c-img img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .6s}
+.rc:hover .c-img img{transform:scale(1.06)}
+.c-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);pointer-events:none}
+.c-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--glass-bg);color:var(--text-muted);font-size:40px}
+.fav-btn,.share-btn{position:absolute;width:36px;height:36px;border-radius:12px;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);color:var(--text-muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:10}
+.fav-btn{top:12px;right:12px}.share-btn{top:12px;right:56px}
+.fav-btn.active{color:var(--red-glow);background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)}
+.v-badge{display:none;position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.3);color:var(--green-glow);font-size:11px;font-weight:700;align-items:center;gap:5px;z-index:10}
+.c-body{padding:16px 20px 20px}
+.c-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.c-ico-w{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.tc .c-ico-w{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(59,130,246,.05));color:var(--blue-glow);border:1px solid rgba(59,130,246,.2)}
+.dc .c-ico-w{background:linear-gradient(135deg,rgba(249,115,22,.2),rgba(249,115,22,.05));color:var(--orange-glow);border:1px solid rgba(249,115,22,.2)}
+.ac .c-ico-w{background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(20,184,166,.05));color:var(--teal-glow);border:1px solid rgba(20,184,166,.2)}
+.c-title{font-size:16px;font-weight:700;line-height:1.3}
+.c-loc{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;margin-top:2px}
+.c-desc{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px}
+.c-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid}
+.t-easy{background:rgba(34,197,94,.1);color:#4ade80;border-color:rgba(34,197,94,.2)}
+.t-medium{background:rgba(234,179,8,.1);color:#facc15;border-color:rgba(234,179,8,.2)}
+.t-hard{background:rgba(239,68,68,.1);color:#f87171;border-color:rgba(239,68,68,.2)}
+.t-time{background:rgba(148,163,184,.08);color:var(--text-secondary);border-color:rgba(148,163,184,.15)}
+.t-dist{background:rgba(139,92,246,.1);color:#a78bfa;border-color:rgba(139,92,246,.2)}
+.t-elev{background:rgba(6,182,212,.1);color:var(--cyan-glow);border-color:rgba(6,182,212,.2)}
+.c-acts{display:flex;gap:8px}
+.map-btn{flex:1;padding:12px 16px;border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .3s}
+.tc .map-btn{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(59,130,246,.08));color:var(--blue-glow);border:1px solid rgba(59,130,246,.25)}
+.dc .map-btn{background:linear-gradient(135deg,rgba(249,115,22,.2),rgba(249,115,22,.08));color:var(--orange-glow);border:1px solid rgba(249,115,22,.25)}
+.ac .map-btn{background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(20,184,166,.08));color:var(--teal-glow);border:1px solid rgba(20,184,166,.25)}
+.vis-btn{width:44px;padding:12px;border:none;border-radius:12px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;background:rgba(34,197,94,.1);color:var(--text-muted);border:1px solid rgba(34,197,94,.15)}
+.vis-btn.active{color:var(--green-glow);background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.3)}
+.tg-btns{display:flex;gap:6px;margin-top:8px}
+.tg-ext-btn{flex:1;padding:10px;border:none;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .3s;text-decoration:none}
+.tg-ext-btn.chat-btn{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:var(--green-glow)}
+.tg-ext-btn.news-btn{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);color:var(--blue-glow)}
+.modal-o{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}
+.modal-o.show{opacity:1;visibility:visible}
+.modal-c{background:var(--modal-bg);border:1px solid var(--glass-border);border-radius:22px 22px 0 0;padding:6px 18px 22px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform .4s cubic-bezier(.25,.8,.25,1)}
+.modal-o.show .modal-c{transform:translateY(0)}
+.m-handle{width:34px;height:4px;border-radius:2px;background:var(--glass-border);margin:8px auto 14px}
+.m-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.m-head-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.m-head h3{font-size:17px;font-weight:700}
+.m-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:9px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.m-body{display:flex;flex-direction:column;gap:10px}
+.subcat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.subcat-item{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .3s}
+.subcat-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.subcat-name{font-size:11px;font-weight:600;color:var(--text-secondary);text-align:center}
+.back-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--glass-border);border-radius:9px;padding:7px 11px;color:var(--text-secondary);font-size:12px;cursor:pointer;margin-bottom:10px;width:fit-content}
+.s-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px}
+.s-card-t{font-size:14px;font-weight:600;margin-bottom:4px}.s-card-d{font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5}
+.s-card-m{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-bottom:4px}
+.s-card-m i{width:16px;font-size:11px}.s-card-m.loc i{color:var(--green-glow)}.s-card-m.ph i{color:var(--blue-glow)}
+.s-card .call-btn{width:100%;margin-top:8px;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(59,130,246,.1));color:var(--blue-glow);border:1px solid rgba(59,130,246,.2);font-weight:600;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.s-card .map-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:6px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green-glow);text-decoration:none}
+.s-card .tg-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-left:4px;padding:6px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);color:var(--cyan-glow);text-decoration:none}
+.s-card .vk-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-left:4px;padding:6px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:var(--blue-glow);text-decoration:none}
+.transport-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:8px}
+.transport-card .t-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.transport-card .t-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.transport-card .t-title{font-size:14px;font-weight:700}.transport-card .t-sub{font-size:10px;color:var(--text-muted)}
+.t-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--glass-bg);border-radius:8px;border:1px solid var(--glass-border);margin-bottom:4px}
+.t-row-route{font-size:12px;font-weight:600}.t-row-price{font-size:12px;font-weight:700;color:var(--green-glow)}
+#ya-map{width:100%;height:65vh;border-radius:16px;border:1px solid var(--glass-border);margin-bottom:14px}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.map-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted)}
+.ml-dot{width:10px;height:10px;border-radius:50%}
+.map-nav-section{margin-bottom:20px}
+.map-nav-title{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.map-nav-btns{display:flex;gap:8px}
+.map-nav-btn{flex:1;padding:12px;border:none;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-secondary);transition:all .3s}
+.map-nav-btn:hover{background:var(--glass-hover)}
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:rgba(15,20,35,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-around;padding:0 2px;z-index:500;padding-bottom:env(safe-area-inset-bottom)}
+[data-theme="light"] .bnav{background:rgba(255,255,255,.92);border-top-color:rgba(0,0,0,.08)}
+.nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 8px;border-radius:10px;transition:all .3s;color:var(--text-muted);position:relative}
+.nav-i.active{color:var(--blue-glow)}
+.nav-i.active::before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:18px;height:2px;border-radius:1px;background:var(--blue-glow)}
+.nav-i i{font-size:17px}.nav-i span{font-size:7px;font-weight:600}
+.nav-badge{position:absolute;top:1px;right:2px;min-width:15px;height:15px;border-radius:50%;background:var(--red);font-size:7px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+.page{display:none}.page.active{display:block}
+.footer{text-align:center;padding:20px 0 10px;color:var(--text-muted);font-size:10px}
+.footer .divider{width:36px;height:2px;background:linear-gradient(90deg,var(--blue),var(--orange));margin:0 auto 8px;border-radius:1px}
+.toast{position:fixed;bottom:calc(var(--nav-h)+14px);left:50%;transform:translateX(-50%) translateY(70px);background:rgba(30,35,55,.95);backdrop-filter:blur(20px);border:1px solid var(--glass-border);padding:10px 18px;border-radius:12px;font-size:12px;font-weight:500;color:#f1f5f9;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:999;transition:transform .4s;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.phrase-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:12px 14px;margin-bottom:7px}
+.phrase-ru{font-size:13px;font-weight:600;margin-bottom:3px}
+.phrase-local{font-size:12px;color:var(--cyan-glow);font-style:italic}
+.phrase-cat{font-size:13px;font-weight:700;color:var(--text-secondary);margin:14px 0 8px;display:flex;align-items:center;gap:6px}
+.detail-page{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:900;overflow-y:auto;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.8,.25,1);padding-bottom:30px}
+.detail-page.open{transform:translateX(0)}
+.detail-hero{width:100%;height:300px;position:relative;overflow:hidden}
+.detail-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,var(--bg),transparent);pointer-events:none}
+.detail-back{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:12px;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.detail-content{max-width:480px;margin:0 auto;padding:0 18px 40px;position:relative;margin-top:-40px}
+.detail-title{font-size:24px;font-weight:800;margin-bottom:6px;line-height:1.2}
+.detail-loc{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;margin-bottom:16px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.detail-section{margin-bottom:20px}
+.detail-section-title{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;color:var(--text-primary)}
+.detail-section-title i{color:var(--blue-glow);font-size:14px}
+.detail-text{font-size:13px;color:var(--text-secondary);line-height:1.8}
+.detail-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:20px}
+.detail-info-item{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center}
+.detail-info-item i{font-size:18px;margin-bottom:6px;display:block}
+.detail-info-val{font-size:16px;font-weight:700;display:block;margin-bottom:2px}
+.detail-info-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase}
+.detail-gallery-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 0}
+.detail-gallery-scroll::-webkit-scrollbar{display:none}
+.detail-gallery-img{flex:0 0 auto;width:220px;height:160px;border-radius:14px;overflow:hidden;border:1px solid var(--glass-border);cursor:pointer;transition:transform .3s}
+.detail-gallery-img:hover{transform:scale(1.03)}
+.detail-gallery-img img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-tips{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:16px}
+.detail-tip{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:12px;color:var(--text-secondary);line-height:1.5}
+.detail-tip:last-child{margin-bottom:0}
+.detail-tip i{color:var(--green-glow);font-size:12px;margin-top:2px;flex-shrink:0}
+.detail-actions{display:flex;gap:8px;margin-bottom:16px}
+.detail-map-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(59,130,246,.08));color:var(--blue-glow);border:1px solid rgba(59,130,246,.25)}
+.detail-fav-btn{width:50px;padding:14px;border:none;border-radius:14px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-muted)}
+.detail-fav-btn.active{color:var(--red-glow);background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.25)}
+.detail-nav-btns{display:flex;gap:6px;margin-bottom:20px}
+.detail-nav-btn{flex:1;padding:10px;border:none;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-secondary)}
+.detail-tg-btns{display:flex;gap:6px;margin-bottom:16px}
+.detail-tg-btn{flex:1;padding:12px;border:none;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:all .3s}
+.detail-tg-btn.chat{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:var(--green-glow)}
+.detail-tg-btn.news{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);color:var(--blue-glow)}
+.img-viewer{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.97);z-index:1200;display:none;flex-direction:column;align-items:center;justify-content:center}
+.img-viewer.show{display:flex}
+.img-viewer-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px;z-index:10}
+.img-viewer-counter{color:rgba(255,255,255,.7);font-size:13px;font-weight:600}
+.img-viewer-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:18px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.img-viewer-main{flex:1;display:flex;align-items:center;justify-content:center;width:100%;position:relative;overflow:hidden;touch-action:pan-y}
+.img-viewer-main img{max-width:92%;max-height:80vh;object-fit:contain;border-radius:8px;transition:opacity .25s;user-select:none;-webkit-user-drag:none}
+.img-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5}
+.img-viewer-nav:hover{background:rgba(255,255,255,.25)}
+.img-viewer-nav.prev{left:10px}
+.img-viewer-nav.next{right:10px}
+.img-viewer-dots{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
+.img-viewer-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s;cursor:pointer}
+.img-viewer-dot.active{background:#fff;transform:scale(1.3)}
+@media(max-width:500px){.img-viewer-nav{width:36px;height:36px;font-size:14px}.img-viewer-nav.prev{left:6px}.img-viewer-nav.next{right:6px}}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+@media(max-width:380px){.svc-grid{grid-template-columns:repeat(3,1fr)}.c-img{height:200px}.detail-hero{height:220px}}
+
+
+/* ===== ADDONS: route status, admin data, user service requests ===== */
+.route-status-badge{position:absolute;left:10px;bottom:10px;z-index:6;display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.02em;backdrop-filter:blur(12px);box-shadow:0 8px 22px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16)}
+.route-status-badge.open{background:rgba(34,197,94,.24);color:#86efac;border-color:rgba(34,197,94,.45)}
+.route-status-badge.closed{background:rgba(239,68,68,.24);color:#fca5a5;border-color:rgba(239,68,68,.45)}
+.rc.route-open{border-color:rgba(34,197,94,.24)}
+.rc.route-closed{border-color:rgba(239,68,68,.23);filter:saturate(.92)}
+.route-hours-line{margin-top:5px;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.35}
+.route-extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.route-extra-item{background:rgba(255,255,255,.045);border:1px solid var(--glass-border);border-radius:12px;padding:9px 10px;font-size:12px;color:var(--text-secondary)}
+.route-extra-item b{display:block;color:var(--text-primary);font-size:12px;margin-bottom:3px}
+.tag.route-detail-status{font-weight:900;border-radius:999px}.tag.route-detail-status.open{background:rgba(34,197,94,.15);color:var(--green-glow);border:1px solid rgba(34,197,94,.30)}.tag.route-detail-status.closed{background:rgba(239,68,68,.15);color:var(--red-glow);border:1px solid rgba(239,68,68,.30)}
+.add-service-btn{width:100%;margin:0 0 14px;padding:13px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(6,182,212,.10));border:1px solid rgba(34,197,94,.22);color:var(--green-glow);font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--card-shadow)}
+.service-form{display:flex;flex-direction:column;gap:9px}.service-form input,.service-form select,.service-form textarea{width:100%;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-primary);border-radius:12px;padding:11px 12px;outline:none;font:inherit;font-size:13px}.service-form textarea{min-height:84px;resize:vertical}.service-form option{background:var(--modal-bg);color:var(--text-primary)}.service-form .hint{font-size:11px;color:var(--text-muted);line-height:1.45}.svc-photo{width:100%;max-height:180px;object-fit:cover;border-radius:14px;margin-bottom:8px;border:1px solid var(--glass-border)}.s-card-price{display:inline-flex;align-items:center;gap:6px;margin:8px 0 4px;padding:6px 9px;border-radius:999px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.22);color:var(--green-glow);font-size:12px;font-weight:800}
+@media(max-width:420px){.route-extra-grid{grid-template-columns:1fr}}
+
+
+.t-price{background:rgba(34,197,94,.12);color:var(--green-glow);border-color:rgba(34,197,94,.25)}
+.t-needs{background:rgba(249,115,22,.12);color:var(--orange-glow);border-color:rgba(249,115,22,.25)}
+.s-card-photos{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:12px;padding-bottom:4px;scrollbar-width:none}
+.s-card-photos::-webkit-scrollbar{display:none}
+.s-card-photo{flex:0 0 100%;scroll-snap-align:start;width:100%;height:200px;object-fit:cover;border-radius:14px;border:1px solid var(--glass-border)}
+.service-form select, .service-form input, .service-form textarea {
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    background: rgba(255,255,255,0.08) !important;
+    margin-bottom: 4px;
+}
+.service-form .call-btn {
+    background: linear-gradient(135deg, var(--green), var(--blue)) !important;
+    color: white !important;
+    font-weight: 800 !important;
+    padding: 14px !important;
+    margin-top: 10px !important;
+    box-shadow: 0 4px 15px rgba(34,197,94,0.3) !important;
+    border: none !important;
+}
+
+</style>
+</head>
+<body>
+<div class="particle" style="top:8%;left:15%"></div><div class="particle" style="top:22%;left:78%;animation-delay:1.2s"></div><div class="particle" style="top:45%;left:42%;animation-delay:.5s"></div><div class="particle" style="top:67%;left:88%;animation-delay:2s"></div><div class="particle" style="top:35%;left:5%;animation-delay:1.7s"></div>
+
+<div class="pull-indicator" id="pullInd"><i class="fas fa-sync-alt"></i><span>Обновление...</span></div>
+
+<div class="img-viewer" id="imgViewer">
+  <div class="img-viewer-top">
+    <span class="img-viewer-counter" id="ivCounter">1 / 1</span>
+    <button class="img-viewer-close" onclick="closeImgViewer()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="img-viewer-main" id="ivMain">
+    <button class="img-viewer-nav prev" onclick="ivNav(-1)"><i class="fas fa-chevron-left"></i></button>
+    <img id="ivImg" src="" alt="" draggable="false">
+    <button class="img-viewer-nav next" onclick="ivNav(1)"><i class="fas fa-chevron-right"></i></button>
+  </div>
+  <div class="img-viewer-dots" id="ivDots"></div>
+</div>
+
+<div class="detail-page" id="detailPage"></div>
+
+<div class="container">
+  <div class="page active" id="page-home">
+    <div class="offline-banner" id="offlineBanner"><i class="fas fa-wifi-slash"></i><span>Офлайн</span></div>
+
+    <header class="header">
+      <div class="header-logo"><i class="fas fa-mountain-sun"></i></div>
+      <h1>Теберда & Домбай</h1>
+      <p id="headerSub">Всё для туриста</p>
+      <div class="header-actions">
+        <button class="lang-toggle" onclick="toggleLang()"><span id="langicon">EN</span></button>
+        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-sun" id="theme-icon"></i></button>
+      </div>
+    </header>
+
+    <div class="sunset-banner" id="sunsetBanner" style="display:none">
+      <i class="fas fa-sun"></i>
+      <span id="sunsetText">Закат сегодня в </span>
+      <span class="sunset-time" id="sunsetTime">--:--</span>
+    </div>
+
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." oninput="debounceSearch(this.value)">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fas fa-xmark"></i></button>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div class="weather-widget tw" id="ww">
+      <div class="weather-top">
+        <div class="weather-loc"><div class="w-dot"></div><span class="w-city" id="w-city">Теберда</span></div>
+        <span class="w-badge" id="w-badge-text">Сейчас</span>
+      </div>
+      <div class="w-main">
+        <div class="w-icon-box"><i class="fas fa-cloud-sun" id="wico"></i></div>
+        <div>
+          <div class="w-temp" id="w-temp">--<span class="deg">°C</span></div>
+          <div class="w-desc" id="w-desc">Загрузка...</div>
+        </div>
+      </div>
+      <div class="w-details">
+        <div class="w-det"><i class="fas fa-wind"></i><span class="w-det-val" id="w-wind">--</span><span class="w-det-lbl" id="w-lbl-wind">Ветер</span></div>
+        <div class="w-det"><i class="fas fa-droplet"></i><span class="w-det-val" id="w-hum">--</span><span class="w-det-lbl" id="w-lbl-hum">Влажность</span></div>
+        <div class="w-det"><i class="fas fa-temperature-half"></i><span class="w-det-val" id="w-feel">--</span><span class="w-det-lbl" id="w-lbl-feel">Ощущ.</span></div>
+      </div>
+      <div class="forecast-row" id="fc-row"></div>
+      <div class="weather-alert" id="w-alert"><i class="fas fa-triangle-exclamation"></i><span id="w-alert-text"></span></div>
+      <div class="w-status" id="w-status"><div class="off"></div><span>Загрузка...</span></div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <div class="progress-title"><i class="fas fa-trophy" style="color:var(--yellow-glow)"></i><span id="prog-title-text">Прогресс</span></div>
+        <div class="progress-pct" id="prog-pct">0%</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+      <div class="progress-stats">
+        <span><i class="fas fa-check-circle" style="color:var(--green-glow)"></i><span id="prog-v">0</span> <span class="tr-visited">посещено</span></span>
+        <span><i class="fas fa-route" style="color:var(--blue-glow)"></i><span id="prog-t">0</span> <span class="tr-total">всего</span></span>
+        <span><i class="fas fa-heart" style="color:var(--red-glow)"></i><span id="prog-f">0</span> ❤</span>
+      </div>
+      <div id="achievements"></div>
+    </div>
+
+    <div class="emer" onclick="openModal('emergency')">
+      <div class="emer-ico"><i class="fas fa-shield-halved"></i></div>
+      <div class="emer-text"><h4 class="tr-emer-t">Экстренные службы</h4><p class="tr-emer-s">МЧС, скорая, полиция</p></div>
+      <i class="fas fa-chevron-right" style="color:var(--red-glow);font-size:12px"></i>
+    </div>
+
+    <div class="services-section">
+      <div class="sec-title" onclick="toggleSvc()">
+        <i class="fas fa-concierge-bell ti" style="color:var(--blue-glow)"></i>
+        <span class="tr-svc">Сервисы</span>
+        <span class="badge" id="svcBadge">16</span>
+        <i class="fas fa-chevron-down arr" id="svcArr"></i>
+      </div>
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
+
+    <button class="add-service-btn" onclick="openServiceRequest()"><i class="fas fa-plus-circle"></i> Добавить свою услугу</button>
+
+    <div class="tabs-w">
+      <div class="tabs">
+        <button class="tab-btn at" id="tab-t" onclick="switchTab('teberda')"><i class="fas fa-water"></i> <span class="tr-tab-t">Теберда</span></button>
+        <button class="tab-btn" id="tab-d" onclick="switchTab('dombay')"><i class="fas fa-snowflake"></i> <span class="tr-tab-d">Домбай</span></button>
+        <button class="tab-btn" id="tab-a" onclick="switchTab('arkhyz')"><i class="fas fa-star"></i> <span class="tr-tab-a">Архыз</span></button>
+      </div>
+    </div>
+
+    <div class="filters-row">
+      <button class="filter-btn active" data-f="all" onclick="setFilter('all')"><i class="fas fa-layer-group"></i><span class="fl-text">Все</span></button>
+      <button class="filter-btn" data-f="easy" onclick="setFilter('easy')"><i class="fas fa-leaf"></i><span class="fl-text">Лёгкие</span></button>
+      <button class="filter-btn" data-f="medium" onclick="setFilter('medium')"><i class="fas fa-hiking"></i><span class="fl-text">Средние</span></button>
+      <button class="filter-btn" data-f="hard" onclick="setFilter('hard')"><i class="fas fa-fire"></i><span class="fl-text">Сложные</span></button>
+    </div>
+
+    <div class="sort-row">
+      <span class="sort-label tr-sort">Сорт:</span>
+      <button class="sort-btn active" data-s="default" onclick="setSort('default')"><span class="sl-text">Умолч.</span></button>
+      <button class="sort-btn" data-s="dist" onclick="setSort('dist')"><span class="sl-text">Км</span></button>
+      <button class="sort-btn" data-s="time" onclick="setSort('time')"><span class="sl-text">Время</span></button>
+      <button class="sort-btn" data-s="gps" onclick="setSort('gps')"><i class="fas fa-location-crosshairs"></i><span class="sl-text">Ближе</span></button>
+    </div>
+
+    <div class="route-counter">
+      <span id="cnt-text"><span class="count">0</span> маршрутов</span>
+      <span id="city-lbl" style="color:var(--blue-glow)"><i class="fas fa-location-dot"></i> Теберда</span>
+    </div>
+
+    <div class="cards" id="cards"></div>
+
+    <footer class="footer">
+      <div class="divider"></div>
+      <p>Тебердинский заповедник · КЧР</p>
+    </footer>
+  </div>
+
+  <div class="page" id="page-map">
+    <header class="header" style="padding:20px 0 10px">
+      <h1 style="font-size:20px" class="tr-map-title">Карта</h1>
+    </header>
+
+    <div class="map-legend">
+      <div class="map-legend-item"><div class="ml-dot" style="background:var(--blue)"></div><span class="tr-tab-t">Теберда</span></div>
+      <div class="map-legend-item"><div class="ml-dot" style="background:var(--orange)"></div><span class="tr-tab-d">Домбай</span></div>
+      <div class="map-legend-item"><div class="ml-dot" style="background:var(--teal)"></div><span class="tr-tab-a">Архыз</span></div>
+      <div class="map-legend-item"><div class="ml-dot" style="background:var(--green)"></div><span class="tr-visited">Посещено</span></div>
+    </div>
+
+    <div id="ya-map"></div>
+
+    <div class="map-nav-section">
+      <div class="map-nav-title"><i class="fas fa-map-signs" style="color:var(--blue-glow)"></i><span class="tr-open-in-maps">Открыть в картах</span></div>
+      <div class="map-nav-btns">
+        <button class="map-nav-btn" onclick="window.open('https://www.google.com/maps?q=43.38,41.72','_blank')"><i class="fab fa-google"></i>Google</button>
+        <button class="map-nav-btn" onclick="window.open('https://2gis.ru/geo/41.72,43.38','_blank')"><i class="fas fa-map-marked-alt"></i>2ГИС</button>
+        <button class="map-nav-btn" onclick="window.open('https://yandex.ru/maps/?pt=41.72,43.38&z=11','_blank')"><i class="fas fa-map"></i><span class="tr-yandex">Яндекс</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-fav">
+    <header class="header" style="padding:20px 0 10px"><h1 style="font-size:20px" class="tr-fav-title">⭐ Избранное</h1></header>
+    <div id="fav-list"></div>
+  </div>
+
+  <div class="page" id="page-transport">
+    <header class="header" style="padding:20px 0 10px"><h1 style="font-size:20px"><i class="fas fa-bus"></i> <span class="tr-transport">Транспорт</span></h1></header>
+    <div id="transport-list"></div>
+  </div>
+
+  <div class="page" id="page-phrase">
+    <header class="header" style="padding:20px 0 10px"><h1 style="font-size:20px" class="tr-phrase-title">Разговорник</h1></header>
+    <div id="phrase-list"></div>
+  </div>
+</div>
+
+<div class="modal-o" id="svcModal">
+  <div class="modal-c">
+    <div class="m-handle"></div>
+    <button class="m-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="m-head" id="mHead"></div>
+    <div class="m-body" id="mBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle" id="t-ico"></i><span id="t-txt"></span></div>
+
+<nav class="bnav">
+  <div class="nav-i active" data-p="page-home" onclick="goPage('page-home')"><i class="fas fa-house"></i><span class="tr-nav-home">Главная</span></div>
+  <div class="nav-i" data-p="page-map" onclick="goPage('page-map')"><i class="fas fa-map"></i><span class="tr-nav-map">Карта</span></div>
+  <div class="nav-i" data-p="page-fav" onclick="goPage('page-fav')"><i class="fas fa-heart"></i><span class="tr-nav-fav">Избранное</span><div class="nav-badge" id="fav-badge" style="display:none">0</div></div>
+  <div class="nav-i" data-p="page-transport" onclick="goPage('page-transport')"><i class="fas fa-bus"></i><span class="tr-transport">Транспорт</span></div>
+  <div class="nav-i" data-p="page-phrase" onclick="goPage('page-phrase')"><i class="fas fa-language"></i><span class="tr-nav-phrase">Фразы</span></div>
+</nav>
+
+<script>
+// ===== СЕРВЕРНАЯ СИНХРОНИЗАЦИЯ =====
+const SERVER_URL = 'api/'; // Подключение к серверу
+
+let serverData = null;
+
+async function loadServerData() {
+    try {
+        const res = await fetch(SERVER_URL + 'sync.php?type=load');
+        if (res.ok) {
+            serverData = await res.json();
+            return true;
+        }
+    } catch(e) {}
+    return false;
+}
+
+// ===== ОРИГИНАЛЬНЫЙ КОД =====
+const tg=window.Telegram?.WebApp;try{tg?.expand();tg?.ready()}catch(e){}
+function haptic(){try{tg?.HapticFeedback?.impactOccurred('light')}catch(e){}}
+
+let curCity='teberda',curPage='page-home',wCache={},yaMap=null,svcOpen=true,curFilter='all',curSort='default',userLat=null,userLon=null,highlightedRoute=null;
+let curLang=localStorage.getItem('lang')||'ru',curTheme=localStorage.getItem('theme')||'dark';
+let favs=JSON.parse(localStorage.getItem('fav')||'[]'),vis=JSON.parse(localStorage.getItem('vis')||'[]');
+let ivPhotos=[],ivIdx=0,ivTouchX=0;
+
+const TG_CHAT='https://t.me/+cy0Vxh-BrbpiNzli';
+const TG_NEWS='https://t.me/TeberdaDombayNews';
+
+const G='https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/';
+const H1='9a7f443009b4a5bdf448e2b08b0f680ce480b2bd/';
+const H2='e35f8d0bb7073b95f449b82bb2dd65001358fcc8/';
+const H3='b2ebe26041a74b0bd89b2944d00495540d573d4d/';
+function r1(p){return G+H1+encodeURI(p)}
+function r2(p){return G+H2+encodeURI(p)}
+function r3(p){return G+H3+encodeURI(p)}
+
+const P={
+baduk:r1('бадуки/бадуки (2).png'),
+shumka:r1('водопад шумка/водопад шумка (1).jpg'),
+karakel:r1('кара кель/5249175838400387456_121.jpg'),
+jamagat:r1('джамагатские нарзаны/джамагатские нарзаны.jpeg'),
+shoanin:r1('шоанинский храм/5249175838400387439_121.jpg'),
+lysaya:r1('лысая гора/5249175838400387445_121.jpg'),
+azgek:r1('Ущелье азгек/5249175838400387503_121.jpg'),
+mukhin:r1('Мухинское ущелье/Снимок5.PNG'),
+zapov:r1('Заповедник/1771833308473-019c897e-1d95-74eb-a0c9-9e09b5b8ae70.png'),
+muzslz:r1('мужские слезы/1771833827482-019c8985-45bd-7105-abe7-b819d81bbaa0.png'),
+chertov:r1('чертов замок/1771834818477-019c8995-08f8-7f90-8da0-12b1ccc89f69.png'),
+shobaidak:r1('озеро шобайдакъ/5249175838400387434_121.jpg'),
+medpesh:r1('медная пещера/5249175838400387729_121.jpg'),
+sentin:r1('сентинский храм/5249175838400387397_121.jpg'),
+syrnaya:r1('сырная пищера/1771835312961-019c899c-af1b-70a8-ba5d-1d7585d5d71b.png'),
+gumbashi:r1('гум баши/1771835952745-019c89a6-82cb-7ae0-ab4e-9ed140775473.png'),
+bermamyt:r1('бермамыт/бермамыт.png'),
+krasmost:r1('красный мост/5249175838400387460_121.jpg'),
+alibek_gl:r3('алибекский ледник/55.png'),
+alibek_w:r2('алибкский водопад (2).jpg'),
+chuchkhur:r2('чучхурские водопад/5249076199454085953_121.jpg'),
+mussa:r2('гора мусса ачитара/imgs_mussa_achitara_aerial (1).png'),
+tuman:r2('Туманное озеро/1771788576301-019c86d3-9329-79c8-90b2-ed05333a162f.png'),
+tarelka:r2('тарелка/1771836732672-019c89b2-60eb-74c6-b7ed-dfd2831ef4ff.png'),
+amanaus:r2('ущелье аманауз/1771837427210-019c89bc-fe29-755f-b466-840be055a46b.png'),
+chert_mel:r2('чёртова мельница/5246769823490970644_121.jpg'),
+sufruzh:r2('Суфруджинские водопады/Снимок4.PNG'),
+kladb:r2('Кладбище альпинистов домбай/1771837767574-019c89c2-223e-75e9-abfc-0dec26bf922b.png'),
+murudzhu:r2('муруджу/1771838290439-019c89ca-0378-793b-9376-9135facb20b5.jpg'),
+kluhor:r3('озеро клухор/6 (1).png')
+};
+
+const vershinaPhotos=[
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(1).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(2).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(3).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(4).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(5).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(6).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(7).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(8).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(9).jpg',
+'https://raw.githubusercontent.com/wrestling099032-arch/photo.pr/2aa040d07aba13865aa5a829eddcbb64876d1540/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B3%D0%BE%D1%81.%D0%BA%D0%B2%D1%80.%D0%B4%D0%BE%D0%BC/%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BD%D0%B0/%D0%B21%20(10).jpg'
+];
+
+const detailPhotos={
+t1:[r1('бадуки/бадуки (1).jpg'),r1('бадуки/бадуки (1).png'),r1('бадуки/бадуки (2).jpg'),r1('бадуки/бадуки (2).png'),r1('бадуки/бадуки (3).jpg')],
+t2:[r1('водопад шумка/водопад шумка (1).jpg'),r1('водопад шумка/водопад шумка (2).jpg'),r1('водопад шумка/водопад шумка (3).jpg'),r1('водопад шумка/водопад шумка (4).jpg')],
+t3:[r1('кара кель/5249175838400387450_121.jpg'),r1('кара кель/5249175838400387451_121.jpg'),r1('кара кель/5249175838400387452_121.jpg'),r1('кара кель/5249175838400387453_121.jpg'),r1('кара кель/5249175838400387454_121.jpg'),r1('кара кель/5249175838400387456_121.jpg')],
+t4:[r1('джамагатские нарзаны/джамагатские нарзаны.jpeg')],
+t5:[r1('шоанинский храм/5249175838400387408_121.jpg'),r1('шоанинский храм/5249175838400387438_121.jpg'),r1('шоанинский храм/5249175838400387439_121.jpg'),r1('шоанинский храм/5249175838400387440_121.jpg'),r1('шоанинский храм/5249175838400387441_121.jpg')],
+t6:[r1('лысая гора/5249175838400387445_121.jpg'),r1('лысая гора/5249175838400387446_121.jpg')],
+t7:[r1('Ущелье азгек/5249175838400387501_121.jpg'),r1('Ущелье азгек/5249175838400387502_121.jpg'),r1('Ущелье азгек/5249175838400387503_121.jpg'),r1('Ущелье азгек/5249175838400387504_121.jpg'),r1('Ущелье азгек/5249175838400387505_121.jpg')],
+t8:[r1('Мухинское ущелье/5249175838400387512_120.jpg'),r1('Мухинское ущелье/Снимок5.PNG')],
+t9:[r1('Заповедник/1771833308473-019c897e-1d95-74eb-a0c9-9e09b5b8ae70.png')],
+t10:[r1('мужские слезы/1771833827482-019c8985-45bd-7105-abe7-b819d81bbaa0.png')],
+t11:[r1('чертов замок/1771834818477-019c8995-08f8-7f90-8da0-12b1ccc89f69.png'),r1('чертов замок/5253808896931992094_121.jpg')],
+t12:[r1('озеро шобайдакъ/5249175838400387432_121.jpg'),r1('озеро шобайдакъ/5249175838400387433_121.jpg'),r1('озеро шобайдакъ/5249175838400387434_121.jpg'),r1('озеро шобайдакъ/5249175838400387435_121.jpg'),r1('озеро шобайдакъ/5249175838400387436_121.jpg')],
+t13:[r1('медная пещера/5249175838400387727_121.jpg'),r1('медная пещера/5249175838400387728_121.jpg'),r1('медная пещера/5249175838400387729_121.jpg'),r1('медная пещера/5249175838400387730_121.jpg'),r1('медная пещера/5249175838400387731_121.jpg'),r1('медная пещера/5249175838400387732_121.jpg'),r1('медная пещера/5249175838400387733_121.jpg'),r1('медная пещера/5249175838400387734_121.jpg')],
+t14:[r1('сентинский храм/5249175838400387396_121.jpg'),r1('сентинский храм/5249175838400387397_121.jpg'),r1('сентинский храм/5249175838400387398_121.jpg'),r1('сентинский храм/5249175838400387399_121.jpg'),r1('сентинский храм/5249175838400387400_121.jpg')],
+t15:[r1('сырная пищера/1771835312961-019c899c-af1b-70a8-ba5d-1d7585d5d71b.png')],
+t16:[r1('гум баши/1771835952745-019c89a6-82cb-7ae0-ab4e-9ed140775473.png'),r1('гум баши/5253808896931992062_121.jpg'),r1('гум баши/5253808896931992064_121.jpg'),r1('гум баши/5253808896931992065_121.jpg'),r1('гум баши/5253808896931992066_121.jpg'),r1('гум баши/5253808896931992069_121.jpg'),r1('гум баши/5253808896931992070_121.jpg')],
+t17:[r1('бермамыт/бермамыт.png')],
+t18:[r1('красный мост/5249175838400387460_121.jpg'),r1('красный мост/5249175838400387461_121.jpg')],
+d1:[r3('алибекский ледник/55.png')],
+d2:[r2('алибкский водопад (1).jpg'),r2('алибкский водопад (1).png'),r2('алибкский водопад (2).jpg'),r2('алибкский водопад (2).png'),r2('алибкский водопад (3).png')],
+d3:[r2('чучхурские водопад/5249076199454085953_121.jpg'),r2('чучхурские водопад/5249076199454085954_121.jpg'),r2('чучхурские водопад/5249076199454085955_121.jpg'),r2('чучхурские водопад/5249076199454085956_121.jpg'),r2('чучхурские водопад/5249076199454085957_121.jpg')],
+d4:[r2('гора мусса ачитара/5253808896931992075_121.jpg'),r2('гора мусса ачитара/5253808896931992076_121.jpg'),r2('гора мусса ачитара/5253808896931992077_121.jpg'),r2('гора мусса ачитара/imgs_mussa_achitara_aerial (1).png'),r2('гора мусса ачитара/imgs_mussa_achitara_aerial (2).png'),r2('гора мусса ачитара/imgs_mussa_achitara_aerial.png')],
+d5:[r2('Туманное озеро/1771788576301-019c86d3-9329-79c8-90b2-ed05333a162f.png'),r2('Туманное озеро/5249175838400387527_120.jpg'),r2('Туманное озеро/5249175838400387529_120.jpg'),r2('Туманное озеро/5249175838400387530_120.jpg'),r2('Туманное озеро/5249175838400387531_120.jpg'),r2('Туманное озеро/5249175838400387532_120.jpg')],
+d6:[r2('тарелка/1771836732672-019c89b2-60eb-74c6-b7ed-dfd2831ef4ff.png')],
+d7:[r2('ущелье аманауз/1771837427210-019c89bc-fe29-755f-b466-840be055a46b.png')],
+d8:[r2('чёртова мельница/5246769823490970644_121.jpg'),r2('чёртова мельница/5246769823490970645_121.jpg'),r2('чёртова мельница/5249076199454085949_121.jpg'),r2('чёртова мельница/5249076199454085950_121.jpg'),r2('чёртова мельница/5249076199454085951_121.jpg'),r2('чёртова мельница/5249076199454085952_121.jpg')],
+d9:[r2('Суфруджинские водопады/Снимок4.PNG')],
+d10:[r2('Кладбище альпинистов домбай/1771837767574-019c89c2-223e-75e9-abfc-0dec26bf922b.png')],
+d11:[r2('муруджу/1771838290439-019c89ca-0378-793b-9376-9135facb20b5.jpg')],
+d12:[r3('озеро клухор/6 (1).png'),r3('озеро клухор/3.png'),r3('озеро клухор/4.png'),r3('озеро клухор/6 (2).png')],
+a1:[],
+a2:[],
+a3:[],
+a4:[],
+a5:[],
+a6:[],
+a7:[],
+a8:[],
+a9:[],
+a10:[]
+};
+
+const DD={
+t1:{ru:'Бадукские озёра — система из трёх живописных горных озёр на высоте от 1930 до 2000 м.\n\nТропа через хвойный лес, горную реку и альпийские луга. Набор высоты ~600 м.',en:'Baduk Lakes — three mountain lakes at 1930-2000m. Trail through forest, river and alpine meadows.'},
+t2:{ru:'Водопад Шумка — один из самых доступных водопадов Теберды. Высота 12 м. Красив весной.',en:'Shumka Waterfall — one of the most accessible near Teberda. 12m high.'},
+t3:{ru:'Озеро Кара-Кёль — тёмно-изумрудное ледниковое озеро. Глубина до 11 м. Пляж, катамараны.',en:'Kara-Kol Lake — dark emerald glacial lake. Up to 11m deep. Beach, catamarans.'},
+t4:{ru:'Джамагатские нарзаны — минеральные источники в горной долине. В хорошую погоду виден Эльбрус.',en:'Djamagat Narzans — mineral springs in mountain valley. Elbrus views on clear days.'},
+t5:{ru:'Шоанинский храм — один из древнейших храмов России, X век. На скальном отроге горы Шоана.',en:'Shoana Temple — one of Russia\'s oldest, 10th century. On rocky spur of Mount Shoana.'},
+t6:{ru:'Лысая гора — смотровая точка с панорамой Тебердинской долины.',en:'Bald Mountain — viewpoint with Teberda valley panorama.'},
+t7:{ru:'Ущелье Азгек — живописное ущелье с высокогорными озёрами. Альпийские луга, водопады.',en:'Azgek Gorge — scenic gorge with high-altitude lakes, alpine meadows.'},
+t8:{ru:'Мухинское ущелье — тихая долина с нарзанными источниками.',en:'Mukhin Gorge — quiet valley with mineral springs.'},
+t9:{ru:'Тебердинский заповедник — вольеры с зубрами, музей природы, экотропы.',en:'Teberda Reserve — bison enclosures, nature museum, eco-trails.'},
+t10:{ru:'Водопад Мужские слёзы — небольшой живописный водопад у дороги.',en:'Male Tears Waterfall — small scenic waterfall by the road.'},
+t11:{ru:'Чёртов замок — скальное образование с панорамным видом.',en:'Devil\'s Castle — rock formation with panoramic views.'},
+t12:{ru:'Озеро Шобайдак — высокогорное озеро в скальном цирке. Прозрачная вода, тишина.',en:'Shobaidak Lake — high-altitude lake in rocky cirque.'},
+t13:{ru:'Медная пещера — карстовая пещера со сталактитами. Берите фонарик.',en:'Medna Cave — karst cave with stalactites. Bring a flashlight.'},
+t14:{ru:'Сентинский храм — аланский храм X века с фресками.',en:'Sentin Temple — 10th century Alanian temple with frescoes.'},
+t15:{ru:'Сырные пещеры — пещеры с производством сыра. Можно попробовать.',en:'Cheese Caves — caves with cheese production. Tasting available.'},
+t16:{ru:'Перевал Гум-Баши (2144 м) — один из высочайших автоперевалов Кавказа. Виды на Эльбрус.',en:'Gum-Bashi Pass (2144m) — one of the highest vehicle passes. Elbrus views.'},
+t17:{ru:'Плато Бермамыт — грандиозное плато с видом на Эльбрус. Невероятные закаты.',en:'Bermamyt Plateau — grand plateau with Elbrus views. Incredible sunsets.'},
+t18:{ru:'Красный мост — исторический мост через реку Теберда.',en:'Red Bridge — historic bridge over the Teberda river.'},
+d1:{ru:'Алибекский ледник (2750 м) — один из самых доступных ледников Кавказа. По пути — Турье озеро.',en:'Alibek Glacier (2750m) — one of the most accessible Caucasus glaciers.'},
+d2:{ru:'Алибекский водопад — 25-метровый водопад реки Джаловчат. Радуга в солнечную погоду.',en:'Alibek Waterfall — 25m waterfall. Rainbow in sunny weather.'},
+d3:{ru:'Чучхурский водопад — трёхкаскадный водопад ~250 м.',en:'Chuchkhur Waterfall — three-cascade ~250m waterfall.'},
+d4:{ru:'Гора Мусса-Ачитара (3012 м) — главная смотровая Домбая. Канатка. Панорама Эльбруса.',en:'Mussa-Achitara (3012m) — Dombay\'s main viewpoint. Cable car.'},
+d5:{ru:'Туманное озеро — живописное озеро в Гоначхирском ущелье. Часто окутано туманом.',en:'Foggy Lake — scenic lake in Gonachkhir gorge. Often misty.'},
+d6:{ru:'Тарелка Домбай — культовое кафе в форме НЛО на склоне горы. Вид и кавказская кухня.',en:'Dombay UFO Cafe — iconic saucer-shaped cafe. Views and cuisine.'},
+d7:{ru:'Ущелье Аманауз — узкое ущелье с водопадом Софруджу.',en:'Amanaus Gorge — narrow gorge with Sofrudzhu waterfall.'},
+d8:{ru:'Чёртова мельница — мощный водопад в узком каньоне.',en:'Devil\'s Mill — powerful waterfall in narrow canyon.'},
+d9:{ru:'Суфруджинские водопады — два грандиозных водопада.',en:'Sufrudzhu Waterfalls — two grand waterfalls.'},
+d10:{ru:'Кладбище альпинистов — мемориал погибшим в горах Домбая.',en:'Climbers Cemetery — memorial to those perished in Dombay.'},
+d11:{ru:'Муруджу — долина с озёрами Голубое и Чёрное Муруджу.',en:'Murudzhu — valley with Blue and Black Murudzhu lakes.'},
+d12:{ru:'Озеро Клухор (2676 м) — высокогорное озеро у Клухорского перевала. Большую часть года покрыто льдом.',en:'Kluhor Lake (2676m) at Kluhor Pass. Frozen most of the year.'},
+a1:{ru:'Софийские водопады — один из самых известных маршрутов Архыза. Несколько мощных каскадов спадают с ледниковых склонов Софийского хребта.',en:'Sofia Waterfalls are one of the most famous routes in Arkhyz. Several powerful cascades descend from the glacial slopes of the Sofia ridge.'},
+a2:{ru:'Софийские озёра — высокогорные озёра бирюзового оттенка, расположенные у перевалов и снежников. Один из самых красивых треков Архыза.',en:'Sofia Lakes are high-mountain turquoise lakes near passes and snowfields. One of the most beautiful treks in Arkhyz.'},
+a3:{ru:'Озеро Любви — живописное озеро в форме сердца, расположенное высоко над долиной. Популярное место для фотосъёмки и панорам.',en:'Lake of Love is a scenic heart-shaped lake located high above the valley. A popular place for photos and panoramic views.'},
+a4:{ru:'Баритовый водопад — красивый и сравнительно лёгкий маршрут к водопаду в окрестностях Архыза. Подходит для короткой прогулки.',en:'Baryte Waterfall is a beautiful and relatively easy route to a waterfall near Arkhyz. Good for a short walk.'},
+a5:{ru:'Казачий водопад — лёгкая прогулка к водопаду рядом с посёлком Архыз. Отличный вариант для семей и тех, кто хочет короткий маршрут.',en:'Kazachiy Waterfall is an easy walk to a waterfall near Arkhyz village. A great option for families and for a short route.'},
+a6:{ru:'Дуккинские озёра — группа высокогорных озёр среди лугов и каменных цирков. Маршрут ценят за тишину и виды.',en:'Dukka Lakes are a group of alpine lakes among meadows and rocky cirques. The route is valued for its silence and views.'},
+a7:{ru:'Телескопы САО РАН — маршрут к объектам Специальной астрофизической обсерватории. Интересен сочетанием науки и горных видов.',en:'SAO RAS Telescopes is a route to the facilities of the Special Astrophysical Observatory. Interesting for its mix of science and mountain landscapes.'},
+a8:{ru:'Канатная дорога Архыз — лёгкий подъём к панорамным площадкам курорта. Подходит для отдыха без длительного треккинга.',en:'Arkhyz Cable Car is an easy ascent to panoramic viewpoints of the resort. Suitable for отдых without a long trek.'},
+a9:{ru:'Аланское городище — историко-археологический комплекс с древними храмами и следами средневекового поселения.',en:'Alanian Settlement is a historical and archaeological complex with ancient churches and traces of a medieval settlement.'},
+a10:{ru:'Лик Христа — известный наскальный образ, к которому ведёт короткий подъём. Одно из самых посещаемых мест Архыза.',en:'The Face of Christ is a famous rock image reached by a short ascent. One of the most visited places in Arkhyz.'}
+};
+
+function applyTheme(){document.documentElement.setAttribute('data-theme',curTheme);document.getElementById('theme-icon').className=curTheme==='dark'?'fas fa-sun':'fas fa-moon'}
+function toggleTheme(){curTheme=curTheme==='dark'?'light':'dark';localStorage.setItem('theme',curTheme);applyTheme();haptic()}
+applyTheme();
+
+function toggleLang(){curLang=curLang==='ru'?'en':'ru';localStorage.setItem('lang',curLang);document.getElementById('langicon').textContent=curLang==='ru'?'EN':'RU';updateUI();renderAll();haptic();showToast(curLang==='ru'?'Русский':'English','fa-language')}
+function L(a,b){return curLang==='ru'?a:b}
+
+function updateUI(){
+document.getElementById('headerSub').textContent=L('Всё для туриста','Everything for tourists');
+document.getElementById('searchInput').placeholder=L('Поиск...','Search...');
+document.getElementById('w-badge-text').textContent=L('Сейчас','Now');
+document.getElementById('w-lbl-wind').textContent=L('Ветер','Wind');
+document.getElementById('w-lbl-hum').textContent=L('Влажность','Humidity');
+document.getElementById('w-lbl-feel').textContent=L('Ощущ.','Feels');
+document.getElementById('prog-title-text').textContent=L('Прогресс','Progress');
+document.querySelectorAll('.tr-visited').forEach(e=>e.textContent=L('посещено','visited'));
+document.querySelectorAll('.tr-total').forEach(e=>e.textContent=L('всего','total'));
+document.querySelectorAll('.tr-emer-t').forEach(e=>e.textContent=L('Экстренные службы','Emergency'));
+document.querySelectorAll('.tr-emer-s').forEach(e=>e.textContent=L('МЧС, скорая, полиция','Rescue, ambulance, police'));
+document.querySelectorAll('.tr-svc').forEach(e=>e.textContent=L('Сервисы','Services'));
+document.querySelectorAll('.tr-tab-t').forEach(e=>e.textContent=L('Теберда','Teberda'));
+document.querySelectorAll('.tr-tab-d').forEach(e=>e.textContent=L('Домбай','Dombay'));
+document.querySelectorAll('.tr-tab-a').forEach(e=>e.textContent=L('Архыз','Arkhyz'));
+document.querySelectorAll('.tr-sort').forEach(e=>e.textContent=L('Сорт:','Sort:'));
+document.querySelectorAll('.tr-map-title').forEach(e=>e.textContent=L('Карта','Map'));
+document.querySelectorAll('.tr-fav-title').forEach(e=>e.textContent=L('⭐ Избранное','⭐ Favorites'));
+document.querySelectorAll('.tr-transport').forEach(e=>e.textContent=L('Транспорт','Transport'));
+document.querySelectorAll('.tr-phrase-title').forEach(e=>e.textContent=L('Разговорник','Phrasebook'));
+document.querySelectorAll('.tr-nav-home').forEach(e=>e.textContent=L('Главная','Home'));
+document.querySelectorAll('.tr-nav-map').forEach(e=>e.textContent=L('Карта','Map'));
+document.querySelectorAll('.tr-nav-fav').forEach(e=>e.textContent=L('Избранное','Favorites'));
+document.querySelectorAll('.tr-nav-phrase').forEach(e=>e.textContent=L('Фразы','Phrases'));
+document.querySelectorAll('.tr-open-in-maps').forEach(e=>e.textContent=L('Открыть в картах','Open in maps'));
+document.querySelectorAll('.tr-yandex').forEach(e=>e.textContent=L('Яндекс','Yandex'));
+const fl=L(['Все','Лёгкие','Средние','Сложные'],['All','Easy','Medium','Hard']);
+document.querySelectorAll('.fl-text').forEach((e,i)=>e.textContent=fl[i]);
+const sl=L(['Умолч.','Км','Время','Ближе'],['Default','Km','Time','Closer']);
+document.querySelectorAll('.sl-text').forEach((e,i)=>e.textContent=sl[i]);
+}
+
+function openImgViewer(src,photos){
+if(photos&&photos.length>1){ivPhotos=photos;ivIdx=photos.indexOf(src);if(ivIdx<0)ivIdx=0}else{ivPhotos=[src];ivIdx=0}
+ivShow();
+document.getElementById('imgViewer').classList.add('show');
+document.body.style.overflow='hidden'
+}
+function closeImgViewer(){
+document.getElementById('imgViewer').classList.remove('show');
+document.body.style.overflow=document.getElementById('detailPage').classList.contains('open')?'hidden':''
+}
+function ivShow(){
+const img=document.getElementById('ivImg');
+img.style.opacity='0';
+setTimeout(()=>{
+img.src=ivPhotos[ivIdx];
+img.onload=()=>{img.style.opacity='1'};
+img.onerror=()=>{img.style.opacity='1'}
+},100);
+document.getElementById('ivCounter').textContent=`${ivIdx+1} / ${ivPhotos.length}`;
+const dots=document.getElementById('ivDots');
+if(ivPhotos.length>1&&ivPhotos.length<=20){
+dots.innerHTML=ivPhotos.map((_,i)=>`<div class="img-viewer-dot ${i===ivIdx?'active':''}" onclick="ivIdx=${i};ivShow()"></div>`).join('')
+}else{dots.innerHTML=''}
+document.querySelectorAll('.img-viewer-nav').forEach(b=>b.style.display=ivPhotos.length>1?'flex':'none')
+}
+function ivNav(d){ivIdx=(ivIdx+d+ivPhotos.length)%ivPhotos.length;ivShow()}
+
+document.getElementById('ivMain').addEventListener('touchstart',e=>{ivTouchX=e.changedTouches[0].clientX},{passive:true});
+document.getElementById('ivMain').addEventListener('touchend',e=>{
+const dx=ivTouchX-e.changedTouches[0].clientX;
+if(Math.abs(dx)>50){if(dx>0)ivNav(1);else ivNav(-1)}
+else if(Math.abs(dx)<10){closeImgViewer()}
+},{passive:true});
+
+document.addEventListener('keydown',e=>{
+if(!document.getElementById('imgViewer').classList.contains('show'))return;
+if(e.key==='ArrowRight')ivNav(1);
+else if(e.key==='ArrowLeft')ivNav(-1);
+else if(e.key==='Escape')closeImgViewer()
+});
+
+function getGPS(){
+if(!navigator.geolocation)return;
+navigator.geolocation.getCurrentPosition(p=>{
+userLat=p.coords.latitude;userLon=p.coords.longitude;
+if(curSort==='gps')renderCards(curCity)
+},()=>{},{enableHighAccuracy:true,timeout:10000})
+}
+function calcDist(a,b,c,d){
+const R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;
+const x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;
+return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))
+}
+getGPS();
+
+async function fetchSunset(){
+try{
+const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=43.44&longitude=41.74&daily=sunset&timezone=auto&forecast_days=1');
+const j=await r.json();
+if(j.daily?.sunset?.[0]){
+const st=new Date(j.daily.sunset[0]);
+document.getElementById('sunsetTime').textContent=st.getHours().toString().padStart(2,'0')+':'+st.getMinutes().toString().padStart(2,'0');
+document.getElementById('sunsetText').textContent=L('Закат сегодня в ','Sunset today at ');
+document.getElementById('sunsetBanner').style.display='flex'
+}
+}catch(e){}
+}
+fetchSunset();
+
+let pulling=false,pullY=0;
+document.addEventListener('touchstart',e=>{
+if(window.scrollY===0&&curPage==='page-home'&&!document.getElementById('detailPage').classList.contains('open')&&!document.getElementById('imgViewer').classList.contains('show')){
+pullY=e.touches[0].clientY;pulling=true
+}
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+if(!pulling)return;
+if(e.touches[0].clientY-pullY>60)document.getElementById('pullInd').classList.add('show')
+},{passive:true});
+document.addEventListener('touchend',()=>{
+if(!pulling)return;
+pulling=false;
+const pi=document.getElementById('pullInd');
+if(pi.classList.contains('show')){
+fetchW(curCity).then(()=>fetchSunset()).finally(()=>setTimeout(()=>pi.classList.remove('show'),800))
+}
+});
+
+window.addEventListener('online',()=>{document.getElementById('offlineBanner').classList.remove('show');fetchW(curCity)});
+window.addEventListener('offline',()=>{document.getElementById('offlineBanner').classList.add('show')});
+if(!navigator.onLine)document.getElementById('offlineBanner').classList.add('show');
+
+const routes={
+teberda:[
+{id:'t1',title:'Бадукские озёра',te:'Baduk Lakes',desc:'Три горных озера с бирюзовой водой на 2000 м.',de:'Three mountain lakes with turquoise water at 2000m.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'6–7 ч',tm:360,dist:'9 км',dn:9,elev:'2000 м "туда и обратно"',image:P.baduk,lat:43.375680,lon:41.694388},
+{id:'t2',title:'Водопад Шумка',te:'Shumka Waterfall',desc:'12-метровый водопад в ущелье.',de:'12m waterfall in a gorge.',icon:'fa-droplet',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1.5–2 ч',tm:90,dist:'3 км',dn:3,elev:'1523 м "туда и обратно"',image:P.shumka,lat:43.409945,lon:41.730354},
+{id:'t3',title:'Озеро Кара-Кёль',te:'Kara-Kol Lake',desc:'Тёмно-изумрудное озеро, пляж, катамараны.',de:'Dark emerald lake, beach, catamarans.',icon:'fa-water-ladder',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'2–3 ч',tm:120,dist:'1 км',dn:1,elev:'1350 м "туда и обратно"',image:P.karakel,lat:43.436962,lon:41.743489},
+{id:'t4',title:'Джамагатские нарзаны',te:'Djamagat Springs',desc:'Минеральные источники, вид на Эльбрус.',de:'Mineral springs, Elbrus views.',icon:'fa-glass-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'5–6 ч',tm:300,dist:'12 км',dn:12,elev:'1813 м "туда и обратно"',image:P.jamagat,lat:43.467064,lon:41.777785},
+{id:'t5',title:'Шоанинский храм',te:'Shoana Temple',desc:'Храм X века на горе Шоана.',de:'10th century temple.',icon:'fa-church',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'2–3 ч',tm:120,dist:'3 км',dn:3,elev:'1100 м "туда и обратно"',image:P.shoanin,lat:43.804355,lon:41.889815},
+{id:'t6',title:'Лысая гора-Барадинское ущелье',te:'Bald Mountain',desc:'Панорама на Тебердинскую долину.',de:'Panoramic Teberda valley view.',icon:'fa-mountain-sun',diff:'Средняя',dfe:'Medium',dc:'medium',time:'3–4 ч',tm:180,dist:'6 км',dn:6,elev:'1600 м "туда и обратно"',image:P.lysaya,lat:43.469126,lon:41.713335},
+{id:'t7',title:'Ущелье Азгек',te:'Azgek Gorge',desc:'Живописное ущелье с озёрами.',de:'Scenic gorge with lakes.',icon:'fa-mountain',diff:'Средняя',dfe:'Medium',dc:'medium',time:'6–7 ч',tm:360,dist:'14 км',dn:14,elev:'2600 м "туда и обратно"',image:P.azgek,lat:43.467291,lon:41.673039},
+{id:'t8',title:'Мухинское ущелье-Барадинское ущелье',te:'Mukhin Gorge',desc:'Тихое ущелье с нарзанами.',de:'Quiet gorge with mineral springs.',icon:'fa-tree',diff:'Средняя',dfe:'Medium',dc:'medium',time:'4–5 ч',tm:240,dist:'10 км',dn:10,elev:'1800 м "туда и обратно"',image:P.mukhin,lat:43.475824,lon:41.677457},
+{id:'t9',title:'Тебердинский заповедник',te:'Teberda Reserve',desc:'Вольеры с зубрами, музей природы.',de:'Bison enclosures, nature museum.',icon:'fa-leaf',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'2–3 ч',tm:120,dist:'2 км',dn:2,elev:'1300 м "туда и обратно"',image:P.zapov,lat:43.443471,lon:41.738464},
+{id:'t10',title:'Водопад Мужские слёзы',te:'Male Tears Waterfall',desc:'Живописный водопад у дороги.',de:'Scenic waterfall by road.',icon:'fa-droplet',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1 ч',tm:60,dist:'1 км',dn:1,elev:'1400 м "туда и обратно"',image:P.muzslz,lat:43.442662,lon:41.746635},
+{id:'t11',title:'Чёртов замок',te:'Devil\'s Castle',desc:'Скальное образование с панорамой.',de:'Rock formation with panorama.',icon:'fa-chess-rook',diff:'Средняя',dfe:'Medium',dc:'medium',time:'3–4 ч',tm:200,dist:'5 км',dn:5,elev:'1800 м "туда и обратно"',image:P.chertov,lat:43.416410,lon:41.766546},
+{id:'t12',title:'Озеро Шобайдак',te:'Shobaidak Lake',desc:'Высокогорное озеро в скалах.',de:'High-altitude lake in rocks.',icon:'fa-water',diff:'Сложная',dfe:'Hard',dc:'hard',time:'8–9 ч',tm:480,dist:'16 км',dn:16,elev:'2700 м "туда и обратно"',image:P.shobaidak,lat:43.446197,lon:41.628748},
+{id:'t13',title:'Медная пещера',te:'Medna Cave',desc:'Карстовая пещера со сталактитами.',de:'Karst cave with stalactites.',icon:'fa-dungeon',diff:'Средняя',dfe:'Medium',dc:'medium',time:'3–4 ч',tm:200,dist:'6 км',dn:6,elev:'1600 м "туда и обратно"',image:P.medpesh,lat:43.481187,lon:41.704569},
+{id:'t14',title:'Сентинский храм',te:'Sentin Temple',desc:'Аланский храм X века.',de:'10th century Alanian temple.',icon:'fa-church',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'2–3 ч',tm:120,dist:'4 км',dn:4,elev:'1200 м "туда и обратно"',image:P.sentin,lat:43.636784,lon:41.865585},
+{id:'t15',title:'Сырные пещеры',te:'Cheese Caves',desc:'Пещеры с сыроварней.',de:'Caves with cheese-making.',icon:'fa-cheese',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1–2 ч',tm:90,dist:'2 км',dn:2,elev:'1400 м "туда и обратно"',image:P.syrnaya,lat:43.773987,lon:41.978800},
+{id:'t16',title:'Перевал Гум-Баши',te:'Gum-Bashi Pass',desc:'Высочайший автоперевал КЧР.',de:'Highest vehicle pass in KCR.',icon:'fa-road',diff:'Средняя',dfe:'Medium',dc:'medium',time:'Весь день',tm:600,dist:'80 км',dn:80,elev:'2144 м "туда и обратно"',image:P.gumbashi,lat:43.776541,lon:42.185752},
+{id:'t17',title:'Плато Бермамыт',te:'Bermamyt Plateau',desc:'Грандиозное плато, вид на Эльбрус.',de:'Grand plateau, Elbrus views.',icon:'fa-panorama',diff:'Средняя',dfe:'Medium',dc:'medium',time:'Весь день',tm:600,dist:'80 км',dn:80,elev:'2592 м "туда и обратно"',image:P.bermamyt,lat:43.711164,lon:42.442134},
+{id:'t18',title:'Красный мост',te:'Red Bridge',desc:'Исторический мост через Теберду.',de:'Historic bridge over Teberda.',icon:'fa-bridge',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1 ч',tm:30,dist:'0.5 км',dn:.5,elev:'1300 м "туда и обратно"',image:P.krasmost,lat:43.480382,lon:41.747908}
+],
+dombay:[
+{id:'d1',title:'Алибекский ледник',te:'Alibek Glacier',desc:'Доступный ледник Кавказа.',de:'Accessible Caucasus glacier.',icon:'fa-igloo',diff:'Сложная',dfe:'Hard',dc:'hard',time:'6–7 ч',tm:360,dist:'14 км',dn:14,elev:'2750 м "туда и обратно"',image:P.alibek_gl,lat:43.282116,lon:41.528415},
+{id:'d2',title:'Алибекский водопад',te:'Alibek Waterfall',desc:'25-метровый водопад.',de:'25m waterfall.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'4–5 ч',tm:240,dist:'10 км',dn:10,elev:'2100 м "туда и обратно"',image:P.alibek_w,lat:43.298694,lon:41.555962},
+{id:'d3',title:'Чучхурский водопад',te:'Chuchkhur Waterfall',desc:'Трёхкаскадный водопад 250 м.',de:'Three-cascade 250m waterfall.',icon:'fa-tornado',diff:'Средняя',dfe:'Medium',dc:'medium',time:'4–5 ч',tm:240,dist:'10 км',dn:10,elev:'2200 м "туда и обратно"',image:P.chuchkhur,lat:43.265671,lon:41.693515},
+{id:'d4',title:'Гора Мусса-Ачитара',te:'Mussa-Achitara',desc:'Канатка на 3012 м, панорама.',de:'Cable car to 3012m, panorama.',icon:'fa-mountain',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'3–4 ч',tm:180,dist:'2 км',dn:2,elev:'3012 м "туда и обратно"',image:P.mussa,lat:43.299598,lon:41.663371},
+{id:'d5',title:'Туманное озеро',te:'Foggy Lake',desc:'Озеро в Гоначхирском ущелье.',de:'Lake in Gonachkhir gorge.',icon:'fa-cloud',diff:'Средняя',dfe:'Medium',dc:'medium',time:'5–6 ч',tm:300,dist:'8 км',dn:8,elev:'1850 м "туда и обратно"',image:P.tuman,lat:43.284774,lon:41.792484},
+{id:'d6',title:'Тарелка Домбай',te:'Dombay UFO Cafe',desc:'Культовое кафе-тарелка.',de:'Iconic UFO cafe.',icon:'fa-burger',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'2–3 ч',tm:120,dist:'1 км',dn:1,elev:'2250 м "туда и обратно"',image:P.tarelka,lat:43.295052,lon:41.652997},
+{id:'d7',title:'Ущелье Аманауз',te:'Amanaus Gorge',desc:'Узкое ущелье с водопадом.',de:'Narrow gorge with waterfall.',icon:'fa-mountain',diff:'Средняя',dfe:'Medium',dc:'medium',time:'3–4 ч',tm:200,dist:'6 км',dn:6,elev:'1900 м "туда и обратно"',image:P.amanaus,lat:43.264580,lon:41.612602},
+{id:'d8',title:'Чёртова мельница',te:'Devil\'s Mill',desc:'Мощный водопад в каньоне.',de:'Powerful waterfall in canyon.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'2–3 ч',tm:150,dist:'4 км',dn:4,elev:'1800 м "туда и обратно"',image:P.chert_mel,lat:43.273465,lon:41.616407},
+{id:'d9',title:'Суфруджинские водопады',te:'Sufrudzhu Waterfalls',desc:'Два грандиозных водопада.',de:'Two grand waterfalls.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'5–6 ч',tm:300,dist:'10 км',dn:10,elev:'2400 м "туда и обратно"',image:P.sufruzh,lat:43.264320,lon:41.609958},
+{id:'d10',title:'Кладбище альпинистов',te:'Climbers Cemetery',desc:'Мемориал альпинистам.',de:'Memorial to climbers.',icon:'fa-monument',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1 ч',tm:30,dist:'1 км',dn:1,elev:'1600 м "туда и обратно"',image:P.kladb,lat:43.292493,lon:41.602434},
+{id:'d11',title:'Муруджу',te:'Murudzhu',desc:'Долина с озёрами Муруджу.',de:'Valley with Murudzhu lakes.',icon:'fa-water',diff:'Сложная',dfe:'Hard',dc:'hard',time:'10–12 ч',tm:600,dist:'20 км',dn:20,elev:'2800 м "туда и обратно"',image:P.murudzhu,lat:43.387196,lon:41.705240},
+{id:'d12',title:'Озеро Клухор',te:'Kluhor Lake',desc:'Высокогорное озеро у перевала.',de:'High-altitude lake at pass.',icon:'fa-water',diff:'Сложная',dfe:'Hard',dc:'hard',time:'8–10 ч',tm:500,dist:'18 км',dn:18,elev:'2676 м "туда и обратно"',image:P.kluhor,lat:43.252192,lon:41.863225}
+],
+arkhyz:[
+{id:'a1',title:'Софийские водопады',te:'Sofia Waterfalls',desc:'Знаменитые водопады Архыза у ледниковых склонов.',de:'Famous waterfalls of Arkhyz near glacial slopes.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'4–6 ч',tm:300,dist:'10 км',dn:10,elev:'2500 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/1%D1%81.png?raw=true',lat:43.435264,lon:41.276161},
+{id:'a2',title:'Софийские озёра',te:'Sofia Lakes',desc:'Высокогорные бирюзовые озёра среди перевалов и снежников.',de:'High-mountain turquoise lakes among passes and snowfields.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'6–8 ч',tm:420,dist:'14 км',dn:14,elev:'2830 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/2%D1%81.png?raw=true',lat:43.449620,lon:41.230165},
+{id:'a3',title:'Озеро Любви',te:'Lake of Love',desc:'Живописное озеро в форме сердца над долиной Архыза.',de:'Scenic heart-shaped lake above the Arkhyz valley.',icon:'fa-heart',diff:'Средняя',dfe:'Medium',dc:'medium',time:'5–6 ч',tm:330,dist:'12 км',dn:12,elev:'2500 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/10%20(1).jpeg?raw=true',lat:43.536942,lon:41.338233},
+{id:'a4',title:'Баритовый водопад',te:'Baryte Waterfall',desc:'Короткий и красивый маршрут к водопаду рядом с Архызом.',de:'Short and scenic trail to a waterfall near Arkhyz.',icon:'fa-droplet',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1.5–2 ч',tm:100,dist:'4 км',dn:4,elev:'1700 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/10%20(3).png?raw=true',lat:43.587039,lon:41.278962},
+{id:'a5',title:'Казачий водопад',te:'Kazachiy Waterfall',desc:'Лёгкая прогулка к водопаду недалеко от посёлка Архыз.',de:'Easy walk to a waterfall near Arkhyz village.',icon:'fa-droplet',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1 ч',tm:60,dist:'2 км',dn:2,elev:'1500 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/10%20(2).png?raw=true',lat:43.553610,lon:41.300386},
+{id:'a6',title:'Дуккинские озёра',te:'Dukka Lakes',desc:'Группа горных озёр среди лугов и каменных цирков.',de:'A group of alpine lakes among meadows and rocky cirques.',icon:'fa-water',diff:'Средняя',dfe:'Medium',dc:'medium',time:'5–7 ч',tm:360,dist:'12 км',dn:12,elev:'2600 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/10%20(1).png?raw=true',lat:43.406186,lon:41.255201},
+{id:'a7',title:'Телескопы САО РАН',te:'SAO RAS Telescopes',desc:'Маршрут к знаменитой астрофизической обсерватории.',de:'Route to the famous astrophysical observatory.',icon:'fa-star',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1–2 ч',tm:90,dist:'3 км',dn:3,elev:'2070 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/11%20(3).jpg?raw=true',lat:43.646655,lon:41.440864},
+{id:'a8',title:'Канатная дорога Архыз',te:'Arkhyz Cable Car',desc:'Лёгкий подъём к панорамам курорта Архыз.',de:'Easy ascent to panoramic viewpoints of Arkhyz resort.',icon:'fa-cable-car',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1 ч',tm:60,dist:'1 км',dn:1,elev:'2500 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/11%20(2).jpg?raw=true',lat:43.544148,lon:41.180243},
+{id:'a9',title:'Аланское городище',te:'Alanian Settlement',desc:'Древний историко-археологический комплекс Архыза.',de:'Ancient historical and archaeological complex of Arkhyz.',icon:'fa-landmark',diff:'Лёгкая',dfe:'Easy',dc:'easy',time:'1–2 ч',tm:90,dist:'2 км',dn:2,elev:'1400 м "туда и обратно"',image:'https://github.com/wrestling099032-arch/photo.pr/blob/main/%D0%B0%D1%80%D1%85%D1%8B%D0%B7/11%20(1).jpg?raw=true',lat:43.685083,lon:41.476110}
+]
+};
+
+
+
+/* ===== ADDONS DATA LAYER (local demo; for real users replace localStorage with server API) ===== */
+const TD_STORE_KEY='teberdaDombayAdmin_v3';
+const TD_BUILTIN_CATS=[
+{id:'housing',title:'Жильё',icon:'fa-house-chimney',ic:'icon-green'},
+{id:'cafe',title:'Кафе',icon:'fa-utensils',ic:'icon-orange'},
+{id:'shops',title:'Магазины',icon:'fa-store',ic:'icon-blue'},
+{id:'guide',title:'Гиды',icon:'fa-person-hiking',ic:'icon-purple'},
+{id:'instructor',title:'Инструкторы',icon:'fa-skiing',ic:'icon-cyan'},
+{id:'souvenirs',title:'Сувениры',icon:'fa-gift',ic:'icon-pink'},
+{id:'medpoint',title:'Медпункт',icon:'fa-kit-medical',ic:'icon-red'},
+{id:'horse',title:'Конные прогулки',icon:'fa-horse',ic:'icon-orange'},
+{id:'quad',title:'Квадроциклы',icon:'fa-motorcycle',ic:'icon-yellow'},
+{id:'jeep',title:'Джиппинг',icon:'fa-car-side',ic:'icon-green'},
+{id:'forel',title:'Форель',icon:'fa-fish',ic:'icon-cyan'},
+{id:'transfer',title:'Трансфер',icon:'fa-van-shuttle',ic:'icon-blue'},
+{id:'banya',title:'Бани',icon:'fa-hot-tub-person',ic:'icon-red'},
+{id:'pharmacy',title:'Аптеки',icon:'fa-prescription-bottle-medical',ic:'icon-green'},
+{id:'lifts',title:'Канатки',icon:'fa-cable-car',ic:'icon-purple'},
+{id:'fun',title:'Развлечения',icon:'fa-face-smile',ic:'icon-pink'},
+{id:'webcams',title:'Веб-камеры',icon:'fa-video',ic:'icon-cyan'},
+{id:'meat',title:'Мясо',icon:'fa-drumstick-bite',ic:'icon-orange'},
+{id:'gas',title:'АЗС',icon:'fa-gas-pump',ic:'icon-yellow'},
+{id:'pvz',title:'ПВЗ',icon:'fa-box',ic:'icon-blue'}
+];
+function tdDefaultData(){return{routeSettings:{},customRoutes:[],customCategories:[],customServices:[],requests:[]}}
+function tdLoad(){try{return Object.assign(tdDefaultData(),JSON.parse(localStorage.getItem(TD_STORE_KEY)||'{}'))}catch(e){return tdDefaultData()}}
+function tdSave(d){try{localStorage.setItem(TD_STORE_KEY,JSON.stringify(d));return true}catch(e){showToast(L('Память переполнена. Используйте фото поменьше или меньше фото.','Storage full. Use smaller/fewer photos.'),'fa-triangle-exclamation');return false}}
+function tdEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function tdFileToDataURL(file){return new Promise((res,rej)=>{if(!file)return res('');const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+function tdResizeImage(file,maxW,quality){return new Promise((res,rej)=>{if(!file)return res('');const r=new FileReader();r.onerror=rej;r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;maxW=maxW||1280;if(w>maxW){h=Math.round(h*maxW/w);w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);try{res(c.toDataURL('image/jpeg',quality||0.78))}catch(e){res(r.result)}};img.onerror=()=>res(r.result);img.src=r.result};r.readAsDataURL(file)})}
+function tdUid(p){return p+'_'+Date.now()+'_'+Math.random().toString(16).slice(2,7)}
+function tdTimeToMin(t){const p=String(t||'00:00').split(':').map(Number);return (p[0]||0)*60+(p[1]||0)}
+function tdNowInRange(open,close){const n=new Date(),cur=n.getHours()*60+n.getMinutes(),a=tdTimeToMin(open),b=tdTimeToMin(close);return a===b?true:(a<b?cur>=a&&cur<b:cur>=a||cur<b)}
+function tdDefaultNeeds(dc){return dc==='easy'?L('Удобная обувь, вода, заряженный телефон.','Comfortable shoes, water, charged phone.'):dc==='medium'?L('Треккинговая обувь, 1.5–2 л воды, дождевик, выход утром.','Trekking shoes, 1.5–2L water, rain jacket, start early.'):L('Для подготовленных: треккинговая обувь, палки, 2+ л воды, связь.','For experienced: trekking shoes, poles, 2+L water, connection.')}
+function tdPrepareRoute(rt){rt.openTime=rt.openTime||'08:00';rt.closeTime=rt.closeTime||'18:00';rt.statusMode=rt.statusMode||'auto';rt.routePrice=rt.routePrice||L('Бесплатно','Free');rt.routeNeeds=rt.routeNeeds||tdDefaultNeeds(rt.dc);if(rt.visible===undefined)rt.visible=true;return rt}
+function applyAdminDataToRoutes(){
+    // Загружаем с сервера если возможно
+    const serverOk = loadServerData().then(ok => ok).catch(() => false);
+    
+    const local = tdLoad();
+    
+    // Серверные данные имеют приоритет
+    let routeSettings = local.routeSettings || {};
+    let customRoutes = local.customRoutes || [];
+    
+    // Если есть серверные данные - используем их
+    if (serverData) {
+        if (serverData.routes) {
+            if (serverData.routes.routeSettings) {
+                routeSettings = { ...routeSettings, ...serverData.routes.routeSettings };
+            }
+            if (serverData.routes.customRoutes && serverData.routes.customRoutes.length) {
+                customRoutes = serverData.routes.customRoutes;
+            }
+        }
+    }
+    
+    ['teberda','dombay','arkhyz'].forEach(city=>routes[city].forEach(rt=>{rt._builtin=true;tdPrepareRoute(rt);if(routeSettings&&routeSettings[rt.id])Object.assign(rt,routeSettings[rt.id]);tdPrepareRoute(rt)}));(customRoutes||[]).forEach(r=>{if(!r||!r.id)return;const city=r.city||'teberda';if(routes[city]&&!routes[city].some(x=>x.id===r.id)){tdPrepareRoute(r);r._custom=true;routes[city].push(r)}})
+}
+function getRouteStatus(rt){const mode=rt.statusMode||'auto';let open=mode==='force_open'||(mode==='auto'&&tdNowInRange(rt.openTime,rt.closeTime));if(mode==='force_closed')open=false;return{open,text:open?L('Открыто','Open'):L('Закрыто','Closed'),mode}}
+function isRouteVisible(rt){return rt.visible!==false}
+function routeStatusBadge(rt){const st=getRouteStatus(rt);return `<div class="route-status-badge ${st.open?'open':'closed'}"><i class="fas ${st.open?'fa-circle-check':'fa-circle-xmark'}"></i>${st.text}</div>`}
+function routeHoursLine(rt){const st=getRouteStatus(rt);return `<div class="route-hours-line"><i class="far fa-clock"></i>${rt.openTime}–${rt.closeTime} · ${st.text}</div>`}
+function routeExtraGrid(rt){return `<span class="tag t-price"><i class="fas fa-tag"></i>${tdEsc(rt.routePrice||L('Бесплатно','Free'))}</span><span class="tag t-needs"><i class="fas fa-suitcase"></i>${tdEsc(rt.routeNeeds||L('Не указано','Not specified'))}</span>`}
+function routeStatusTag(rt){const st=getRouteStatus(rt);return `<span class="tag route-detail-status ${st.open?'open':'closed'}"><i class="fas ${st.open?'fa-circle-check':'fa-circle-xmark'}"></i>${st.text} · ${rt.openTime}–${rt.closeTime}</span>`}
+function getManagedSvc(){
+    const s=getSvc(),local=tdLoad();
+    
+    // Серверные данные услуг имеют приоритет
+    let customCategories = local.customCategories || [];
+    let customServices = local.customServices || [];
+    
+    if (serverData) {
+        if (serverData.categories && serverData.categories.length) {
+            // Добавляем категории с сервера
+            serverData.categories.forEach(c => {
+                if (c.visible !== false && !customCategories.some(x => x.id === c.id)) {
+                    customCategories.push(c);
+                }
+            });
+        }
+        if (serverData.services && serverData.services.length) {
+            // Используем услуги с сервера
+            customServices = serverData.services;
+        }
+    }
+    
+    (customCategories||[]).filter(c=>c.visible!==false).forEach(c=>{if(!s[c.id])s[c.id]={title:c.title,icon:c.icon||'fa-briefcase',ic:c.ic||'icon-blue',items:[]}});(customServices||[]).filter(x=>x.status==='approved').forEach(item=>addServiceToObj(s,item));return s
+}
+
+function addServiceToObj(s,item){
+    const key = item.categoryId || 'guide';
+    const cat = s[key] || (s[key] = {title: L('Услуги','Services'), icon:'fa-briefcase', ic:'icon-blue', items:[]});
+    const svc = {
+        name: item.name,
+        desc: item.desc,
+        addr: item.addr || item.city || '',
+        contact: item.contact,
+        tg: item.tg,
+        price: item.price,
+        photo: item.photo,
+        photos: item.photos || (item.photo ? [item.photo] : []),
+        lat: item.lat,
+        lon: item.lon
+    };
+    
+    if(cat.type === 'cat'){
+        const subId = item.subCategoryId || 'user_added';
+        let sub = cat.subs.find(x => x.id === subId);
+        if(!sub) {
+            sub = cat.subs.find(x => x.id === 'user_added');
+            if(!sub) {
+                sub = {id:'user_added', name:L('Добавленные услуги','Added services'), icon:'fa-plus-circle', ic:'icon-green', items:[]};
+                cat.subs.unshift(sub);
+            }
+        }
+        sub.items = sub.items || [];
+        sub.items.unshift(svc);
+    } else {
+        cat.items = cat.items || [];
+        cat.items.unshift(svc);
+    }
+}
+
+function getManagedSvcKeys(s){const base=['housing','cafe','shops','guide','instructor','souvenirs','medpoint','horse','quad','jeep','forel','transfer','banya','pharmacy','lifts','fun','webcams','meat','gas','pvz'];Object.keys(s).forEach(k=>{if(!base.includes(k))base.push(k)});return base}
+
+function openServiceRequest(){
+    const d=tdLoad(),cats=[...TD_BUILTIN_CATS,...(d.customCategories||[]).filter(c=>c.visible!==false)];
+    const opts=cats.map(c=>`<option value="${c.id}">${tdEsc(c.title)}</option>`).join('');
+    document.getElementById('mHead').innerHTML=`<div class="m-head-ico icon-green"><i class="fas fa-plus-circle"></i></div><h3>${L('Добавить услугу','Add service')}</h3>`;
+    document.getElementById('mBody').innerHTML=`<div class="service-form">
+        <label style="font-size:10px;color:var(--text-muted);margin-left:5px">${L('Категория','Category')}</label>
+        <select id="reqCat" onchange="updateSubCats()">${opts}</select>
+        <div id="subCatContainer" style="display:none">
+            <label style="font-size:10px;color:var(--text-muted);margin-left:5px">${L('Подкатегория','Subcategory')}</label>
+            <select id="reqSubCat"></select>
+        </div>
+        <label style="font-size:10px;color:var(--text-muted);margin-left:5px">${L('Город','City')}</label>
+        <select id="reqCity"><option>Теберда</option><option>Домбай</option><option>Архыз</option></select>
+        <input id="reqName" placeholder="${L('Название услуги','Service name')}">
+        <input id="reqPrice" placeholder="${L('Цена, например от 2000 ₽','Price, e.g. from 2000 ₽')}">
+        <textarea id="reqDesc" placeholder="${L('Описание услуги','Service description')}"></textarea>
+        <input id="reqContact" placeholder="${L('Телефон или Telegram','Phone or Telegram')}">
+        <input id="reqCheck" placeholder="${L('Чек / номер перевода','Receipt / transfer number')}">
+        <label style="font-size:10px;color:var(--text-muted);margin-left:5px">${L('Фото чека оплаты','Payment receipt photo')}</label>
+        <input id="reqCheckPhoto" type="file" accept="image/*">
+        <label style="font-size:10px;color:var(--text-muted);margin-left:5px">${L('Фотографии (до 3 шт)','Photos (up to 3)')}</label>
+        <input id="reqPhoto1" type="file" accept="image/*">
+        <input id="reqPhoto2" type="file" accept="image/*">
+        <input id="reqPhoto3" type="file" accept="image/*">
+        <div class="hint">${L('Заявка появится в админке после проверки.','Request will appear in admin after review.')}</div>
+        <button class="call-btn" onclick="submitServiceRequest()"><i class="fas fa-paper-plane"></i> ${L('Отправить заявку','Send request')}</button>
+    </div>`;
+    document.getElementById('svcModal').classList.add('show');
+    updateSubCats();
+}
+
+function updateSubCats(){
+    const catId = document.getElementById('reqCat').value;
+    const container = document.getElementById('subCatContainer');
+    const subSelect = document.getElementById('reqSubCat');
+    const s = getSvc()[catId];
+    if(s && s.type === 'cat' && s.subs) {
+        container.style.display = 'block';
+        subSelect.innerHTML = s.subs.map(sub => `<option value="${sub.id}">${tdEsc(sub.name)}</option>`).join('');
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+
+async function submitServiceRequest(){
+    const p1 = await tdResizeImage(document.getElementById('reqPhoto1').files[0],1280,0.78);
+    const p2 = await tdResizeImage(document.getElementById('reqPhoto2').files[0],1280,0.78);
+    const p3 = await tdResizeImage(document.getElementById('reqPhoto3').files[0],1280,0.78);
+    const checkPhoto = await tdResizeImage(document.getElementById('reqCheckPhoto').files[0],1280,0.8);
+    const photos = [p1, p2, p3].filter(x => x);
+
+    const catId = document.getElementById('reqCat').value;
+    const subCatId = document.getElementById('subCatContainer').style.display !== 'none' ? document.getElementById('reqSubCat').value : null;
+
+    const req = {
+        id: tdUid('req'),
+        created: new Date().toLocaleString('ru-RU'),
+        status: 'new',
+        categoryId: catId,
+        subCategoryId: subCatId,
+        city: reqCity.value,
+        name: reqName.value.trim(),
+        price: reqPrice.value.trim(),
+        desc: reqDesc.value.trim(),
+        contact: reqContact.value.trim(),
+        check: reqCheck.value.trim(),
+        checkPhoto: checkPhoto || '',
+        photos: photos,
+        photo: photos[0] || '' // Fallback for old code
+    };
+
+    if(!req.name || !req.contact){
+        showToast(L('Заполните название и контакт','Fill name and contact'),'fa-triangle-exclamation');
+        return;
+    }
+    const d=tdLoad();
+    d.requests.unshift(req);
+    if(!tdSave(d))return;
+    closeModal();
+    showToast(L('Заявка отправлена','Request sent'),'fa-paper-plane');
+}
+
+applyAdminDataToRoutes();
+
+const transportData=[
+{route:'Минеральные Воды → Теберда',re:'MinVody → Teberda',icon:'fa-bus',ic:'icon-blue',times:['08:00','12:00','16:00'],dur:'4 ч',dre:'4h',price:'1500₽'},
+{route:'Теберда → Домбай',re:'Teberda → Dombay',icon:'fa-van-shuttle',ic:'icon-green',times:['07:30','09:00','11:00','14:00','17:00'],dur:'30 мин',dre:'30min',price:'100₽'},
+{route:'Домбай → Теберда',re:'Dombay → Teberda',icon:'fa-van-shuttle',ic:'icon-orange',times:['08:00','10:00','13:00','16:00','18:00'],dur:'30 мин',dre:'30min',price:'100₽'},
+{route:'Такси Теберда ↔ Домбай',re:'Taxi Teberda ↔ Dombay',icon:'fa-taxi',ic:'icon-yellow',times:['24/7'],dur:'25 мин',dre:'25min',price:'500-800₽'},
+{route:'Аэропорт МинВод',re:'MinVody Airport',icon:'fa-plane-arrival',ic:'icon-purple',times:[L('По заказу','On request')],dur:'3.5 ч',dre:'3.5h',price:'6000-9000₽'}
+];
+
+function getSvc(){return{
+housing:{title:L('Жильё','Housing'),icon:'fa-house-chimney',ic:'icon-green',type:'cat',subs:[
+{id:'hotels',name:L('Гостиницы','Hotels'),icon:'fa-hotel',ic:'icon-green',items:[
+{name:'Экара',desc:L('Гостиница','Hotel'),addr:'г. Теберда',contact:'89188811912',lat:43.439510,lon:41.743101}
+]},
+{id:'apart',name:L('Квартиры','Apartments'),icon:'fa-building',ic:'icon-green',items:[
+{name:L('Однокомнатная квартира','Studio'),desc:L('Однокомнатная в Домбае,вместимостью до 4 гостей, до подъемников 5 мин. Пихтовый мыс 1','Central'),contact:'89280281900',addr:'г. Домбай',tg:'https://t.me/dombayschs',lat:43.288436,lon:41.620223},
+{name:L('2-к. квартира, 50 м², 2 кровати','Studio'),desc:L('Комфоpтнaя 2-х кoмнaтная квартирa поcле pемoнта c живописным видoм нa гopы, в 15 мин eзды oт посёлка Дoмбaй! (ссылка на авито в кнопке тг)','Central'),contact:'8 928 922 07 10',addr:'г. Теберда',tg:'https://www.avito.ru/teberda/kvartiry/2-k._kvartira_50_m_2_krovati_3631196216?utm_campaign=native&utm_medium=item_page_ios&utm_source=soc_sharing_seller',lat:43.427691,lon:41.738719},
+{name:L('2-к. квартира, 50 м², 2 кровати','Studio'),desc:L('Сдаю чиcтую, уютную, oчень теплую квapтиру со всeми удобcтвами. Bсе нeобxодимоe в шaгoвoй дoступности ( мaгaзины, кaфе, аптeкa, мед.пункт, cбeрбaнк, кaнатная дoрoгa) (ссылка на авито в кнопке тг)','Central'),contact:'89304246667',addr:'г. Домбай',tg:'https://www.avito.ru/teberda/kvartiry/2-k._kvartira_50_m_2_krovati_1845267004?utm_campaign=native&utm_medium=item_page_android&utm_source=soc_sharing_seller',lat:43.289001,lon:41.619360}
+]},
+{id:'houses',name:L('Коттеджи','Cottages'),icon:'fa-house-chimney',ic:'icon-green',items:[
+{name:L('Лесной Дом Лодж','Near Shumka'),desc:L('Лодж на 4-6чел, Лесная аура 6-8чел домики в лесной зоне','Near waterfall'),contact:'89280283091',addr:'г. Теберда,переулок Родниковый 5 г.',tg:'https://t.me/edisherashwililodg',lat:43.419369,lon:41.737579},
+{name:L('Гризли Grizzly '),desc:L('Котеджи в центре Теберды на берегу озера Къара-кёль, ссылка на инстаграм в кнопке(тг)','Near waterfall'),contact:'89259430680',addr:'г. Теберда ул Ленина 40ж',tg:'https://www.instagram.com/grizzly.teberda?igsh=MWp6NWltMnQ4dno4cQ==',lat:43.438820,lon:41.743418,vk:'https://vk.ru/grizzzlyteberda'},
+{name:L('ЭКО Домики','Near Shumka'),desc:L('ЭКО Домики в Домбае','Near waterfall'),contact:'+7 928 260-59-22',addr:'г. Домбай, улица Спасателей 107А',tg:'https://t.me/dombayjile',lat:43.289841,lon:41.624274}
+]},
+{id:'guest',name:L('Гостевые дома','Guesthouses'),icon:'fa-house-user',ic:'icon-green',items:[
+{name:L('Гостевой дом Ковчег','Near Shumka'),desc:L('Ждем ваши заявки','Near waterfall'),contact:'89280281900',addr:'Теберда,Орджоникидзе 93 г. Теберда',tg:'https://t.me/teberdakovcheg',lat:43.419297,lon:41.735207},
+{name:L('Гостевой дом','Near Shumka'),desc:L('Ждем ваши заявки','Near waterfall'),contact:'89283815090',addr:'Улица Орджоникидзе дом 49б г. Теберда',tg:'https://www.avito.ru/teberda/doma_dachi_kottedzhi/6-k._dom_290_m_3518863042?utm_campaign=native&utm_medium=item_page_android&utm_source=soc_sharing_seller',lat:43.422283,lon:41.737076},
+{name:L('Вершина','Near Shumka'),desc:L('Гостевой дом в Теберде','Near waterfall'),contact:'8928 381 38 87',addr:'г.Теберда, ул.Ленина 25Д',tg:'https://www.instagram.com/za_rema8165?igsh=MWFweDk5ZmwwbTNsMg%3D%3D&utm_source=qr',lat:43.430324,lon:41.742744},
+{name:L('Кёль-Баши','Near Shumka'),desc:L('Гостевой дом в Теберде, вместимость до 6 человек','Near waterfall'),contact:'8928 912 77 03',addr:'г.Теберда, ул.Ленина 69',tg:'https://t.me/Zuhra_Ber',lat:43.420166,lon:41.737619},
+{name:L('Гостевой дом у Анжелики','Near Shumka'),desc:L('Дом в Домбае 3 этажа,7 минут до канатной дороги, вместимрсть 12-14 человек, комнаты расположены на 2ом и 3ем этажах','Near waterfall'),contact:'8996 524 97 77',addr:'п.Домбай,ул.Пихтовый мыс дом 23б/33',tg:'https://t.me/Anzhelika0520',lat:43.288977,lon:41.619427},
+{name:L('Гостевой Дом Family','Near Shumka'),desc:L('Гостевой дом в Домбае, яндекс карты точная ссылка в кнопке (тг)','Near waterfall'),contact:'89283940917',addr:'п. Домбай, ул. Карачаевская, 52' ,lat:43.293272,lon:41.628865,tg:'https://yandex.ru/maps/org/dombay_family/48106241744?si=dnqrby951881wrrjdufg2661yg'},
+{name:L('Гостевой дом у Заура','Near Shumka'),desc:L('Гостевой дом в Теберде, яндекс карты точная ссылка в кнопке (тг)','Near waterfall'),contact:'89380288091',addr:'г. Теберда, ул. Ленина 30' ,lat:43.440614,lon:41.741675,tg:'https://travel.yandex.ru/s/r9LauH'}
+]},
+{id:'vershina',name:L('Видовые апартаменты','Panoramic Apartments'),icon:'fa-building',ic:'icon-green',items:[
+{name:L('Видовые апартаменты "Вершина"','Panoramic Apartments "Vershina"'),desc:L('Панорамные апартаменты в самом центре поселка Домбай в 2 минутах от канатной дороги \nРядом с нами: рынок, зоопарк, боулинг, супермаркет Пятерочка, стоянка экскурсоводов.\nВ самом здании за доплату можно воспользоваться бассейнами (в том числе уличным), хаммам, кабинетом массажа, прокатом снаряжения , бильярдом и игровыми комнатами. Также у нас в доме один из лучших ресторанов Бизон, подземная и наземная парковка на закрытой территории \nЛучшие виды с окон на самых высоких этажах курорта ждут вас! Есть варианты размещения от 2 до 8 человек.','Panoramic apartments in the center of Dombay village, 2 minutes from the cable car \nNearby: market, zoo, bowling, Pyatyorochka supermarket.\nIn the building: pools, hammam, massage, ski rental , billiards, game rooms. Restaurant Bizon, underground and ground parking \nBest views from the highest floors! Accommodation for 2 to 8 people.'),contact:'89380350907',addr:L('Домбай, Карачаевская улица, 60','Dombay, Karachayevskaya st. 60'),lat:43.291848,lon:41.628133,gallery:'vershina'}
+]}
+]},
+cafe:{title:L('Кафе','Cafes'),icon:'fa-utensils',ic:'icon-pink',type:'s',items:[
+{name:L('Форелевое хозяйство "Озёрный"','Trout farm "Ozerniy"'),desc:L('Ловля+мангал, кафе','Fish+BBQ, cafe'),addr:'г. Теберда',lat:43.427754,lon:41.735392,tg:'https://t.me/baza_ozernyi'},
+{name:L('Кафе Томагавк','Cafe Tomahawk'),desc:L('Стейкхаус','Steakhouse'),addr:'г. Теберда, ул. Карачаевская 31',contact:'89259606666',lat:43.467746,lon:41.735504,tg:'https://steakhousetomahawk.tilda.ws/'},
+{name:L('Кафе БЕРЕКЕТ РЕСТО (УЮТ)"','Cafe BEREKET RESTO'),desc:L('Костровая зона, Качели, Беседка, Мангал','Fish+BBQ, cafe'),addr:'г. Теберда, ул. Ленина 21',contact:'+7 928 380 29 16',lat:43.433763,lon:41.743450,tg:'https://t.me/Asiyat2026'},
+{name:L('Катана Роллы"','Trout farm "katana"'),desc:L('График работы: 11:00-21:00 Только доставка. Ссылка меню в кнопке ТГ','Fish+BBQ, cafe'),addr:'г. Теберда',contact:'89283860222' ,tg:'https://wa.me/c/79283860222'},
+{name:'GreenHill',desc:L('Кафе в Домбае','Dombay cafe'),addr:L('Домбай','Dombay'),lat:43.290636,lon:41.626882},
+{name:'Столовая Домбай',desc:L('Столовая в Домбае, яндекс карты точная ссылка в кнопке (тг)','Dombay cafe'),addr:L('п. Домбай','Dombay') ,contact:'89283940917' ,lat:43.293272,lon:41.628865,tg:'https://yandex.ru/maps/org/dombay/115160048941?si=dnqrby951881wrrjdufg2661yg'},
+{name:'Тоти кафе "Старый мост"',desc:L('Кафе в Теберде','Dombay cafe'),addr:L('г. Теберда') ,contact:'89283844847' ,lat:43.443567,lon:41.740862},
+{name:L('Вкусные торты на заказ"','Trout farm "tort"'),desc:L('🎂Вкусные торты на заказ для незабываемых моментов! Каждый торт сделан с любовью и вниманием к деталям ♥️🥳Отметьте свои особенные события со вкусом!','Fish+BBQ, cafe'),addr:'г. Теберда',contact:'89993402319' ,tg:'https://t.me/bereketova'}
+]},
+shops:{title:L('Магазины','Shops'),icon:'fa-store',ic:'icon-blue',type:'s',items:[
+{name:L('Пятёрочка','Pyatyorochka'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.439617,lon:41.744564},
+{name:L('Магнит Центр','Magnit Center'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.439844,lon:41.743580},
+{name:L('Магазин Мега','Shop Mega'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.442056,lon:41.743790},
+{name:L('Магазин ЮГУ','Shop YuGU'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.430731,lon:41.739350},
+{name:L('Магнит на Мухе','Magnit Mukha'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.471838,lon:41.737683},
+{name:L('Магазин Горянка','Shop Goryanka'),desc:L('Продукты','Groceries'),addr:'г. Теберда',lat:43.474364,lon:41.743041},
+{name:L('Пятёрочка Домбай','Pyatyorochka Dombay'),desc:L('Продукты','Groceries'),addr:L('Домбай','Dombay'),lat:43.292606,lon:41.627900}
+]},
+guide:{title:L('Гиды','Guides'),icon:'fa-person-hiking',ic:'icon-teal',type:'s',items:[
+{name:L('Руслан Шаманов','Ruslan Shamanov'),desc:L('Гид, туризм','Guide, tourism'),contact:'89283851709',tg:'https://t.me/Shamanovturizm',vk:'https://vk.ru/shamanov_turizm'},
+{name:L('Квалифицированный гид-Хасан','Hasan'),desc:L('Экскурсии на все категорийные маршруты','Guide, tourism'),contact:'8928-382-04-55',tg:'https://t.me/Dombay_Hasan'}
+]},
+instructor:{title:L('Инструкторы','Instructors'),icon:'fa-helmet-safety',ic:'icon-orange',type:'s',items:[
+{name:L('Инструктор по горным лыжам Шамиль','Mountaineering'),desc:L('Сертификат','Certified'),contact:'89994345146'},
+{name:L('Инструктор Хасан','Hasan'),desc:L('Квалифицированный фрирайд гид, инструктор по сноутборду','Guide, tourism'),contact:'8928-382-04-55',tg:'https://t.me/Dombay_Hasan'}
+]},
+souvenirs:{title:L('Сувениры','Souvenirs'),icon:'fa-gift',ic:'icon-purple',type:'s',items:[
+{name:L('Сувениры','Souvenirs'),desc:L('Папахи, магниты','Papakhas'),contact:'00000',addr:'г. Теберда'}
+]},
+medpoint:{title:L('Медпункты','Medical'),icon:'fa-staff-snake',ic:'icon-red',type:'s',items:[
+{name:L('Амбулатория','Ambulatory'),desc:L('Домбай','Dombay'),addr:L('Домбай','Dombay'),lat:43.288870,lon:41.620404},
+{name:L('Участковая больница','District Hospital'),desc:'г. Теберда',addr:'г. Теберда',lat:43.448597,lon:41.745278}
+]},
+horse:{title:L('Конные','Horse riding'),icon:'fa-horse',ic:'icon-orange',type:'s',items:[
+{name:L('Конный прокат “Horse travel“','To waterfall'),desc:'Теберда, переулок Подгорный 10',contact:'89280333379',tg:'https://horse-travel.clients.site/',lat:43.443037,lon:41.746459}
+]},
+quad:{title:L('Квадроциклы','ATVs'),icon:'fa-motorcycle',ic:'icon-blue',type:'s',items:[
+{name:'ДомбайКвадро',desc:L('Квадроциклы, туры','ATVs, tours'),contact:'+79380294777',tg:'https://t.me/DombayKvadro'},
+{name:'Квадрики Ахмат',desc:L('Квадроциклы, туры','ATVs, tours'),contact:'89224683810',tg:'https://t.me/+H-n2cR9juPNkNTIy'}
+]},
+jeep:{title:L('Джипинг','Jeeping'),icon:'fa-truck-monster',ic:'icon-teal',type:'s',items:[
+{name:L('Туры в Домбай','Tours in Dombai'),desc:L('Джиппинг, экскурсии','Jeeping, tours'),contact:'+79887169156',tg:'https://t.me/tours_in_dombai'},
+{name:'Bert Travel',desc:L('Джипинг, туры','Jeeping, tours'),contact:'89897832525',tg:'https://t.me/BertTravel'},
+{name:L('Руслан Шаманов','Ruslan Shamanov'),desc:L('Гид, туризм','Guide, tourism'),contact:'89283851709',tg:'https://t.me/Shamanovturizm',vk:'https://vk.ru/shamanov_turizm'},
+{name:'Анатолий',desc:L('Эксскурсии и горный трансфер, УАЗ 8чел. ЗИЛ 22-25чел. ','Jeeping, tours'),contact:'89283922091',tg:'https://t.me/edisherashwililodg'},
+{name:'Каплан',desc:L('Джипинг, туры','Jeeping, tours'),contact:'89280259001'},
+{name:'Руслан',desc:L('Джипинг, туры. Руслан на 7 мест','Jeeping, tours'),contact:'89286573940'}
+]},
+forel:{title:L('Форель','Trout'),icon:'fa-fish',ic:'icon-cyan',type:'s',items:[
+{name:L('Форелевое хозяйство "Озёрный"','Trout farm "Ozerniy"'),desc:L('Ловля+мангал','Fish+BBQ'),addr:'г. Теберда',lat:43.427754,lon:41.735392,tg:'https://t.me/baza_ozernyi'}
+]},
+pvz:{title:L('ПВЗ','Pickup points'),icon:'fa-box',ic:'icon-purple',type:'s',items:[
+{name:'Wildberries',desc:L('Пункт выдачи Wildberries','Wildberries pickup point'),addr:'г. Теберда ул. Ленина 58а',contact:'+79283940672',lat:43.428460,lon:41.742187}
+]},
+transfer:{title:L('Трансфер','Transfer'),icon:'fa-car',ic:'icon-purple',type:'s',items:[
+{name:L('Такси: Трансфер Альберт','Taxi: Transfer Albert'),desc:'Теберда -Домбай - Архыз, и не только',contact:'89283882520'},
+{name:L('Такси: Трансфер Ислам','Taxi: Transfer'),desc:'Теберда -Домбай - Архыз, и не только',contact:'89298594699'},
+{name:L('Такси: Трансфер Шамиль','Taxi: Transfer'),desc:'Теберда -Домбай - Архыз, и не только',contact:'89280333353'},
+{name:L('Такси: Трансфер Руслан','Taxi: Transfer'),desc:'Теберда -Домбай - Архыз, и не только. Руслан  микроавтобус на 7 мест',contact:'89286573940'}
+]},
+banya:{title:L('Бани','Baths'),icon:'fa-hot-tub-person',ic:'icon-red',type:'s',items:[
+{name:L('Баня на дровах','Russian bath'),desc:L('Баня на дровах в Теберде Горная 72','Wood-fired'),contact:'89280310194',addr:'г. Теберда',lat:43.476219,lon:41.738459}
+]},
+pharmacy:{title:L('Аптеки','Pharmacy'),icon:'fa-prescription-bottle-medical',ic:'icon-cyan',type:'s',items:[
+{name:L('Аптека Апрель','April Pharmacy'),desc:L('Лекарства, режим работы с 8:00 до 20:00 Микро-район северный, рядм WB','Medicines'),addr:'г. Теберда',lat:43.473705,lon:41.742674},
+{name:L('Аптека Апрель','April Pharmacy'),desc:L('Лекарства, режим работы с 8:00 до 20:00 рядом с магнитом','Medicines'),addr:'г. Теберда',lat:43.471777,lon:41.737720},
+{name:L('Аптека Плюс','Pharmacy Plus'),desc:L('Лекарства, режим работы с 9:00 до 22:00','Medicines'),addr:'г. Теберда',lat:43.427253,lon:41.739677},
+{name:L('Апрель Домбай','April Dombay'),desc:L('Лекарства, режим работы с 8:00 до 20:00','Medicines'),addr:L('Домбай','Dombay'),lat:43.291837,lon:41.628036}
+]},
+lifts:{title:L('Канатки','Cable cars'),icon:'fa-cable-car',ic:'icon-cyan',type:'s',items:[
+{name:L('3012 м','3012m'),desc:L('Панорама','Panorama'),contact:'00000000000',addr:L('Домбай','Dombay')}
+]},
+fun:{title:L('Развлечения','Activities'),icon:'fa-parachute-box',ic:'icon-pink',type:'s',items:[
+{name:L('Параглайдинг','Paragliding'),desc:L('Полёт!','Flight!'),contact:'00000000000',addr:L('Домбай','Dombay')},
+{name:L('Рафтинг','Rafting'),desc:L('Сплав по реке','River rafting'),addr:'г. Теберда',contact:'8928000',lat:43.44,lon:41.74},
+{name:L('Параплан','Paraglider'),desc:L('Полёт на параплане','Paraglider flight'),addr:L('Домбай','Dombay'),contact:'8928000',lat:43.29,lon:41.63}
+]},
+webcams:{title:L('Веб-камеры','Webcams'),icon:'fa-video',ic:'icon-blue',type:'s',items:[
+{name:L('Веб-камера Теберда','Webcam Teberda'),desc:L('Онлайн трансляция','Live stream'),addr:'г. Теберда',tg:'http://webcam-online.net/cam/panorama-poselka-teberda-karachaevo-cherkesiya'},
+{name:L('Веб-камера Домбай 1','Webcam Dombay 1'),desc:L('Онлайн трансляция','Live stream'),addr:L('Домбай','Dombay'),tg:'https://public.ivideon.com/camera/100-h4V20DXJewrLRFXpabLpQQ:65536/'},
+{name:L('Веб-камера Домбай 2','Webcam Dombay 2'),desc:L('Онлайн трансляция','Live stream'),addr:L('Домбай','Dombay'),tg:'https://public.ivideon.com/camera/100-sHbH0FLLQUyeHcAyAVS22l:0/'}
+]},
+meat:{title:L('Мясные','Meat shops'),icon:'fa-drumstick-bite',ic:'icon-red',type:'s',items:[
+{name:L('Мясной магазин Казбек','Meat shop Kazbek'),desc:L('Мясная продукция','Meat products'),addr:'г. Теберда',contact:'892800',lat:43.427276,lon:41.740136},
+{name:L('Мясной','MYasnoy'),desc:L('Мясная продукция','Meat products'),addr:'г. Теберда',contact:'8929000',lat:43.473441,lon:41.741994}
+]},
+gas:{title:L('Заправки','Gas stations'),icon:'fa-gas-pump',ic:'icon-yellow',type:'s',items:[
+{name:'Max Energy',desc:L('АЗС','Gas station'),addr:'г. Теберда',lat:43.427241,lon:41.741973},
+{name:L('Роснефть','Rosneft'),desc:L('АЗС','Gas station'),addr:'г. Теберда',lat:43.482235,lon:41.745542},
+{name:L('АЗС','Gas station'),desc:L('Заправка','Fuel'),addr:'г. Теберда',lat:43.447678,lon:41.740719},
+{name:L('Электрозаправка','Gas station'),desc:L('Заправка','Fuel'),addr:'г. Теберда',lat:43.440648,lon:41.744199}
+]}
+}}
+
+const phrases=[
+{cat:'Приветствие',ce:'Greetings',items:[{ru:'Здравствуйте!',local:'Кюнюгюз ахшы болсун!',en:'Hello!'},{ru:'Привет!',local:'Салам!',en:'Hi!'},{ru:'Доброе утро!',local:'Ахшы ингир!',en:'Good morning!'},{ru:'Добрый вечер!',local:'Ахшы кеч!',en:'Good evening!'}]},
+{cat:'Благодарность',ce:'Gratitude',items:[{ru:'Спасибо!',local:'Сау бол!',en:'Thank you!'},{ru:'Большое спасибо!',local:'Кёп сау бол!',en:'Thank you very much!'},{ru:'Пожалуйста (в ответ)',local:'Хош келдинг!',en:'You\'re welcome!'}]},
+{cat:'Навигация',ce:'Navigation',items:[{ru:'Где это?',local:'...къайдады?',en:'Where is it?'},{ru:'Направо',local:'Онг жанына',en:'Right'},{ru:'Налево',local:'Сол жанына',en:'Left'},{ru:'Прямо',local:'Тюз бар',en:'Straight'},{ru:'Далеко?',local:'Узакъмы?',en:'Is it far?'},{ru:'Близко?',local:'Жууукъму?',en:'Is it close?'},{ru:'Дорога',local:'Жол',en:'Road'},{ru:'Река',local:'Суу',en:'River'}]},
+{cat:'Природа',ce:'Nature',items:[{ru:'Красиво!',local:'Ариу!',en:'Beautiful!'},{ru:'Гора',local:'Тау',en:'Mountain'},{ru:'Озеро',local:'Кёль',en:'Lake'},{ru:'Водопад',local:'Чучхур',en:'Waterfall'},{ru:'Лес',local:'Агъач',en:'Forest'},{ru:'Снег',local:'Къар',en:'Snow'},{ru:'Солнце',local:'Кюн',en:'Sun'},{ru:'Дождь',local:'Жангур',en:'Rain'},{ru:'Ветер',local:'Жел',en:'Wind'},{ru:'Холодно',local:'Сууукъ',en:'Cold'},{ru:'Тепло',local:'Жылы',en:'Warm'}]},
+{cat:'В кафе',ce:'At cafe',items:[{ru:'Хычин',local:'Хычын',en:'Khychin (flat pie)'},{ru:'Чай',local:'Чай',en:'Tea'},{ru:'Вода',local:'Суу',en:'Water'},{ru:'Хлеб',local:'Ётмек',en:'Bread'},{ru:'Мясо',local:'Эт',en:'Meat'},{ru:'Вкусно!',local:'Татлы!',en:'Delicious!'},{ru:'Счёт, пожалуйста',local:'Санау, тилейме',en:'Check, please'}]},
+{cat:'Числа',ce:'Numbers',items:[{ru:'Один',local:'Бир',en:'One'},{ru:'Два',local:'Эки',en:'Two'},{ru:'Три',local:'Юч',en:'Three'},{ru:'Пять',local:'Беш',en:'Five'},{ru:'Десять',local:'Он',en:'Ten'},{ru:'Сто',local:'Жюз',en:'Hundred'}]},
+{cat:'Экстренные',ce:'Emergency',items:[{ru:'Помогите!',local:'Болушугъуз!',en:'Help!'},{ru:'Вызовите врача!',local:'Доктор чакъырыгъыз!',en:'Call a doctor!'},{ru:'Мне плохо',local:'Мен аманмы',en:'I feel sick'}]},
+{cat:'Прощание',ce:'Farewell',items:[{ru:'До свидания!',local:'Сау къал!',en:'Goodbye!'},{ru:'Увидимся!',local:'Кёрюшюрбюз!',en:'See you!'},{ru:'Удачи!',local:'Насып болсун!',en:'Good luck!'}]}
+];
+
+const wC={
+teberda:{n:'Теберда',ne:'Teberda',lat:43.44,lon:41.74},
+dombay:{n:'Домбай',ne:'Dombay',lat:43.27,lon:41.62},
+arkhyz:{n:'Архыз',ne:'Arkhyz',lat:43.56,lon:41.28}
+};
+
+function wmo(c,d){
+const w={0:{d:L('Ясно','Clear'),i:d?'fa-sun':'fa-moon'},1:{d:L('Ясно','Clear'),i:d?'fa-sun':'fa-moon'},2:{d:L('Облачно','Cloudy'),i:d?'fa-cloud-sun':'fa-cloud-moon'},3:{d:L('Пасмурно','Overcast'),i:'fa-cloud'},45:{d:L('Туман','Fog'),i:'fa-smog'},51:{d:L('Морось','Drizzle'),i:'fa-cloud-rain'},61:{d:L('Дождь','Rain'),i:'fa-cloud-rain'},65:{d:L('Ливень','Heavy rain'),i:'fa-cloud-showers-heavy'},71:{d:L('Снег','Snow'),i:'fa-snowflake'},80:{d:L('Ливень','Showers'),i:'fa-cloud-showers-heavy'},95:{d:L('Гроза','Storm'),i:'fa-cloud-bolt'}};
+return w[c]||{d:L('Облачно','Cloudy'),i:'fa-cloud'}
+}
+function getAlert(c){
+if([95].includes(c))return{cls:'bad',text:'⚡ '+L('Гроза!','Storm!')};
+if([61,65,80].includes(c))return{cls:'warn',text:L('Дождевик ☔ ','Raincoat ☔ ')};
+if([71].includes(c))return{cls:'warn',text:L('Снег!','Snow!')};
+if([0,1,2].includes(c))return{cls:'good',text:L('Отлично ☀','Great ☀')};
+return null
+}
+
+function renderW(city,d,fc,live){
+const w=document.getElementById('ww');
+w.className=`weather-widget ${city==='teberda'?'tw':city==='dombay'?'dw':'aw'}`;
+w.style.opacity='0';
+setTimeout(()=>{
+document.getElementById('w-city').textContent=curLang==='en'?wC[city].ne:wC[city].n;
+document.getElementById('w-temp').innerHTML=`${Math.round(d.temp)}<span class="deg">°C</span>`;
+document.getElementById('w-desc').textContent=d.desc;
+document.getElementById('wico').className=`fas ${d.icon}`;
+document.getElementById('w-wind').textContent=`${d.wind} ${L('м/с','m/s')}`;
+document.getElementById('w-hum').textContent=`${d.hum}%`;
+document.getElementById('w-feel').textContent=`${Math.round(d.feels)}°`;
+const fr=document.getElementById('fc-row');
+if(fc?.length){
+const dn=curLang==='ru'?['Вс','Пн','Вт','Ср','Чт','Пт','Сб']:['Su','Mo','Tu','We','Th','Fr','Sa'];
+fr.innerHTML=fc.map(f=>{
+const dt=new Date(f.dt);
+const m=wmo(f.code,1);
+const clr=city==='teberda'?'var(--blue-glow)':city==='dombay'?'var(--orange-glow)':'var(--teal-glow)';
+return`<div class="fc-day"><div class="fc-name">${dn[dt.getDay()]}</div><i class="fas ${m.i}" style="color:${clr}"></i><div class="fc-temp">${Math.round(f.mx)}° <span>${Math.round(f.mn)}°</span></div></div>`
+}).join('')
+}
+const al=getAlert(d.code||0);
+const ae=document.getElementById('w-alert');
+if(al){ae.className=`weather-alert ${al.cls} show`;document.getElementById('w-alert-text').textContent=al.text}else ae.classList.remove('show');
+document.getElementById('w-status').innerHTML=live?`<div class="live"></div><span>${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} · Open-Meteo</span>`:`<div class="off"></div><span>${L('Кэш','Cache')}</span>`;
+w.style.opacity='1'
+},100)
+}
+
+async function fetchW(city){
+const c=wCache[city];
+if(c&&(Date.now()-c.t<300000)){renderW(city,c.data,c.fc,1);return}
+try{
+const{lat,lon}=wC[city];
+const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min&wind_speed_unit=ms&timezone=auto&forecast_days=5`);
+const j=await r.json();
+const cu=j.current;
+const m=wmo(cu.weather_code,cu.is_day===1);
+const data={temp:cu.temperature_2m,feels:cu.apparent_temperature,hum:cu.relative_humidity_2m,wind:Math.round(cu.wind_speed_10m*10)/10,desc:m.d,icon:m.i,code:cu.weather_code};
+const fc=j.daily?j.daily.time.slice(1).map((t,i)=>({dt:t,code:j.daily.weather_code[i+1],mx:j.daily.temperature_2m_max[i+1],mn:j.daily.temperature_2m_min[i+1]})):[];
+wCache[city]={data,fc,t:Date.now()};
+renderW(city,data,fc,1)
+}catch(e){
+renderW(city,{temp:12,feels:9,hum:70,wind:3,desc:'—',icon:'fa-cloud',code:3},[],0)
+}
+}
+
+function renderProgress(){
+const total=[...routes.teberda,...routes.dombay,...routes.arkhyz].length;
+const v=vis.length,pct=total?Math.round(v/total*100):0;
+document.getElementById('prog-pct').textContent=pct+'%';
+document.getElementById('prog-fill').style.width=pct+'%';
+document.getElementById('prog-v').textContent=v;
+document.getElementById('prog-t').textContent=total;
+document.getElementById('prog-f').textContent=favs.length;
+const achs=[{icon:'🏁',n:L('Новичок','Beginner'),need:1},{icon:'⛰',n:L('Опытный','Experienced'),need:10},{icon:'👑',n:L('Покоритель','Conqueror'),need:total}];
+document.getElementById('achievements').innerHTML=achs.map(a=>`<span class="achievement ${v>=a.need?'unlocked':'locked'}">${a.icon} ${a.n}</span>`).join('')
+}
+
+function setFilter(f){curFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));renderCards(curCity);haptic()}
+function setSort(s){curSort=s;if(s==='gps'&&!userLat)getGPS();document.querySelectorAll('.sort-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===s));renderCards(curCity);haptic()}
+function getFiltered(city){
+let l=[...routes[city]].filter(isRouteVisible);
+if(curFilter!=='all')l=l.filter(r=>r.dc===curFilter);
+if(curSort==='dist')l.sort((a,b)=>a.dn-b.dn);
+else if(curSort==='time')l.sort((a,b)=>a.tm-b.tm);
+else if(curSort==='gps'&&userLat){l.forEach(r=>r._gps=calcDist(userLat,userLon,r.lat,r.lon));l.sort((a,b)=>a._gps-b._gps)}
+return l
+}
+
+function shareRoute(id){
+const rt=[...routes.teberda,...routes.dombay,...routes.arkhyz].find(x=>x.id===id);
+if(!rt)return;
+const t=curLang==='en'?(rt.te||rt.title):rt.title;
+if(navigator.share)navigator.share({title:t,text:`${t}\n${rt.dist} · ${rt.elev}`}).catch(()=>{});
+haptic()
+}
+
+function toggleSvc(){
+svcOpen=!svcOpen;
+document.getElementById('svc-grid').classList.toggle('collapsed',!svcOpen);
+document.getElementById('svcArr').style.transform=svcOpen?'rotate(0)':'rotate(-90deg)'
+}
+
+function renderSvc(){
+const s=getManagedSvc();
+const keys=getManagedSvcKeys(s);
+document.getElementById('svcBadge').textContent=keys.length;
+document.getElementById('svc-grid').innerHTML=keys.map(k=>{
+const sv=s[k];
+return sv?`<div class="svc-item" onclick="openModal('${k}')"><div class="svc-ico ${sv.ic}"><i class="fas ${sv.icon}"></i></div><div class="svc-name">${sv.title}</div></div>`:''
+}).join('')
+}
+
+function openModal(key){
+const s=getManagedSvc()[key];
+if(!s)return;
+const mh=document.getElementById('mHead'),mb=document.getElementById('mBody');
+mh.innerHTML=`<div class="m-head-ico ${s.ic}"><i class="fas ${s.icon}"></i></div><h3>${s.title}</h3>`;
+if(s.type==='cat')mb.innerHTML='<div class="subcat-grid">'+s.subs.map(sub=>`<div class="subcat-item" onclick="event.stopPropagation();openSub('${key}','${sub.id}')"><div class="subcat-ico ${sub.ic}"><i class="fas ${sub.icon}"></i></div><div class="subcat-name">${sub.name}</div></div>`).join('')+'</div>';
+else mb.innerHTML=s.items.map(mkSC).join('');
+document.getElementById('svcModal').classList.add('show')
+}
+
+function openSub(key,sid){
+const s=getManagedSvc()[key],sub=s.subs.find(x=>x.id===sid);
+if(!sub)return;
+document.getElementById('mHead').innerHTML=`<div class="back-btn" onclick="openModal('${key}')"><i class="fas fa-arrow-left"></i> ${L('Назад','Back')}</div><div style="display:flex;align-items:center;gap:10px;margin-top:8px"><div class="m-head-ico ${sub.ic}"><i class="fas ${sub.icon}"></i></div><h3>${sub.name}</h3></div>`;
+document.getElementById('mBody').innerHTML=sub.items.map(mkSC).join('')
+}
+
+
+function mkSC(item){
+    let mapLink='';
+    if(item.lat && item.lon){mapLink=`<a class="map-link" href="https://yandex.ru/maps/?pt=${item.lon},${item.lat}&z=16&l=map" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-map-pin"></i> ${L('На карте','Map')}</a>`}
+    let tgLink='';
+    if(item.tg){tgLink=`<a class="tg-link" href="${item.tg}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-telegram"></i> Telegram</a>`}
+    let vkLink='';
+    if(item.vk){vkLink=`<a class="vk-link" href="${item.vk}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-vk"></i> VK</a>`}
+    
+    let photos = item.photos || (item.photo ? [item.photo] : []);
+    let photoHtml = '';
+    if(photos.length > 1) {
+        photoHtml = `<div class="s-card-photos">` + photos.map(p => `<img class="s-card-photo" src="${p}" onclick="event.stopPropagation();openImgViewer('${p}', ${JSON.stringify(photos).replace(/"/g, '&quot;')})">`).join('') + `</div>`;
+    } else if(photos.length === 1) {
+        photoHtml = `<img class="svc-photo" src="${photos[0]}" onclick="event.stopPropagation();openImgViewer('${photos[0]}', ['${photos[0]}'])">`;
+    }
+    
+    let galleryBtn='';
+    if(item.gallery==='vershina'){
+        galleryBtn=`<button class="call-btn" style="background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.1));color:var(--green-glow);border:1px solid rgba(34,197,94,.2);margin-top:6px" onclick="event.stopPropagation();openImgViewer(vershinaPhotos[0],vershinaPhotos)"><i class="fas fa-images"></i> ${L('Смотреть фото','View photos')} (${vershinaPhotos.length})</button>`
+    }
+    const priceHtml=item.price?`<div class="s-card-price" style="background:rgba(34,197,94,.1);color:var(--green-glow);border:1px solid rgba(34,197,94,.2);padding:5px 10px;border-radius:8px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px"><i class="fas fa-tag"></i>${item.price}</div>`:'';
+    return `<div class="s-card">${photoHtml}<div class="s-card-t" style="font-weight:800;font-size:15px;margin-bottom:5px">${item.name}</div>${priceHtml}<div class="s-card-d" style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);margin-bottom:10px">${(item.desc||'').replace(/\n/g,'<br>')}</div>${item.addr?`<div class="s-card-m loc"><i class="fas fa-map-pin"></i>${item.addr}</div>`:''}${item.contact?`<div class="s-card-m ph"><i class="fas fa-phone"></i>${item.contact}</div>`:''}${mapLink}${tgLink}${vkLink}${item.contact?`<button class="call-btn" onclick="event.stopPropagation();window.location.href='tel:${item.contact}'"><i class="fas fa-phone-alt"></i> ${L('Связаться','Contact')}</button>`:''}${galleryBtn}</div>`;
+}
+
+function closeModal(){document.getElementById('svcModal').classList.remove('show')}
+
+function openDetail(id){
+const rt=[...routes.teberda,...routes.dombay,...routes.arkhyz].find(x=>x.id===id);
+if(!rt)return;
+const city=routes.teberda.includes(rt)?'teberda':routes.dombay.includes(rt)?'dombay':'arkhyz';
+const title=curLang==='en'?(rt.te||rt.title):rt.title;
+const loc=city==='teberda'?L('Теберда','Teberda'):city==='dombay'?L('Домбай','Dombay'):L('Архыз','Arkhyz');
+const diff=curLang==='en'?rt.dfe:rt.diff;
+const isFav=favs.includes(rt.id),isVis=vis.includes(rt.id);
+const dd=DD[rt.id];
+const fullDesc=dd?(curLang==='en'?dd.en:dd.ru):(curLang==='en'?(rt.de||rt.desc):rt.desc);
+const adminGallery=(rt.gallery&&rt.gallery.length)?rt.gallery:((function(){try{var d=tdLoad();var rs=d.routeSettings&&d.routeSettings[rt.id];return rs&&Array.isArray(rs.gallery)?rs.gallery:[]}catch(e){return[]}})());const builtinPhotos=detailPhotos[rt.id]||[];const photos=[...builtinPhotos,...adminGallery.filter(p=>!builtinPhotos.includes(p))];
+const rStatus=getRouteStatus(rt);
+let tips=[];
+if(rt.dc==='easy')tips=[L('Для семей с детьми','For families'),L('Возьмите воду','Bring water'),L('Удобная обувь','Comfortable shoes')];
+else if(rt.dc==='medium')tips=[L('Треккинговая обувь','Trekking shoes'),L('1.5–2 л воды','1.5-2L water'),L('Выходите рано','Start early'),L('Дождевик','Rain jacket')];
+else tips=[L('Для подготовленных','For experienced'),L('Обувь и палки','Shoes and poles'),L('2+ л воды','2+L water'),L('Сообщите маршрут','Tell someone')];
+const dp=document.getElementById('detailPage');
+dp.innerHTML=`<div class="detail-hero">${rt.image?`<img src="${rt.image}" alt="${title}">`:`<div class="c-img-ph" style="height:100%"><i class="fas ${rt.icon}"></i></div>`}<button class="detail-back" onclick="closeDetail()"><i class="fas fa-arrow-left"></i></button></div><div class="detail-content"><div class="detail-title">${title}</div><div class="detail-loc"><i class="fas fa-location-dot"></i>${loc} · ${rt.elev}</div><div class="detail-tags">${routeStatusTag(rt)}<span class="tag t-${rt.dc}"><i class="fas fa-signal"></i>${diff}</span><span class="tag t-time"><i class="far fa-clock"></i>${rt.time}</span><span class="tag t-dist"><i class="fas fa-route"></i>${rt.dist}</span><span class="tag t-elev"><i class="fas fa-mountain"></i>${rt.elev}</span>${isVis?`<span class="tag t-easy"><i class="fas fa-check-circle"></i>${L('Посещено','Visited')}</span>`:''}</div><div class="detail-info-grid"><div class="detail-info-item"><i class="fas fa-route" style="color:var(--purple-glow)"></i><span class="detail-info-val">${rt.dist}</span><span class="detail-info-lbl">${L('Расстояние','Distance')}</span></div><div class="detail-info-item"><i class="far fa-clock" style="color:var(--blue-glow)"></i><span class="detail-info-val">${rt.time}</span><span class="detail-info-lbl">${L('Время','Duration')}</span></div><div class="detail-info-item"><i class="fas fa-mountain" style="color:var(--cyan-glow)"></i><span class="detail-info-val">${rt.elev}</span><span class="detail-info-lbl">${L('Высота','Elevation')}</span></div><div class="detail-info-item"><i class="fas fa-signal" style="color:${rt.dc==='easy'?'var(--green-glow)':rt.dc==='medium'?'var(--yellow-glow)':'var(--red-glow)'}"></i><span class="detail-info-val">${diff}</span><span class="detail-info-lbl">${L('Сложность','Difficulty')}</span></div></div><div class="detail-section"><div class="detail-section-title"><i class="far fa-clock"></i>${L('Режим и стоимость','Hours and price')}</div><div class="detail-text"><b>${rStatus.text}</b> · ${rt.openTime}–${rt.closeTime}<br><b>${L('Стоимость прохода','Entry price')}:</b> ${tdEsc(rt.routePrice||L('Не указано','Not specified'))}<br><b>${L('Что нужно','What to bring')}:</b> ${tdEsc(rt.routeNeeds||L('Не указано','Not specified'))}</div></div><div class="detail-section"><div class="detail-section-title"><i class="fas fa-info-circle"></i>${L('Описание','Description')}</div><div class="detail-text">${fullDesc.replace(/\n\n/g,'</p><p style="margin-top:10px">').replace(/\n/g,'<br>')}</div></div>${photos.length?`<div class="detail-section"><div class="detail-section-title"><i class="fas fa-images"></i>${L('Фотографии','Photos')} (${photos.length})</div><div class="detail-gallery-scroll" id="detGallery"></div></div>`:''}<div class="detail-section"><div class="detail-section-title"><i class="fas fa-lightbulb"></i>${L('Советы','Tips')}</div><div class="detail-tips">${tips.map(t=>`<div class="detail-tip"><i class="fas fa-check"></i><span>${t}</span></div>`).join('')}</div></div><div class="detail-actions"><button class="detail-map-btn" onclick="closeDetail();setTimeout(()=>showOnMap(${rt.lat},${rt.lon},'${title.replace(/'/g,"\\'")}'),300)"><i class="fas fa-map-location-dot"></i>${L('На карте','Map')}</button><button class="detail-fav-btn ${isFav?'active':''}" onclick="toggleFav('${rt.id}');openDetail('${rt.id}')"><i class="${isFav?'fas':'far'} fa-heart"></i></button></div><div class="detail-tg-btns"><a class="detail-tg-btn chat" href="${TG_CHAT}" target="_blank"><i class="fab fa-telegram"></i>${L('Чат','Chat')}</a><a class="detail-tg-btn news" href="${TG_NEWS}" target="_blank"><i class="fas fa-bullhorn"></i>${L('Новости','News')}</a></div><div class="detail-nav-btns"><button class="detail-nav-btn" onclick="window.open('https://www.google.com/maps?q=${rt.lat},${rt.lon}','_blank')"><i class="fab fa-google"></i>Google</button><button class="detail-nav-btn" onclick="window.open('https://2gis.ru/geo/${rt.lon},${rt.lat}','_blank')"><i class="fas fa-map-marked-alt"></i>2ГИС</button><button class="detail-nav-btn" onclick="window.open('https://yandex.ru/maps/?pt=${rt.lon},${rt.lat}&z=14','_blank')"><i class="fas fa-map"></i>${L('Яндекс','Yandex')}</button></div></div>`;
+if(photos.length){
+const gal=document.getElementById('detGallery');
+photos.forEach((p,i)=>{
+const div=document.createElement('div');
+div.className='detail-gallery-img';
+div.onclick=()=>openImgViewer(p,photos);
+const img=document.createElement('img');
+img.src=p;
+img.alt=title+' '+(i+1);
+img.loading='lazy';
+div.appendChild(img);
+gal.appendChild(div)
+})
+}
+dp.classList.add('open');
+dp.scrollTop=0;
+document.body.style.overflow='hidden';
+haptic()
+}
+
+function closeDetail(){document.getElementById('detailPage').classList.remove('open');document.body.style.overflow=''}
+
+function mkRoute(rt,city,i){
+const cls=city==='teberda'?'tc':city==='dombay'?'dc':'ac',isFav=favs.includes(rt.id),isVis=vis.includes(rt.id);
+const title=curLang==='en'?(rt.te||rt.title):rt.title;
+const desc=curLang==='en'?(rt.de||rt.desc):rt.desc;
+const diff=curLang==='en'?rt.dfe:rt.diff;
+const loc=city==='teberda'?L('Теберда','Teberda'):city==='dombay'?L('Домбай','Dombay'):L('Архыз','Arkhyz');
+const st=getRouteStatus(rt);
+const img=rt.image?`<img src="${rt.image}" alt="${title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'c-img-ph\\'><i class=\\'fas ${rt.icon||'fa-route'}\\'></i></div>'">`:`<div class="c-img-ph"><i class="fas ${rt.icon||'fa-route'}"></i></div>`;
+let gps='';
+if(userLat){const d=rt._gps||calcDist(userLat,userLon,rt.lat,rt.lon);gps=`<div class="gps-distance"><i class="fas fa-location-crosshairs"></i>${d.toFixed(1)} ${L('км','km')}</div>`}
+return`<div class="rc ${cls} ${isVis?'visited':''} ${st.open?'route-open':'route-closed'}" style="animation-delay:${i*.05+.03}s" onclick="openDetail('${rt.id}')"><div class="c-img">${img}${routeStatusBadge(rt)}<button class="share-btn" onclick="event.stopPropagation();shareRoute('${rt.id}')"><i class="fas fa-share-alt"></i></button><button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${rt.id}')"><i class="${isFav?'fas':'far'} fa-heart"></i></button><div class="v-badge"><i class="fas fa-check-circle"></i> ${L('Был','Visited')}</div></div><div class="c-body"><div class="c-head"><div class="c-ico-w"><i class="fas ${rt.icon||'fa-route'}"></i></div><div><div class="c-title">${title}</div><div class="c-loc"><i class="fas fa-location-dot"></i>${loc}</div>${gps}${routeHoursLine(rt)}</div></div><div class="c-desc">${desc}</div><div class="c-tags"><span class="tag t-${rt.dc}"><i class="fas fa-signal"></i>${diff}</span><span class="tag t-time"><i class="far fa-clock"></i>${rt.time}</span><span class="tag t-dist"><i class="fas fa-route"></i>${rt.dist}</span><span class="tag t-elev"><i class="fas fa-mountain"></i>${rt.elev}</span>${routeExtraGrid(rt)}</div><div class="c-acts"><button class="map-btn" onclick="event.stopPropagation();showOnMap(${rt.lat||43.38},${rt.lon||41.72},'${title.replace(/'/g,"\\'")}')"><i class="fas fa-map-location-dot"></i>${L('На карте','Map')}</button><button class="vis-btn ${isVis?'active':''}" onclick="event.stopPropagation();toggleVis('${rt.id}')"><i class="fas fa-check"></i></button></div><div class="tg-btns"><a class="tg-ext-btn chat-btn" href="${TG_CHAT}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-telegram"></i>${L('Чат','Chat')}</a><a class="tg-ext-btn news-btn" href="${TG_NEWS}" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-bullhorn"></i>${L('Новости','News')}</a></div></div></div>`
+}
+
+function renderCards(city){
+const list=getFiltered(city);
+document.getElementById('cards').innerHTML=list.length?list.map((rt,i)=>mkRoute(rt,city,i)).join(''):`<div style="text-align:center;padding:40px;color:var(--text-muted)">—</div>`;
+document.getElementById('cnt-text').innerHTML=`<span class="count">${list.length}</span> ${L('маршрутов','routes')}`
+}
+
+function switchTab(city){
+if(curCity===city)return;
+haptic();
+document.querySelectorAll('.rc').forEach((c,i)=>{c.style.animationDelay=`${i*.03}s`;c.classList.add('card-leaving')});
+document.getElementById('tab-t').className='tab-btn'+(city==='teberda'?' at':'');
+document.getElementById('tab-d').className='tab-btn'+(city==='dombay'?' ad':'');
+document.getElementById('tab-a').className='tab-btn'+(city==='arkhyz'?' aa':'');
+curCity=city;
+fetchW(city);
+setTimeout(()=>{
+renderCards(city);
+const l=document.getElementById('city-lbl');
+l.style.color=city==='teberda'?'var(--blue-glow)':city==='dombay'?'var(--orange-glow)':'var(--teal-glow)';
+l.innerHTML=`<i class="fas fa-location-dot"></i> ${city==='teberda'?L('Теберда','Teberda'):city==='dombay'?L('Домбай','Dombay'):L('Архыз','Arkhyz')}`
+},250)
+}
+
+function toggleFav(id){
+const i=favs.indexOf(id);
+if(i>=0)favs.splice(i,1);else favs.push(id);
+localStorage.setItem('fav',JSON.stringify(favs));
+updFB();
+renderCards(curCity);
+renderProgress();
+if(curPage==='page-fav')renderFavs();
+haptic();
+showToast(i>=0?L('Убрано','Removed'):L('❤ Добавлено','❤ Added'),'fa-heart')
+}
+function updFB(){
+const b=document.getElementById('fav-badge');
+if(favs.length){b.style.display='flex';b.textContent=favs.length}else b.style.display='none'
+}
+
+function renderFavs(){
+const l=document.getElementById('fav-list');
+const all=[...routes.teberda,...routes.dombay,...routes.arkhyz].filter(r=>favs.includes(r.id)&&isRouteVisible(r));
+if(!all.length){
+l.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-muted)"><i class="far fa-heart" style="font-size:40px;display:block;margin-bottom:10px"></i>${L('Нажмите ❤','Tap ❤')}</div>`;
+return
+}
+l.innerHTML='<div class="cards">'+all.map((rt,i)=>{
+const c=routes.teberda.includes(rt)?'teberda':routes.dombay.includes(rt)?'dombay':'arkhyz';
+return mkRoute(rt,c,i)
+}).join('')+'</div>'
+}
+
+function toggleVis(id){
+const i=vis.indexOf(id);
+if(i>=0)vis.splice(i,1);else vis.push(id);
+localStorage.setItem('vis',JSON.stringify(vis));
+renderCards(curCity);
+renderProgress();
+haptic();
+showToast(i>=0?L('Убрано','Removed'):L('✓ Отмечено','✓ Marked'),'fa-check-circle')
+}
+
+function renderTransport(){
+document.getElementById('transport-list').innerHTML=transportData.map(tr=>`<div class="transport-card"><div class="t-header"><div class="t-ico ${tr.ic}"><i class="fas ${tr.icon}"></i></div><div><div class="t-title">${curLang==='en'?tr.re:tr.route}</div><div class="t-sub">${curLang==='en'?tr.dre:tr.dur} · ${tr.price}</div></div></div>${tr.times.map(t=>`<div class="t-row"><span class="t-row-route"><i class="far fa-clock" style="margin-right:4px;color:var(--text-muted)"></i>${t}</span><span class="t-row-price">${tr.price}</span></div>`).join('')}</div>`).join('')
+}
+function renderPhrases(){
+document.getElementById('phrase-list').innerHTML=phrases.map(cat=>`<div class="phrase-cat"><i class="fas fa-comment-dots" style="color:var(--cyan-glow)"></i>${curLang==='en'?(cat.ce||cat.cat):cat.cat}</div>`+cat.items.map(p=>`<div class="phrase-card"><div class="phrase-ru">${curLang==='en'?p.en:p.ru}</div><div class="phrase-local">${p.local}</div></div>`).join('')).join('')
+}
+
+function initYaMap(){
+if(yaMap)return;
+if(!window.ymaps){
+const s=document.createElement('script');
+s.src='https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+s.onload=()=>ymaps.ready(createMap);
+document.head.appendChild(s)
+}else if(!yaMap)ymaps.ready(createMap)
+}
+function createMap(){
+if(yaMap)return;
+yaMap=new ymaps.Map('ya-map',{center:[43.38,41.72],zoom:10,controls:['zoomControl']},{suppressMapOpenBlock:true});
+addMarkers()
+}
+
+function addMarkers(){
+if(!yaMap)return;
+yaMap.geoObjects.removeAll();
+[
+...routes.teberda.map(r=>({...r,city:'teberda'})),
+...routes.dombay.map(r=>({...r,city:'dombay'})),
+...routes.arkhyz.map(r=>({...r,city:'arkhyz'}))
+].filter(isRouteVisible).forEach(rt=>{
+const v=vis.includes(rt.id);
+const hl=highlightedRoute&&highlightedRoute.lat===rt.lat&&highlightedRoute.lon===rt.lon;
+const color=v?'#22c55e':(rt.city==='teberda'?'#3b82f6':rt.city==='dombay'?'#f97316':'#14b8a6');
+const title=curLang==='en'?(rt.te||rt.title):rt.title;
+yaMap.geoObjects.add(new ymaps.Placemark([rt.lat,rt.lon],{balloonContentHeader:`<b>${title}</b>`,balloonContentBody:`${rt.dist} · ${rt.elev}`,hintContent:title},{preset:hl?'islands#redCircleDotIcon':'islands#circleIcon',iconColor:hl?'#ef4444':color}))
+});
+if(userLat)yaMap.geoObjects.add(new ymaps.Placemark([userLat,userLon],{hintContent:'📍'},{preset:'islands#geolocationIcon'}))
+}
+
+function showOnMap(lat,lon,title){
+highlightedRoute={lat,lon};
+goPage('page-map');
+setTimeout(()=>{
+if(!yaMap){
+initYaMap();
+setTimeout(()=>{if(yaMap){addMarkers();yaMap.setCenter([lat,lon],14,{duration:300})}},1200)
+}else{
+yaMap.container.fitToViewport();
+setTimeout(()=>{addMarkers();yaMap.setCenter([lat,lon],14,{duration:300})},200)
+}
+showToast(title,'fa-map-pin')
+},300)
+}
+
+let searchTimer=null;
+function debounceSearch(val){clearTimeout(searchTimer);searchTimer=setTimeout(()=>handleSearch(val),200)}
+
+function handleSearch(val){
+const cl=document.getElementById('searchClear'),rs=document.getElementById('searchResults');
+if(!val.trim()){cl.style.display='none';rs.classList.remove('show');return}
+cl.style.display='flex';
+const q=val.toLowerCase();
+let found=[];
+[...routes.teberda,...routes.dombay,...routes.arkhyz].forEach(rt=>{
+const title=curLang==='en'?(rt.te||rt.title):rt.title;
+if(title.toLowerCase().includes(q)||rt.desc.toLowerCase().includes(q))found.push({t:title,s:(curLang==='en'?rt.dfe:rt.diff)+' · '+rt.dist,i:rt.icon,c:'icon-blue',a:`openDetail('${rt.id}')`})
+});
+rs.innerHTML=found.length?found.slice(0,8).map(f=>`<div class="sr-item" onclick="${f.a};clearSearch()"><div class="sr-icon ${f.c}"><i class="fas ${f.i}"></i></div><div class="sr-info"><div class="sr-title">${f.t}</div><div class="sr-sub">${f.s}</div></div></div>`).join(''):`<div style="padding:16px;text-align:center;color:var(--text-muted)">—</div>`;
+rs.classList.add('show')
+}
+
+function clearSearch(){
+document.getElementById('searchInput').value='';
+document.getElementById('searchClear').style.display='none';
+document.getElementById('searchResults').classList.remove('show')
+}
+
+function goPage(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav-i').forEach(n=>n.classList.toggle('active',n.dataset.p===id));
+curPage=id;
+haptic();
+if(id==='page-fav')renderFavs();
+if(id==='page-transport')renderTransport();
+if(id==='page-map')setTimeout(()=>{initYaMap();if(yaMap){yaMap.container.fitToViewport();addMarkers()}},300);
+window.scrollTo({top:0,behavior:'smooth'})
+}
+
+function showToast(text,icon='fa-check-circle'){
+const t=document.getElementById('toast');
+document.getElementById('t-txt').textContent=text;
+document.getElementById('t-ico').className=`fas ${icon}`;
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),2400)
+}
+
+function renderAll(){
+    // Загружаем данные с сервера и пересобираем
+    loadServerData().then(() => {
+        applyAdminDataToRoutes();
+        renderSvc();
+        renderCards(curCity);
+        renderProgress();
+    });
+    renderPhrases();
+    renderTransport();
+    updFB();
+    updateUI()
+}
+
+// Загружаем данные с сервера при старте
+loadServerData().then(() => {
+    applyAdminDataToRoutes();
+    renderAll();
+});
+
+// Обновляем погоду
+fetchW('teberda');
+setInterval(()=>fetchW(curCity),300000);
+
+// Периодически проверяем обновления с сервера
+setInterval(() => {
+    loadServerData().then(ok => {
+        if (ok && serverData) {
+            applyAdminDataToRoutes();
+            renderSvc();
+            renderCards(curCity);
+        }
+    });
+}, 60000); // Каждую минуту
+
+let tx=0;
+document.addEventListener('touchstart',e=>{
+if(document.getElementById('detailPage').classList.contains('open')||document.getElementById('imgViewer').classList.contains('show'))return;
+tx=e.changedTouches[0].screenX
+},{passive:1});
+document.addEventListener('touchend',e=>{
+if(document.getElementById('detailPage').classList.contains('open')||document.getElementById('imgViewer').classList.contains('show'))return;
+const d=tx-e.changedTouches[0].screenX;
+if(Math.abs(d)>80){
+if(d>0&&curCity==='teberda')switchTab('dombay');
+else if(d>0&&curCity==='dombay')switchTab('arkhyz');
+else if(d<0&&curCity==='arkhyz')switchTab('dombay');
+else if(d<0&&curCity==='dombay')switchTab('teberda')
+}
+},{passive:1});
+
+document.getElementById('svcModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrapper'))document.getElementById('searchResults').classList.remove('show')});
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fdd9ab0cfa2e953',t:'MTc3OTEzNjA2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fe5eb494cf12e09',t:'MTc3OTIyMzI1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
