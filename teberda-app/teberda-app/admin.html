@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Админка — Теберда & Домбай</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>
+*{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0a0e1a;--card:#111827;--card2:#151a28;--line:rgba(255,255,255,.10);--text:#f1f5f9;--muted:#94a3b8;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--purple:#8b5cf6;--cyan:#06b6d4;--shadow:0 8px 32px rgba(0,0,0,.4)}body{font-family:-apple-system,'SF Pro Display','Segoe UI',sans-serif;background:radial-gradient(ellipse 600px 400px at 20% 10%,rgba(59,130,246,.08),transparent 60%),var(--bg);color:var(--text);min-height:100vh;padding:14px 12px 40px}.app{max-width:820px;margin:0 auto}.head{position:sticky;top:0;z-index:20;margin:-14px -12px 14px;padding:16px 12px;background:rgba(10,14,26,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.head-in{max-width:820px;margin:auto;display:flex;justify-content:space-between;gap:12px;align-items:center}.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;font-size:22px}h1{font-size:21px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:13px;padding:10px 12px;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:linear-gradient(135deg,var(--blue),var(--purple))}.btn.good{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.3);color:#86efac}.btn.bad{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.3);color:#fca5a5}.btn.warn{background:rgba(234,179,8,.13);border-color:rgba(234,179,8,.3);color:#fde68a}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.tab.active{background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(139,92,246,.14));border-color:rgba(96,165,250,.38)}.notice{background:linear-gradient(135deg,rgba(234,179,8,.13),rgba(234,179,8,.05));border:1px solid rgba(234,179,8,.25);color:#fde68a;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.45;margin-bottom:12px}.card{background:linear-gradient(180deg,rgba(17,24,39,.94),rgba(15,23,42,.94));border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin-bottom:11px;overflow:hidden}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.title{font-weight:900;font-size:16px;line-height:1.25}.meta{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin:0 0 5px 3px}input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px 11px;outline:none;font:inherit;font-size:13px}textarea{min-height:82px;resize:vertical}option{background:#111827;color:#fff}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.badge{border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:12px;font-weight:900;white-space:nowrap}.badge.open,.badge.approved{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.34);color:#86efac}.badge.closed,.badge.declined{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.34);color:#fca5a5}.badge.new{background:rgba(59,130,246,.14);border-color:rgba(59,130,246,.34);color:#93c5fd}.formbox{display:none}.formbox.show{display:block}.locked{opacity:.65}.hint{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}.photo{width:100%;max-height:200px;object-fit:cover;border-radius:14px;border:1px solid var(--line);margin-top:10px}.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);opacity:0;background:rgba(15,23,42,.96);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:11px 15px;z-index:99;transition:.22s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.empty{text-align:center;color:var(--muted);padding:35px 8px}.server-status{position:fixed;top:14px;right:12px;padding:6px 10px;border-radius:8px;font-size:11px;z-index:100}.server-status.online{background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.3)}.server-status.offline{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}@media(max-width:620px){.grid{grid-template-columns:1fr}.head-in{align-items:flex-start}.actions .btn{flex:1}h1{font-size:18px}}
+</style></head><body>
+<div id="serverStatus" class="server-status offline">⚡ Сохранение: локально</div>
+<div class="head"><div class="head-in"><div style="display:flex;align-items:center;gap:11px"><div class="logo"><i class="fas fa-user-shield"></i></div><div><h1>Админка</h1><div class="sub">Маршруты, категории, услуги, заявки</div></div></div><a class="btn" href="index.html"><i class="fas fa-eye"></i> Сайт</a></div></div><main class="app"><div class="notice" id="modeNotice"><b>Серверный режим:</b> изменения сохраняются на сервере. Данные доступны с любого устройства.</div><div class="tabs"><button class="btn tab active" data-tab="routes" onclick="showTab('routes')"><i class="fas fa-route"></i> Маршруты</button><button class="btn tab" data-tab="services" onclick="showTab('services')"><i class="fas fa-briefcase"></i> Услуги</button><button class="btn tab" data-tab="cats" onclick="showTab('cats')"><i class="fas fa-layer-group"></i> Категории</button><button class="btn tab" data-tab="requests" onclick="showTab('requests')"><i class="fas fa-inbox"></i> Заявки</button></div>
+<section id="routesPage"><button class="btn primary" onclick="newRoute()"><i class="fas fa-plus"></i> Добавить маршрут</button><div id="routeForm" class="card formbox"></div><div id="routesList"></div></section>
+<section id="servicesPage" style="display:none"><button class="btn primary" onclick="newService()"><i class="fas fa-plus"></i> Добавить услугу самому</button><div id="serviceForm" class="card formbox"></div><div id="servicesList"></div></section>
+<section id="catsPage" style="display:none"><button class="btn primary" onclick="newCat()"><i class="fas fa-plus"></i> Добавить категорию</button><div id="catForm" class="card formbox"></div><div id="catsList"></div></section>
+<section id="requestsPage" style="display:none"><div id="requestsList"></div></section></main><div class="toast" id="toast"></div><script>
+// ===== СЕРВЕРНАЯ СИНХРОНИЗАЦИЯ =====
+const SERVER_URL = ''; // Пусто = локальный режим. Введите '/api/' для серверного режима
+let serverConnected = false;
+
+async function checkServer() {
+    if (!SERVER_URL) {
+        updateServerStatus(false);
+        return false;
+    }
+    try {
+        const res = await fetch(SERVER_URL + 'sync.php?type=ping');
+        const json = await res.json();
+        if (json.status === 'ok') {
+            serverConnected = true;
+            updateServerStatus(true);
+            return true;
+        }
+    } catch(e) {}
+    serverConnected = false;
+    updateServerStatus(false);
+    return false;
+}
+
+function updateServerStatus(online) {
+    const el = document.getElementById('serverStatus');
+    if (online) {
+        el.className = 'server-status online';
+        el.innerHTML = '✓ Сохранение: сервер';
+    } else {
+        el.className = 'server-status offline';
+        el.innerHTML = '⚡ Сохранение: локально';
+    }
+}
+
+async function loadFromServer() {
+    if (!SERVER_URL || !serverConnected) return null;
+    try {
+        const res = await fetch(SERVER_URL + 'sync.php?type=load');
+        return await res.json();
+    } catch(e) { return null; }
+}
+
+async function saveToServer(type, data) {
+    if (!SERVER_URL || !serverConnected) return false;
+    try {
+        const res = await fetch(SERVER_URL + 'sync.php?type=' + type, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        return json.success === true;
+    } catch(e) { return false; }
+}
+
+// ===== ОРИГИНАЛЬНЫЙ КОД =====
+const TD_STORE_KEY='teberdaDombayAdmin_v4';
+const BUILTIN_ROUTES=[{"id": "t1", "city": "teberda", "title": "Бадукские озёра", "desc": "Три горных озера с бирюзовой водой на 2000 м.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "6–7 ч", "tm": 360, "dist": "9 км", "dn": 9.0, "elev": "2000 м \"туда и обратно\"", "lat": 43.37568, "lon": 41.694388, "builtin": true}, {"id": "t2", "city": "teberda", "title": "Водопад Шумка", "desc": "12-метровый водопад в ущелье.", "icon": "fa-droplet", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1.5–2 ч", "tm": 90, "dist": "3 км", "dn": 3.0, "elev": "1523 м \"туда и обратно\"", "lat": 43.409945, "lon": 41.730354, "builtin": true}, {"id": "t3", "city": "teberda", "title": "Озеро Кара-Кёль", "desc": "Тёмно-изумрудное озеро, пляж, катамараны.", "icon": "fa-water-ladder", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "2–3 ч", "tm": 120, "dist": "1 км", "dn": 1.0, "elev": "1350 м \"туда и обратно\"", "lat": 43.436962, "lon": 41.743489, "builtin": true}, {"id": "t4", "city": "teberda", "title": "Джамагатские нарзаны", "desc": "Минеральные источники, вид на Эльбрус.", "icon": "fa-glass-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "5–6 ч", "tm": 300, "dist": "12 км", "dn": 12.0, "elev": "1813 м \"туда и обратно\"", "lat": 43.467064, "lon": 41.777785, "builtin": true}, {"id": "t5", "city": "teberda", "title": "Шоанинский храм", "desc": "Храм X века на горе Шоана.", "icon": "fa-church", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "2–3 ч", "tm": 120, "dist": "3 км", "dn": 3.0, "elev": "1100 м \"туда и обратно\"", "lat": 43.804355, "lon": 41.889815, "builtin": true}, {"id": "t6", "city": "teberda", "title": "Лысая гора-Барадинское ущелье", "desc": "Панорама на Тебердинскую долину.", "icon": "fa-mountain-sun", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "3–4 ч", "tm": 180, "dist": "6 км", "dn": 6.0, "elev": "1600 м \"туда и обратно\"", "lat": 43.469126, "lon": 41.713335, "builtin": true}, {"id": "t7", "city": "teberda", "title": "Ущелье Азгек", "desc": "Живописное ущелье с озёрами.", "icon": "fa-mountain", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "6–7 ч", "tm": 360, "dist": "14 км", "dn": 14.0, "elev": "2600 м \"туда и обратно\"", "lat": 43.467291, "lon": 41.673039, "builtin": true}, {"id": "t8", "city": "teberda", "title": "Мухинское ущелье-Барадинское ущелье", "desc": "Тихое ущелье с нарзанами.", "icon": "fa-tree", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "4–5 ч", "tm": 240, "dist": "10 км", "dn": 10.0, "elev": "1800 м \"туда и обратно\"", "lat": 43.475824, "lon": 41.677457, "builtin": true}, {"id": "t9", "city": "teberda", "title": "Тебердинский заповедник", "desc": "Вольеры с зубрами, музей природы.", "icon": "fa-leaf", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "2–3 ч", "tm": 120, "dist": "2 км", "dn": 2.0, "elev": "1300 м \"туда и обратно\"", "lat": 43.443471, "lon": 41.738464, "builtin": true}, {"id": "t10", "city": "teberda", "title": "Водопад Мужские слёзы", "desc": "Живописный водопад у дороги.", "icon": "fa-droplet", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1 ч", "tm": 60, "dist": "1 км", "dn": 1.0, "elev": "1400 м \"туда и обратно\"", "lat": 43.442662, "lon": 41.746635, "builtin": true}, {"id": "t11", "city": "teberda", "title": "Чёртов замок", "desc": "Скальное образование с панорамой.", "icon": "fa-chess-rook", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "3–4 ч", "tm": 200, "dist": "5 км", "dn": 5.0, "elev": "1800 м \"туда и обратно\"", "lat": 43.41641, "lon": 41.766546, "builtin": true}, {"id": "t12", "city": "teberda", "title": "Озеро Шобайдак", "desc": "Высокогорное озеро в скалах.", "icon": "fa-water", "diff": "Сложная", "dfe": "Hard", "dc": "hard", "time": "8–9 ч", "tm": 480, "dist": "16 км", "dn": 16.0, "elev": "2700 м \"туда и обратно\"", "lat": 43.446197, "lon": 41.628748, "builtin": true}, {"id": "t13", "city": "teberda", "title": "Медная пещера", "desc": "Карстовая пещера со сталактитами.", "icon": "fa-dungeon", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "3–4 ч", "tm": 200, "dist": "6 км", "dn": 6.0, "elev": "1600 м \"туда и обратно\"", "lat": 43.481187, "lon": 41.704569, "builtin": true}, {"id": "t14", "city": "teberda", "title": "Сентинский храм", "desc": "Аланский храм X века.", "icon": "fa-church", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "2–3 ч", "tm": 120, "dist": "4 км", "dn": 4.0, "elev": "1200 м \"туда и обратно\"", "lat": 43.636784, "lon": 41.865585, "builtin": true}, {"id": "t15", "city": "teberda", "title": "Сырные пещеры", "desc": "Пещеры с сыроварней.", "icon": "fa-cheese", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1–2 ч", "tm": 90, "dist": "2 км", "dn": 2.0, "elev": "1400 м \"туда и обратно\"", "lat": 43.773987, "lon": 41.9788, "builtin": true}, {"id": "t16", "city": "teberda", "title": "Перевал Гум-Баши", "desc": "Высочайший автоперевал КЧР.", "icon": "fa-road", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "Весь день", "tm": 600, "dist": "80 км", "dn": 80.0, "elev": "2144 м \"туда и обратно\"", "lat": 43.776541, "lon": 42.185752, "builtin": true}, {"id": "t17", "city": "teberda", "title": "Плато Бермамыт", "desc": "Грандиозное плато, вид на Эльбрус.", "icon": "fa-panorama", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "Весь день", "tm": 600, "dist": "80 км", "dn": 80.0, "elev": "2592 м \"туда и обратно\"", "lat": 43.711164, "lon": 42.442134, "builtin": true}, {"id": "t18", "city": "teberda", "title": "Красный мост", "desc": "Исторический мост через Теберду.", "icon": "fa-bridge", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1 ч", "tm": 30, "dist": "0.5 км", "dn": 0.5, "elev": "1300 м \"туда и обратно\"", "lat": 43.480382, "lon": 41.747908, "builtin": true}, {"id": "d1", "city": "dombay", "title": "Алибекский ледник", "desc": "Доступный ледник Кавказа.", "icon": "fa-igloo", "diff": "Сложная", "dfe": "Hard", "dc": "hard", "time": "6–7 ч", "tm": 360, "dist": "14 км", "dn": 14.0, "elev": "2750 м \"туда и обратно\"", "lat": 43.282116, "lon": 41.528415, "builtin": true}, {"id": "d2", "city": "dombay", "title": "Алибекский водопад", "desc": "25-метровый водопад.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "4–5 ч", "tm": 240, "dist": "10 км", "dn": 10.0, "elev": "2100 м \"туда и обратно\"", "lat": 43.298694, "lon": 41.555962, "builtin": true}, {"id": "d3", "city": "dombay", "title": "Чучхурский водопад", "desc": "Трёхкаскадный водопад 250 м.", "icon": "fa-tornado", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "4–5 ч", "tm": 240, "dist": "10 км", "dn": 10.0, "elev": "2200 м \"туда и обратно\"", "lat": 43.265671, "lon": 41.693515, "builtin": true}, {"id": "d4", "city": "dombay", "title": "Гора Мусса-Ачитара", "desc": "Канатка на 3012 м, панорама.", "icon": "fa-mountain", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "3–4 ч", "tm": 180, "dist": "2 км", "dn": 2.0, "elev": "3012 м \"туда и обратно\"", "lat": 43.299598, "lon": 41.663371, "builtin": true}, {"id": "d5", "city": "dombay", "title": "Туманное озеро", "desc": "Озеро в Гоначхирском ущелье.", "icon": "fa-cloud", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "5–6 ч", "tm": 300, "dist": "8 км", "dn": 8.0, "elev": "1850 м \"туда и обратно\"", "lat": 43.284774, "lon": 41.792484, "builtin": true}, {"id": "d6", "city": "dombay", "title": "Тарелка Домбай", "desc": "Культовое кафе-тарелка.", "icon": "fa-burger", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "2–3 ч", "tm": 120, "dist": "1 км", "dn": 1.0, "elev": "2250 м \"туда и обратно\"", "lat": 43.295052, "lon": 41.652997, "builtin": true}, {"id": "d7", "city": "dombay", "title": "Ущелье Аманауз", "desc": "Узкое ущелье с водопадом.", "icon": "fa-mountain", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "3–4 ч", "tm": 200, "dist": "6 км", "dn": 6.0, "elev": "1900 м \"туда и обратно\"", "lat": 43.26458, "lon": 41.612602, "builtin": true}, {"id": "d8", "city": "dombay", "title": "Чёртова мельница", "desc": "Мощный водопад в каньоне.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "2–3 ч", "tm": 150, "dist": "4 км", "dn": 4.0, "elev": "1800 м \"туда и обратно\"", "lat": 43.273465, "lon": 41.616407, "builtin": true}, {"id": "d9", "city": "dombay", "title": "Суфруджинские водопады", "desc": "Два грандиозных водопада.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "5–6 ч", "tm": 300, "dist": "10 км", "dn": 10.0, "elev": "2400 м \"туда и обратно\"", "lat": 43.26432, "lon": 41.609958, "builtin": true}, {"id": "d10", "city": "dombay", "title": "Кладбище альпинистов", "desc": "Мемориал альпинистам.", "icon": "fa-monument", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1 ч", "tm": 30, "dist": "1 км", "dn": 1.0, "elev": "1600 м \"туда и обратно\"", "lat": 43.292493, "lon": 41.602434, "builtin": true}, {"id": "d11", "city": "dombay", "title": "Муруджу", "desc": "Долина с озёрами Муруджу.", "icon": "fa-water", "diff": "Сложная", "dfe": "Hard", "dc": "hard", "time": "10–12 ч", "tm": 600, "dist": "20 км", "dn": 20.0, "elev": "2800 м \"туда и обратно\"", "lat": 43.387196, "lon": 41.70524, "builtin": true}, {"id": "d12", "city": "dombay", "title": "Озеро Клухор", "desc": "Высокогорное озеро у перевала.", "icon": "fa-water", "diff": "Сложная", "dfe": "Hard", "dc": "hard", "time": "8–10 ч", "tm": 500, "dist": "18 км", "dn": 18.0, "elev": "2676 м \"туда и обратно\"", "lat": 43.252192, "lon": 41.863225, "builtin": true}, {"id": "a1", "city": "arkhyz", "title": "Софийские водопады", "desc": "Знаменитые водопады Архыза у ледниковых склонов.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "4–6 ч", "tm": 300, "dist": "10 км", "dn": 10.0, "elev": "2500 м \"туда и обратно\"", "lat": 43.435264, "lon": 41.276161, "builtin": true}, {"id": "a2", "city": "arkhyz", "title": "Софийские озёра", "desc": "Высокогорные бирюзовые озёра среди перевалов и снежников.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "6–8 ч", "tm": 420, "dist": "14 км", "dn": 14.0, "elev": "2830 м \"туда и обратно\"", "lat": 43.44962, "lon": 41.230165, "builtin": true}, {"id": "a3", "city": "arkhyz", "title": "Озеро Любви", "desc": "Живописное озеро в форме сердца над долиной Архыза.", "icon": "fa-heart", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "5–6 ч", "tm": 330, "dist": "12 км", "dn": 12.0, "elev": "2500 м \"туда и обратно\"", "lat": 43.536942, "lon": 41.338233, "builtin": true}, {"id": "a4", "city": "arkhyz", "title": "Баритовый водопад", "desc": "Короткий и красивый маршрут к водопаду рядом с Архызом.", "icon": "fa-droplet", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1.5–2 ч", "tm": 100, "dist": "4 км", "dn": 4.0, "elev": "1700 м \"туда и обратно\"", "lat": 43.587039, "lon": 41.278962, "builtin": true}, {"id": "a5", "city": "arkhyz", "title": "Казачий водопад", "desc": "Лёгкая прогулка к водопаду недалеко от посёлка Архыз.", "icon": "fa-droplet", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1 ч", "tm": 60, "dist": "2 км", "dn": 2.0, "elev": "1500 м \"туда и обратно\"", "lat": 43.55361, "lon": 41.300386, "builtin": true}, {"id": "a6", "city": "arkhyz", "title": "Дуккинские озёра", "desc": "Группа горных озёр среди лугов и каменных цирков.", "icon": "fa-water", "diff": "Средняя", "dfe": "Medium", "dc": "medium", "time": "5–7 ч", "tm": 360, "dist": "12 км", "dn": 12.0, "elev": "2600 м \"туда и обратно\"", "lat": 43.406186, "lon": 41.255201, "builtin": true}, {"id": "a7", "city": "arkhyz", "title": "Телескопы САО РАН", "desc": "Маршрут к знаменитой астрофизической обсерватории.", "icon": "fa-star", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1–2 ч", "tm": 90, "dist": "3 км", "dn": 3.0, "elev": "2070 м \"туда и обратно\"", "lat": 43.646655, "lon": 41.440864, "builtin": true}, {"id": "a8", "city": "arkhyz", "title": "Канатная дорога Архыз", "desc": "Лёгкий подъём к панорамам курорта Архыз.", "icon": "fa-cable-car", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1 ч", "tm": 60, "dist": "1 км", "dn": 1.0, "elev": "2500 м \"туда и обратно\"", "lat": 43.544148, "lon": 41.180243, "builtin": true}, {"id": "a9", "city": "arkhyz", "title": "Аланское городище", "desc": "Древний историко-археологический комплекс Архыза.", "icon": "fa-landmark", "diff": "Лёгкая", "dfe": "Easy", "dc": "easy", "time": "1–2 ч", "tm": 90, "dist": "2 км", "dn": 2.0, "elev": "1400 м \"туда и обратно\"", "lat": 43.685083, "lon": 41.47611, "builtin": true}];
+const BUILTIN_CATS=[{"id": "housing", "title": "Жильё", "icon": "fa-house-chimney", "ic": "icon-green"}, {"id": "cafe", "title": "Кафе", "icon": "fa-utensils", "ic": "icon-orange"}, {"id": "shops", "title": "Магазины", "icon": "fa-store", "ic": "icon-blue"}, {"id": "guide", "title": "Гиды", "icon": "fa-person-hiking", "ic": "icon-purple"}, {"id": "instructor", "title": "Инструкторы", "icon": "fa-skiing", "ic": "icon-cyan"}, {"id": "souvenirs", "title": "Сувениры", "icon": "fa-gift", "ic": "icon-pink"}, {"id": "medpoint", "title": "Медпункт", "icon": "fa-kit-medical", "ic": "icon-red"}, {"id": "horse", "title": "Конные прогулки", "icon": "fa-horse", "ic": "icon-orange"}, {"id": "quad", "title": "Квадроциклы", "icon": "fa-motorcycle", "ic": "icon-yellow"}, {"id": "jeep", "title": "Джиппинг", "icon": "fa-car-side", "ic": "icon-green"}, {"id": "forel", "title": "Форель", "icon": "fa-fish", "ic": "icon-cyan"}, {"id": "transfer", "title": "Трансфер", "icon": "fa-van-shuttle", "ic": "icon-blue"}, {"id": "banya", "title": "Бани", "icon": "fa-hot-tub-person", "ic": "icon-red"}, {"id": "pharmacy", "title": "Аптеки", "icon": "fa-prescription-bottle-medical", "ic": "icon-green"}, {"id": "lifts", "title": "Канатки", "icon": "fa-cable-car", "ic": "icon-purple"}, {"id": "fun", "title": "Развлечения", "icon": "fa-face-smile", "ic": "icon-pink"}, {"id": "webcams", "title": "Веб-камеры", "icon": "fa-video", "ic": "icon-cyan"}, {"id": "meat", "title": "Мясо", "icon": "fa-drumstick-bite", "ic": "icon-orange"}, {"id": "gas", "title": "АЗС", "icon": "fa-gas-pump", "ic": "icon-yellow"}, {"id": "pvz", "title": "ПВЗ", "icon": "fa-box", "ic": "icon-blue"}];
+function blankData(){return{routeSettings:{},customRoutes:[],customCategories:[],customServices:[],requests:[]}}
+async function loadWithServer(){
+    const local = load();
+    if(SERVER_URL){
+        const server = await loadFromServer();
+        if(server && (server.routes || server.services)){
+            return {
+                routeSettings: server.routes?.routeSettings || local.routeSettings,
+                customRoutes: server.routes?.customRoutes || local.customRoutes,
+                customServices: server.services || local.customServices,
+                customCategories: server.categories || local.customCategories,
+                requests: server.requests || local.requests
+            };
+        }
+    }
+    return local;
+}
+function load(){try{return Object.assign(blankData(),JSON.parse(localStorage.getItem(TD_STORE_KEY)||'{}'))}catch(e){return blankData()}}
+function save(){
+    // Сохраняем локально всегда
+    try{localStorage.setItem(TD_STORE_KEY,JSON.stringify(data))}catch(e){toast('Память переполнена');return false}
+    // Синхронизируем с сервером
+    if(SERVER_URL && serverConnected){
+        saveToServer('routes', data.routeSettings);
+        saveToServer('services', data.customServices);
+        saveToServer('categories', data.customCategories);
+        saveToServer('requests', data.requests);
+    }
+    return true;
+}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function uid(p){return p+'_'+Date.now()+'_'+Math.random().toString(16).slice(2,7)}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.tm);toast.tm=setTimeout(()=>e.classList.remove('show'),1800)}
+function fileToDataURL(file){return new Promise((res,rej)=>{if(!file)return res('');const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+function resizeImage(file,maxW,quality){return new Promise((res,rej)=>{if(!file)return res('');const r=new FileReader();r.onerror=rej;r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;maxW=maxW||1280;if(w>maxW){h=Math.round(h*maxW/w);w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);try{res(c.toDataURL('image/jpeg',quality||0.78))}catch(e){res(r.result)}};img.onerror=()=>res(r.result);img.src=r.result};r.readAsDataURL(file)})}
+function safeSave(){try{localStorage.setItem(TD_STORE_KEY,JSON.stringify(data));if(SERVER_URL && serverConnected){saveToServer('routes',data.routeSettings);saveToServer('services',data.customServices);saveToServer('categories',data.customCategories);saveToServer('requests',data.requests);}return true}catch(e){toast('Память переполнена. Вставляйте фото по ссылке.');return false}}
+function toMin(t){const p=String(t||'00:00').split(':').map(Number);return (p[0]||0)*60+(p[1]||0)}
+function inRange(o,c){const n=new Date(),cur=n.getHours()*60+n.getMinutes(),a=toMin(o),b=toMin(c);return a===b?true:(a<b?cur>=a&&cur<b:cur>=a||cur<b)}
+function routeStatus(r){let open=r.statusMode==='force_open'||((r.statusMode||'auto')==='auto'&&inRange(r.openTime||'08:00',r.closeTime||'18:00'));if(r.statusMode==='force_closed')open=false;return open}
+function allRoutes(){return [...BUILTIN_ROUTES.map(r=>Object.assign({},r,defaultsFor(r),data.routeSettings[r.id]||{},{builtin:true})),...(data.customRoutes||[]).map(r=>Object.assign({},defaultsFor(r),r,{builtin:false}))]}
+function defaultsFor(r){return{openTime:'08:00',closeTime:'18:00',statusMode:'auto',routePrice:'Бесплатно',routeNeeds:r.dc==='easy'?'Удобная обувь, вода, заряженный телефон.':r.dc==='medium'?'Треккинговая обувь, 1.5–2 л воды, дождевик, выход утром.':'Для подготовленных: треккинговая обувь, палки, 2+ л воды, связь.',visible:true}}
+function allCats(){return [...BUILTIN_CATS.map(c=>Object.assign({},c,{builtin:true,visible:true})),...(data.customCategories||[]).map(c=>Object.assign({},c,{builtin:false}))]}
+function catOptions(sel=''){return allCats().filter(c=>c.visible!==false).map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${esc(c.title)}</option>`).join('')}
+function showTab(t){['routes','services','cats','requests'].forEach(x=>document.getElementById(x+'Page').style.display=x===t?'block':'none');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));renderAll()}
+let data=blankData(),editRouteId=null,editServiceId=null,editCatId=null;
+function closeForms(){['routeForm','serviceForm','catForm'].forEach(id=>document.getElementById(id).classList.remove('show'))}
+function routeFormHtml(r){return `<div class="title">${r.id?'Редактировать маршрут':'Новый маршрут'}</div><div class="grid" style="margin-top:12px"><div class="full"><label>Название</label><input id="rfTitle" value="${esc(r.title||'')}"></div><div><label>Город</label><select id="rfCity"><option value="teberda" ${r.city==='teberda'?'selected':''}>Теберда</option><option value="dombay" ${r.city==='dombay'?'selected':''}>Домбай</option><option value="arkhyz" ${r.city==='arkhyz'?'selected':''}>Архыз</option></select></div><div><label>Сложность</label><select id="rfDc"><option value="easy" ${r.dc==='easy'?'selected':''}>Лёгкая</option><option value="medium" ${r.dc==='medium'?'selected':''}>Средняя</option><option value="hard" ${r.dc==='hard'?'selected':''}>Сложная</option></select></div><div><label>Время</label><input id="rfTime" value="${esc(r.time||'')}"></div><div><label>Расстояние</label><input id="rfDist" value="${esc(r.dist||'')}"></div><div><label>Высота</label><input id="rfElev" value="${esc(r.elev||'')}"></div><div><label>Стоимость прохода</label><input id="rfPrice" value="${esc(r.routePrice||'')}"></div><div><label>Открытие</label><input id="rfOpen" type="time" value="${esc(r.openTime||'08:00')}"></div><div><label>Закрытие</label><input id="rfClose" type="time" value="${esc(r.closeTime||'18:00')}"></div><div class="full"><label>Режим</label><select id="rfMode"><option value="auto" ${(r.statusMode||'auto')==='auto'?'selected':''}>Автоматически по времени</option><option value="force_open" ${r.statusMode==='force_open'?'selected':''}>Принудительно открыт</option><option value="force_closed" ${r.statusMode==='force_closed'?'selected':''}>Принудительно закрыт</option></select></div><div class="full"><label>Описание</label><textarea id="rfDesc">${esc(r.desc||'')}</textarea></div><div class="full"><label>Что нужно</label><textarea id="rfNeeds">${esc(r.routeNeeds||'')}</textarea></div><div><label>Широта</label><input id="rfLat" value="${esc(r.lat||'')}"></div><div><label>Долгота</label><input id="rfLon" value="${esc(r.lon||'')}"></div><div class="full"><label>Главное фото — ссылка (оставьте пустым — сохранится встроенное фото)</label><input id="rfImage" placeholder="https://..." value="${esc(r.image||'')}"></div><div class="full"><label>Галерея фото</label><div id="rfGalleryBox" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div><div style="display:flex;gap:6px;flex-wrap:wrap"><input id="rfGalleryUrl" placeholder="https://...jpg — вставь ссылку" style="flex:1;min-width:160px"><button type="button" class="btn good" onclick="rfAddGalleryUrl()"><i class="fas fa-link"></i> Добавить</button><label class="btn warn" style="cursor:pointer"><i class="fas fa-upload"></i> Файл<input type="file" accept="image/*" multiple style="display:none" onchange="rfAddGalleryFiles(this.files);this.value=''"></label></div></div><div class="full"><label><input type="checkbox" id="rfVisible" ${r.visible!==false?'checked':''} style="width:auto"> Показывать маршрут</label></div></div><div class="actions"><button class="btn primary" onclick="saveRouteEdit()">Сохранить</button><button class="btn" onclick="closeForms()">Отмена</button></div>`}
+function newRoute(){editRouteId=null;window._rfGallery=[];const r=Object.assign({id:'',city:'teberda',title:'',dc:'easy',diff:'Лёгкая',time:'',dist:'',elev:'',desc:'',icon:'fa-route',lat:43.38,lon:41.72,image:'',gallery:[]},defaultsFor({dc:'easy'}));showForm('routeForm',routeFormHtml(r));rfRenderGallery()}
+function editRoute(id){editRouteId=id;const r=allRoutes().find(r=>r.id===id);window._rfGallery=Array.isArray(r.gallery)?r.gallery.slice():[];showForm('routeForm',routeFormHtml(r));rfRenderGallery()}
+function showForm(id,html){const e=document.getElementById(id);e.innerHTML=html;e.classList.add('show');e.scrollIntoView({behavior:'smooth',block:'start'})}
+
+window._rfGallery = [];
+function rfRenderGallery(){
+  const box=document.getElementById('rfGalleryBox');if(!box)return;
+  if(!window._rfGallery.length){box.innerHTML='<div class="hint" style="margin:0">Пока пусто</div>';return}
+  box.innerHTML=window._rfGallery.map((p,i)=>`<div style="position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--line)"><img src="${p}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.opacity=.3;this.alt='✕'"><button type="button" onclick="rfRemoveGallery(${i})" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;cursor:pointer;font-size:12px">✕</button></div>`).join('');
+}
+function rfAddGalleryUrl(){
+  const inp=document.getElementById('rfGalleryUrl');const v=inp.value.trim();
+  if(!v){toast('Вставьте ссылку');return}
+  window._rfGallery.push(v);inp.value='';rfRenderGallery();
+}
+async function rfAddGalleryFiles(files){
+  if(!files||!files.length)return;
+  for(const f of files){
+    try{const d=await resizeImage(f,1280,0.78);if(d)window._rfGallery.push(d)}catch(e){}
+  }
+  rfRenderGallery();
+}
+function rfRemoveGallery(i){window._rfGallery.splice(i,1);rfRenderGallery()}
+
+function routePayload(old={}){const dc=rfDc.value;const img=rfImage.value.trim();const p=Object.assign({},old,{title:rfTitle.value.trim(),city:rfCity.value,dc,diff:dc==='easy'?'Лёгкая':dc==='medium'?'Средняя':'Сложная',dfe:dc==='easy'?'Easy':dc==='medium'?'Medium':'Hard',time:rfTime.value.trim(),tm:parseInt(rfTime.value)||60,dist:rfDist.value.trim(),dn:parseFloat(rfDist.value)||0,elev:rfElev.value.trim(),routePrice:rfPrice.value.trim(),openTime:rfOpen.value,closeTime:rfClose.value,statusMode:rfMode.value,desc:rfDesc.value.trim(),routeNeeds:rfNeeds.value.trim(),lat:parseFloat(rfLat.value)||43.38,lon:parseFloat(rfLon.value)||41.72,visible:rfVisible.checked,icon:old.icon||'fa-route',gallery:Array.isArray(window._rfGallery)?window._rfGallery.slice():(old.gallery||[])});if(img)p.image=img;else if('image' in p && !old.image)delete p.image;return p}
+function saveRouteEdit(){
+  const snap=JSON.parse(JSON.stringify({rs:data.routeSettings,cr:data.customRoutes}));
+  if(editRouteId){const r=allRoutes().find(x=>x.id===editRouteId);const p=routePayload(r);if(r.builtin)data.routeSettings[r.id]=p;else data.customRoutes=data.customRoutes.map(x=>x.id===r.id?p:x)}
+  else{const p=routePayload({id:uid('route'),builtin:false});if(!p.title){toast('Введите название');return}data.customRoutes.unshift(p)}
+  if(!save()){data.routeSettings=snap.rs;data.customRoutes=snap.cr;return}
+  closeForms();renderRoutes();toast('Маршрут сохранён')
+}
+function toggleRoute(id){const r=allRoutes().find(x=>x.id===id);r.visible=!r.visible;if(r.builtin)data.routeSettings[id]=r;else data.customRoutes=data.customRoutes.map(x=>x.id===id?r:x);save();renderRoutes()}
+function delRoute(id){const r=allRoutes().find(x=>x.id===id);if(r.builtin){r.visible=false;data.routeSettings[id]=r;toast('Встроенный маршрут скрыт')}else if(confirm('Удалить маршрут?'))data.customRoutes=data.customRoutes.filter(x=>x.id!==id);save();renderRoutes()}
+function renderRoutes(){document.getElementById('routesList').innerHTML=allRoutes().map(r=>`<div class="card ${r.visible===false?'locked':''}"><div class="row"><div><div class="title">${esc(r.title)}</div><div class="meta"><span>${r.city}</span><span>·</span><span>${esc(r.diff)}</span><span>·</span><span>${esc(r.routePrice||'')}</span><span>·</span><span>${r.builtin?'встроенный':'новый'}</span></div></div><div class="badge ${routeStatus(r)?'open':'closed'}">${r.visible===false?'Скрыт':routeStatus(r)?'Открыто':'Закрыто'}</div></div><div class="hint">${esc(r.openTime)}–${esc(r.closeTime)} · ${esc(r.routeNeeds||'')}</div><div class="actions"><button class="btn primary" onclick="editRoute('${r.id}')">Редактировать</button><button class="btn warn" onclick="toggleRoute('${r.id}')">${r.visible===false?'Показать':'Скрыть'}</button><button class="btn bad" onclick="delRoute('${r.id}')">${r.builtin?'Скрыть':'Удалить'}</button></div></div>`).join('')}
+
+function serviceFormHtml(s={}){
+    return `<div class="title">${s.id?'Редактировать услугу':'Новая услуга'}</div>
+    <div class="grid" style="margin-top:12px">
+        <div class="full"><label>Категория</label><select id="sfCat" onchange="updateAdminSubCats()">${catOptions(s.categoryId)}</select></div>
+        <div class="full" id="sfSubCatBox" style="display:none"><label>Подкатегория</label><select id="sfSubCat"></select></div>
+        <div><label>Город</label><select id="sfCity"><option ${s.city==='Теберда'?'selected':''}>Теберда</option><option ${s.city==='Домбай'?'selected':''}>Домбай</option><option ${s.city==='Архыз'?'selected':''}>Архыз</option></select></div>
+        <div><label>Цена</label><input id="sfPrice" value="${esc(s.price||'')}"></div>
+        <div class="full"><label>Название</label><input id="sfName" value="${esc(s.name||'')}"></div>
+        <div class="full"><label>Описание</label><textarea id="sfDesc">${esc(s.desc||'')}</textarea></div>
+        <div><label>Контакт</label><input id="sfContact" value="${esc(s.contact||'')}"></div>
+        <div><label>Telegram/ссылка</label><input id="sfTg" value="${esc(s.tg||'')}"></div>
+        <div class="full"><label>Фото 1 — файл ИЛИ ссылка</label><input id="sfPhoto1" type="file" accept="image/*"><input id="sfPhotoUrl1" placeholder="или вставьте https://… ссылку" value="${esc((s.photos&&s.photos[0])&&/^https?:/.test(s.photos[0])?s.photos[0]:'')}" style="margin-top:6px"></div>
+        <div class="full"><label>Фото 2 — файл ИЛИ ссылка</label><input id="sfPhoto2" type="file" accept="image/*"><input id="sfPhotoUrl2" placeholder="или вставьте https://… ссылку" value="${esc((s.photos&&s.photos[1])&&/^https?:/.test(s.photos[1])?s.photos[1]:'')}" style="margin-top:6px"></div>
+        <div class="full"><label>Фото 3 — файл ИЛИ ссылка</label><input id="sfPhoto3" type="file" accept="image/*"><input id="sfPhotoUrl3" placeholder="или вставьте https://… ссылку" value="${esc((s.photos&&s.photos[2])&&/^https?:/.test(s.photos[2])?s.photos[2]:'')}" style="margin-top:6px"></div>
+        <div class="hint">Можно загрузить файл ИЛИ вставить ссылку. Ссылки экономят память.</div>
+    </div>
+    <div class="actions"><button class="btn primary" onclick="saveServiceEdit()">Сохранить</button><button class="btn" onclick="closeForms()">Отмена</button></div>`;
+}
+
+function updateAdminSubCats(selectedSubId){
+    const catId = sfCat.value;
+    const box = document.getElementById('sfSubCatBox');
+    const sel = document.getElementById('sfSubCat');
+    const subMapping = {
+        'housing': [{id:'hotels', name:'Гостиницы'},{id:'apart', name:'Квартиры'},{id:'houses', name:'Коттеджи'},{id:'guest', name:'Гостевые дома'},{id:'vershina', name:'Видовые апартаменты'}]
+    };
+    if(subMapping[catId]){
+        box.style.display = 'block';
+        sel.innerHTML = subMapping[catId].map(sub => `<option value="${sub.id}" ${sub.id===selectedSubId?'selected':''}>${sub.name}</option>`).join('');
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function newService(){editServiceId=null;showForm('serviceForm',serviceFormHtml({city:'Теберда'}));updateAdminSubCats();}
+function editService(id){const s=data.customServices.find(x=>x.id===id);editServiceId=id;showForm('serviceForm',serviceFormHtml(s));updateAdminSubCats(s.subCategoryId);}
+
+async function saveServiceEdit(){
+    const old = editServiceId ? data.customServices.find(x => x.id === editServiceId) : null;
+    const f1 = sfPhoto1.files[0], f2 = sfPhoto2.files[0], f3 = sfPhoto3.files[0];
+    const u1 = document.getElementById('sfPhotoUrl1').value.trim();
+    const u2 = document.getElementById('sfPhotoUrl2').value.trim();
+    const u3 = document.getElementById('sfPhotoUrl3').value.trim();
+    let p1='',p2='',p3='';
+    try{
+      p1 = f1 ? await resizeImage(f1,1280,0.78) : '';
+      p2 = f2 ? await resizeImage(f2,1280,0.78) : '';
+      p3 = f3 ? await resizeImage(f3,1280,0.78) : '';
+    }catch(e){toast('Ошибка чтения фото');return}
+
+    let photos = (old && old.photos) ? [...old.photos] : [];
+    if(p1) photos[0] = p1; else if(u1) photos[0] = u1;
+    if(p2) photos[1] = p2; else if(u2) photos[1] = u2;
+    if(p3) photos[2] = p3; else if(u3) photos[2] = u3;
+    photos = photos.filter(x => x);
+
+    const subId = document.getElementById('sfSubCatBox').style.display !== 'none' ? sfSubCat.value : null;
+
+    const s = Object.assign({id:editServiceId||uid('svc'), status:'approved'}, old||{}, {
+        categoryId: sfCat.value,
+        subCategoryId: subId,
+        city: sfCity.value,
+        price: sfPrice.value.trim(),
+        name: sfName.value.trim(),
+        desc: sfDesc.value.trim(),
+        contact: sfContact.value.trim(),
+        tg: sfTg.value.trim(),
+        photos: photos,
+        photo: photos[0] || ''
+    });
+
+    if(!s.name){toast('Введите название');return}
+    const snapshot = JSON.parse(JSON.stringify(data.customServices));
+    if(old) data.customServices = data.customServices.map(x => x.id === s.id ? s : x);
+    else data.customServices.unshift(s);
+    if(!save()){
+      data.customServices = snapshot;
+      return;
+    }
+    closeForms();
+    renderServices();
+    toast('Услуга сохранена');
+}
+
+function delService(id){if(confirm('Удалить услугу?')){data.customServices=data.customServices.filter(x=>x.id!==id);save();renderServices()}}
+function renderServices(){document.getElementById('servicesList').innerHTML=(data.customServices||[]).map(s=>{const c=allCats().find(x=>x.id===s.categoryId)||{title:'Категория'};return `<div class="card"><div class="row"><div><div class="title">${esc(s.name)}</div><div class="meta"><span>${esc(c.title)}</span><span>·</span><span>${esc(s.city)}</span><span>·</span><span>${esc(s.price||'')}</span></div></div><div class="badge approved">Опубликовано</div></div>${(s.photos && s.photos.length) ? s.photos.map(p => `<img class="photo" src="${p}" style="width:32%;display:inline-block;margin-right:1%">`).join('') : (s.photo ? `<img class="photo" src="${s.photo}">` : '')}<div class="hint">${esc(s.desc||'')}</div><div class="actions"><button class="btn primary" onclick="editService('${s.id}')">Редактировать</button><button class="btn bad" onclick="delService('${s.id}')">Удалить</button></div></div>`}).join('')||'<div class="empty">Пока нет добавленных услуг</div>'}
+
+function catFormHtml(c={}){return `<div class="title">${c.id?'Редактировать категорию':'Новая категория'}</div><div class="grid" style="margin-top:12px"><div><label>Название</label><input id="cfTitle" value="${esc(c.title||'')}"></div><div><label>FontAwesome иконка</label><input id="cfIcon" value="${esc(c.icon||'fa-briefcase')}"></div><div class="full"><label><input type="checkbox" id="cfVisible" ${c.visible!==false?'checked':''} style="width:auto"> Показывать</label></div></div><div class="actions"><button class="btn primary" onclick="saveCatEdit()">Сохранить</button><button class="btn" onclick="closeForms()">Отмена</button></div>`}
+function newCat(){editCatId=null;showForm('catForm',catFormHtml({visible:true}))}
+function editCat(id){const c=allCats().find(x=>x.id===id);if(c.builtin){toast('Встроенные категории нельзя редактировать');return}editCatId=id;showForm('catForm',catFormHtml(c))}
+function saveCatEdit(){const old=editCatId?data.customCategories.find(x=>x.id===editCatId):null;const c=Object.assign({id:editCatId||uid('cat'),ic:'icon-blue'},old||{},{title:cfTitle.value.trim(),icon:cfIcon.value.trim()||'fa-briefcase',visible:cfVisible.checked});if(!c.title){toast('Введите название');return}if(old)data.customCategories=data.customCategories.map(x=>x.id===c.id?c:x);else data.customCategories.unshift(c);save();closeForms();renderCats();toast('Категория сохранена')}
+function delCat(id){const c=allCats().find(x=>x.id===id);if(c.builtin){toast('Встроенные категории нельзя удалять');return}if(confirm('Удалить категорию?')){data.customCategories=data.customCategories.filter(x=>x.id!==id);save();renderCats()}}
+function renderCats(){document.getElementById('catsList').innerHTML=allCats().map(c=>`<div class="card ${c.builtin?'locked':''}"><div class="row"><div><div class="title"><i class="fas ${esc(c.icon)}"></i> ${esc(c.title)}</div><div class="meta"><span>${c.builtin?'встроенная':'новая'}</span><span>·</span><span>${c.visible===false?'скрыта':'показана'}</span></div></div></div><div class="actions"><button class="btn primary" onclick="editCat('${c.id}')" ${c.builtin?'disabled':''}>Редактировать</button><button class="btn bad" onclick="delCat('${c.id}')" ${c.builtin?'disabled':''}>Удалить</button></div></div>`).join('')}
+
+function approveReq(id){const r=data.requests.find(x=>x.id===id);if(!r)return;r.status='approved';data.customServices.unshift({id:uid('svc'),status:'approved',categoryId:r.categoryId,subCategoryId:r.subCategoryId,city:r.city,name:r.name,price:r.price,desc:r.desc,contact:r.contact,tg:'',photo:r.photo,photos:r.photos});if(!save()){toast('Не хватило памяти при одобрении');return};renderRequests();toast('Заявка одобрена')}
+function declineReq(id){const r=data.requests.find(x=>x.id===id);if(r)r.status='declined';save();renderRequests();toast('Заявка отклонена')}
+function delReq(id){data.requests=data.requests.filter(x=>x.id!==id);save();renderRequests()}
+function renderRequests(){document.getElementById('requestsList').innerHTML=(data.requests||[]).map(r=>{const c=allCats().find(x=>x.id===r.categoryId)||{title:'Категория'};const t=r.status==='approved'?'Одобрено':r.status==='declined'?'Отклонено':'Новая';return `<div class="card"><div class="row"><div><div class="title">${esc(r.name)}</div><div class="meta"><span>${esc(c.title)}</span><span>·</span><span>${esc(r.city)}</span><span>·</span><span>${esc(r.created)}</span></div></div><div class="badge ${r.status}">${t}</div></div>${(r.photos && r.photos.length) ? r.photos.map(p => `<img class="photo" src="${p}" style="width:32%;display:inline-block;margin-right:1%">`).join('') : (r.photo ? `<img class="photo" src="${r.photo}">` : '')}<div class="hint">${esc(r.desc||'')}</div><div class="hint">Контакт: ${esc(r.contact||'')}</div><div class="actions"><button class="btn good" onclick="approveReq('${r.id}')">Одобрить</button><button class="btn bad" onclick="declineReq('${r.id}')">Отклонить</button><button class="btn" onclick="delReq('${r.id}')">Удалить</button></div></div>`}).join('')||'<div class="empty">Заявок пока нет</div>'}
+
+async function renderAll(){
+    await checkServer();
+    data = await loadWithServer();
+    renderRoutes();
+    renderServices();
+    renderCats();
+    renderRequests();
+}
+
+// Запуск
+renderAll();
+</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a04710084c3eec3f',t:'MTc4MDI0MTg3NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

@@ -1,0 +1,16 @@
+[
+  {"id": "housing", "icon": "fa-bed", "name": "Жильё", "cities": ["Теберда", "Домбай", "Архыз"], "subcategories": [
+    {"id": "hotels", "name": "Гостиницы"},
+    {"id": "apart", "name": "Квартиры"},
+    {"id": "houses", "name": "Коттеджи"},
+    {"id": "guest", "name": "Гостевые дома"},
+    {"id": "vershina", "name": "Видовые апартаменты"}
+  ]},
+  {"id": "food", "icon": "fa-utensils", "name": "Еда", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "transport", "icon": "fa-bus", "name": "Транспорт", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "rental", "icon": "fa-skiing", "name": "Аренда", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "excursions", "icon": "fa-compass", "name": "Экскурсии", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "medical", "icon": "fa-first-aid", "name": "Медицина", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "guide", "icon": "fa-hiking", "name": "Гиды", "cities": ["Теберда", "Домбай", "Архыз"]},
+  {"id": "other", "icon": "fa-ellipsis-h", "name": "Прочее", "cities": ["Теберда", "Домбай", "Архыз"]}
+]
