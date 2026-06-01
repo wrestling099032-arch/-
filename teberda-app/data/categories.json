@@ -1,0 +1,142 @@
+[
+    {
+        "id": "housing",
+        "title": "Жильё",
+        "icon": "fa-house-chimney",
+        "ic": "icon-green",
+        "visible": true
+    },
+    {
+        "id": "cafe",
+        "title": "Кафе",
+        "icon": "fa-utensils",
+        "ic": "icon-orange",
+        "visible": true
+    },
+    {
+        "id": "shops",
+        "title": "Магазины",
+        "icon": "fa-store",
+        "ic": "icon-blue",
+        "visible": true
+    },
+    {
+        "id": "guide",
+        "title": "Гиды",
+        "icon": "fa-person-hiking",
+        "ic": "icon-purple",
+        "visible": true
+    },
+    {
+        "id": "instructor",
+        "title": "Инструкторы",
+        "icon": "fa-skiing",
+        "ic": "icon-cyan",
+        "visible": true
+    },
+    {
+        "id": "souvenirs",
+        "title": "Сувениры",
+        "icon": "fa-gift",
+        "ic": "icon-pink",
+        "visible": true
+    },
+    {
+        "id": "medpoint",
+        "title": "Медпункт",
+        "icon": "fa-kit-medical",
+        "ic": "icon-red",
+        "visible": true
+    },
+    {
+        "id": "horse",
+        "title": "Конные прогулки",
+        "icon": "fa-horse",
+        "ic": "icon-orange",
+        "visible": true
+    },
+    {
+        "id": "quad",
+        "title": "Квадроциклы",
+        "icon": "fa-motorcycle",
+        "ic": "icon-yellow",
+        "visible": true
+    },
+    {
+        "id": "jeep",
+        "title": "Джиппинг",
+        "icon": "fa-car-side",
+        "ic": "icon-green",
+        "visible": true
+    },
+    {
+        "id": "forel",
+        "title": "Форель",
+        "icon": "fa-fish",
+        "ic": "icon-cyan",
+        "visible": true
+    },
+    {
+        "id": "transfer",
+        "title": "Трансфер",
+        "icon": "fa-van-shuttle",
+        "ic": "icon-blue",
+        "visible": true
+    },
+    {
+        "id": "banya",
+        "title": "Бани",
+        "icon": "fa-hot-tub-person",
+        "ic": "icon-red",
+        "visible": true
+    },
+    {
+        "id": "pharmacy",
+        "title": "Аптеки",
+        "icon": "fa-prescription-bottle-medical",
+        "ic": "icon-green",
+        "visible": true
+    },
+    {
+        "id": "lifts",
+        "title": "Канатки",
+        "icon": "fa-cable-car",
+        "ic": "icon-purple",
+        "visible": true
+    },
+    {
+        "id": "fun",
+        "title": "Развлечения",
+        "icon": "fa-face-smile",
+        "ic": "icon-pink",
+        "visible": true
+    },
+    {
+        "id": "webcams",
+        "title": "Веб-камеры",
+        "icon": "fa-video",
+        "ic": "icon-cyan",
+        "visible": true
+    },
+    {
+        "id": "meat",
+        "title": "Мясо",
+        "icon": "fa-drumstick-bite",
+        "ic": "icon-orange",
+        "visible": true
+    },
+    {
+        "id": "gas",
+        "title": "АЗС",
+        "icon": "fa-gas-pump",
+        "ic": "icon-yellow",
+        "visible": true
+    },
+    {
+        "id": "pvz",
+        "title": "ПВЗ",
+        "icon": "fa-box",
+        "ic": "icon-blue",
+        "visible": true
+    }
+]
