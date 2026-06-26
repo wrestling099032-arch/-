@@ -1,0 +1,2329 @@
+# ============================================================
+# Teberda & Dombay Guide Bot 9.0 FULL
+# aiogram 2.25.1
+# ============================================================
+import os
+import logging
+import json
+import datetime
+import asyncio
+import aiohttp
+import pytz
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import (
+    ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup,
+    InlineKeyboardButton, WebAppInfo, InputMediaPhoto
+)
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
+
+# ================== BASE DIR ==================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def p(filename: str) -> str:
+    return os.path.join(BASE_DIR, filename)
+
+def norm(text: str) -> str:
+    if text is None:
+        return ""
+    return " ".join(text.replace("\u00a0", " ").strip().split())
+
+def norm_multiline(text: str) -> str:
+    """Сохраняет переносы строк"""
+    if text is None:
+        return ""
+    lines = text.replace("\u00a0", " ").split("\n")
+    return "\n".join(line.strip() for line in lines if line.strip())
+
+# ================= НАСТРОЙКИ =================
+API_TOKEN = "мой токен"
+
+# Главный админ (всегда)
+SUPER_ADMIN_ID = 988124332
+
+# Список всех админов (включая главного) — загружается из файла
+ADMINS_FILE = p("admins.json")
+
+def load_admins() -> list:
+    data = load_json(ADMINS_FILE, [SUPER_ADMIN_ID])
+    if not isinstance(data, list):
+        data = [SUPER_ADMIN_ID]
+    if SUPER_ADMIN_ID not in data:
+        data.insert(0, SUPER_ADMIN_ID)
+    return data
+
+def save_admins(admins: list):
+    save_json(ADMINS_FILE, admins)
+
+def is_admin(uid: int) -> bool:
+    return uid in load_admins()
+
+SITE_URL = "https://teberda-dombay-gid.ru/"
+CHANNEL_URL = "https://t.me/TeberdaDombayNews"
+CHANNEL_ID = "@TeberdaDombayNews"
+CHAT_URL = "https://t.me/+cy0Vxh-BrbpiNzli"
+
+# ★ Обновлённая ссылка приложения
+GUIDE_APP_URL = "https://teberda-dombay-gid.ru/teberda-app/"
+# ★ Ссылка админ-панели приложения
+GUIDE_ADMIN_APP_URL = "https://teberda-dombay-gid.ru/teberda-app/admin.html"
+
+MUSIC_URL = "https://t.me/tipopesen"
+
+# ===== AI =====
+# Замените на рабочий ключ и URL
+GROQ_API_KEY = "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjFrYnhacFJNQGJSI0tSbE1xS1lqIn0.eyJ1c2VyIjoic2QyMDY4MDAiLCJ0eXBlIjoiYXBpX2tleSIsImFwaV9rZXlfaWQiOiJjZDA1ZTg0OC1kNmQ5LTQ5ZjktYTVjMy04MjA2ZDk5YTE5ZmEiLCJpYXQiOjE3NzI1NTQ3OTR9.mlPywz7YKiHjg6LONsxQ1QlWmwwQfNjq1nABnkm_pYUjWig-Yjnm4v8QfXjpsdjqI7Bc3IFFKGBX7dndTiG1lsrLr-uduMHa41oYoUU7LPX7MYcu4JVdsKlodrX6-Tlo7ISK5uPwk559R7DiTm4YbRi6X-JKiiekhTiuWgacQilsMX89-zKiDkkjRVFt99a3nNx_DrXxtg4Suk1IDjwVYe7AvddxjxyzdXGv0uLDBF7Cru1E3S34PMw9uqR62R43HGppequawy6eh7Rr6uKFjWzPMOi7iyZAsn5UIUOT32BfsqPmbf-iudUIOuqLYCnxp-08sXCV7MPOuIlStnnIMXoB-3gafgfisw6bp08WsYvWQzj0w1SpXn_ynfCE2t42G33hQAs8vBq1PxtTIh9sRvm9h3CDZX3D9oEE31_kIWTqVhXeZGplFvfvXb56RIluK3dQzWDM62cLb8HSrZ0kIoCjcIz4ux1Ho4rJd_OGMhG2nnblHYMzgNT-E6Wa49jS"
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL = "gemini/gemini-2.5-flash-lite"
+AI_DAILY_LIMIT = 10
+
+AI_SYSTEM_PROMPT = """
+Ты — умный туристический гид по Карачаево‑Черкесской Республике (КЧР) и Кавказу.
+Особенно подробно знаешь: Теберду и Домбай.
+Умеешь:
+— советовать куда сходить (места, прогулки, маршруты, смотровые, канатки, водопады, озёра)
+— подбирать маршрут по уровню, времени и сезону
+— давать список экипировки: что брать, какую обувь и одежду слоями, аптечку
+— безопасность в горах: погода, ветер, гроза, туман, лавины зимой, связь, вода
+— логистика: как добраться, транспорт, жильё
+Стиль: понятно, структурировано, полезно, дружелюбно. Эмодзи умеренно.
+"""
+
+# ================= ФАЙЛЫ =================
+USERS_FILE = p("users.json")
+SUBS_FILE = p("weather_subs.json")
+LIMITS_FILE = p("ai_limits.json")
+SERVICES_FILE = p("services.json")
+SETTINGS_FILE = p("settings.json")
+
+# ================= INIT =================
+logging.basicConfig(level=logging.INFO)
+PROXY_URL = "http://eWk8kg:mv6xJt@196.18.13.49:8000"
+bot = Bot(token=API_TOKEN, proxy=PROXY_URL)
+dp = Dispatcher(bot, storage=MemoryStorage())
+AI_STATE = {}
+
+# ================= JSON HELPERS =================
+def load_json(path, default):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return default
+
+def save_json(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def ensure_json_file(path, default):
+    if not os.path.exists(path):
+        save_json(path, default)
+
+def add_user(uid: int):
+    users = load_json(USERS_FILE, [])
+    if uid not in users:
+        users.append(uid)
+        save_json(USERS_FILE, users)
+
+# ================= SETTINGS =================
+def load_settings():
+    st = load_json(SETTINGS_FILE, {})
+    if not isinstance(st, dict):
+        st = {}
+    st.setdefault("services_limit", 5)
+    st.setdefault("service_ttl_days", 30)
+    save_json(SETTINGS_FILE, st)
+    return st
+
+def get_services_limit() -> int:
+    return int(load_settings().get("services_limit", 5))
+
+def set_services_limit(n: int):
+    st = load_settings()
+    st["services_limit"] = int(n)
+    save_json(SETTINGS_FILE, st)
+
+def get_service_ttl_days() -> int:
+    return int(load_settings().get("service_ttl_days", 30))
+
+def set_service_ttl_days(n: int):
+    st = load_settings()
+    st["service_ttl_days"] = int(n)
+    save_json(SETTINGS_FILE, st)
+
+# ================= AI LIMIT =================
+def check_limit(uid):
+    if is_admin(uid):
+        return True, 999
+    limits = load_json(LIMITS_FILE, {})
+    today = datetime.date.today().isoformat()
+    rec = limits.get(str(uid))
+    if not rec or rec.get("date") != today:
+        return True, AI_DAILY_LIMIT
+    used = int(rec.get("count", 0))
+    return used < AI_DAILY_LIMIT, AI_DAILY_LIMIT - used
+
+def use_limit(uid):
+    if is_admin(uid):
+        return
+    limits = load_json(LIMITS_FILE, {})
+    today = datetime.date.today().isoformat()
+    rec = limits.get(str(uid))
+    if not rec or rec.get("date") != today:
+        limits[str(uid)] = {"date": today, "count": 1}
+    else:
+        rec["count"] = int(rec.get("count", 0)) + 1
+        limits[str(uid)] = rec
+    save_json(LIMITS_FILE, limits)
+
+# ================= КНОПКИ / МЕНЮ =================
+# ★ Переименована кнопка и ссылка
+BTN_APP = "⛰️ Горный гид"
+BTN_CHANNEL = "📣 Канал"
+BTN_CHAT = "💬 Чат"
+BTN_SITE = "🌐 Сайт"
+BTN_MUSIC = "🎵 Music"
+BTN_SOS = "🆘 SOS"
+BTN_WEATHER = "🌤 Погода"
+BTN_AI = "🤖 AI Гид"
+BTN_VIP_SERVICES = "⭐ VIP Услуги"
+BTN_ADD_VIP = "➕ Добавить VIP-услугу"
+BTN_ADMIN_PANEL = "⚙️ Админ-панель"
+
+A_BACK = "◀️ Назад"
+A_BROADCAST = "📢 Рассылка"
+A_STATS = "📊 Статистика"
+A_MANAGE_VIP = "⭐ Управление VIP"
+A_ADD_VIP_ADMIN = "➕ Добавить VIP"
+A_SET_LIMIT = "🔢 Лимит VIP"
+A_SET_TTL = "⏳ Срок VIP (дней)"
+A_PENDING = "📋 Заявки"
+A_ADMINS = "👥 Администраторы"
+A_GUIDE_ADMIN = "🗺 Админ гида"  # ★ Новая кнопка
+
+SKIP_BTN = "⏭ Пропустить"
+CANCEL_BTN = "❌ Отмена"
+CONFIRM_BTN = "✅ Подтвердить"
+
+FORM_STEPS_TOTAL = 15
+
+def progress_bar(step: int, total: int = FORM_STEPS_TOTAL) -> str:
+    filled = int((step / total) * 10)
+    bar = "█" * filled + "░" * (10 - filled)
+    return f"[{bar}] {step}/{total}"
+
+def main_keyboard(uid: int):
+    kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    # ★ Обновлённая кнопка с новой ссылкой и названием
+    kb.add(KeyboardButton(BTN_APP, web_app=WebAppInfo(url=GUIDE_APP_URL)))
+    kb.add(KeyboardButton(BTN_CHANNEL), KeyboardButton(BTN_CHAT))
+    kb.add(KeyboardButton(BTN_SITE), KeyboardButton(BTN_MUSIC))
+    kb.add(KeyboardButton(BTN_WEATHER), KeyboardButton(BTN_AI))
+    kb.add(KeyboardButton(BTN_VIP_SERVICES), KeyboardButton(BTN_ADD_VIP))
+    kb.add(KeyboardButton(BTN_SOS))
+    if is_admin(uid):
+        kb.add(KeyboardButton(BTN_ADMIN_PANEL))
+    return kb
+
+def admin_keyboard(uid: int = SUPER_ADMIN_ID):
+    kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    kb.add(KeyboardButton(A_MANAGE_VIP))
+    kb.add(KeyboardButton(A_ADD_VIP_ADMIN))
+    kb.add(KeyboardButton(A_PENDING))
+    kb.add(KeyboardButton(A_SET_LIMIT), KeyboardButton(A_SET_TTL))
+    kb.add(KeyboardButton(A_BROADCAST), KeyboardButton(A_STATS))
+    # ★ Кнопка "Админ гида" открывает Mini App
+    kb.add(KeyboardButton(A_GUIDE_ADMIN, web_app=WebAppInfo(url=GUIDE_ADMIN_APP_URL)))
+    # Управление админами — только супер-админу
+    if uid == SUPER_ADMIN_ID:
+        kb.add(KeyboardButton(A_ADMINS))
+    kb.add(KeyboardButton(A_BACK))
+    return kb
+
+def skip_kb():
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb.add(KeyboardButton(SKIP_BTN))
+    kb.add(KeyboardButton(CANCEL_BTN))
+    return kb
+
+def cancel_kb():
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb.add(KeyboardButton(CANCEL_BTN))
+    return kb
+
+def confirm_kb():
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb.add(KeyboardButton(CONFIRM_BTN))
+    kb.add(KeyboardButton(CANCEL_BTN))
+    return kb
+
+# ============================================================
+# ХРАНЕНИЕ VIP УСЛУГ
+# ============================================================
+def normalize_service_item(item):
+    if not isinstance(item, dict):
+        return None
+    if "owner_id" not in item and "id" in item:
+        item["owner_id"] = item.get("id")
+    try:
+        if item.get("owner_id") is not None:
+            item["owner_id"] = int(item["owner_id"])
+    except:
+        item["owner_id"] = None
+    if not item.get("created_at"):
+        item["created_at"] = datetime.datetime.utcnow().isoformat()
+    if "photos" not in item:
+        item["photos"] = []
+    if "website" not in item:
+        item["website"] = ""
+    return item
+
+def services_store():
+    store = load_json(SERVICES_FILE, {"pending": [], "approved": []})
+    if isinstance(store, list):
+        store = {"pending": [], "approved": store}
+    if not isinstance(store, dict):
+        store = {"pending": [], "approved": []}
+    store.setdefault("pending", [])
+    store.setdefault("approved", [])
+    if isinstance(store["pending"], dict):
+        store["pending"] = list(store["pending"].values())
+    if isinstance(store["approved"], dict):
+        store["approved"] = list(store["approved"].values())
+    if not isinstance(store["pending"], list):
+        store["pending"] = []
+    if not isinstance(store["approved"], list):
+        store["approved"] = []
+    store["pending"] = [x for x in (normalize_service_item(i) for i in store["pending"]) if x]
+    store["approved"] = [x for x in (normalize_service_item(i) for i in store["approved"]) if x]
+    save_json(SERVICES_FILE, store)
+    return store
+
+def approved_owner_ids(store) -> set:
+    ids = set()
+    for s in store.get("approved", []):
+        if isinstance(s, dict) and s.get("owner_id") is not None:
+            ids.add(str(s["owner_id"]))
+    return ids
+
+def service_text(s: dict) -> str:
+    """
+    Полная информация об услуге.
+    Межстрочный интервал — пустая строка между блоками.
+    """
+    if not isinstance(s, dict):
+        return "⚠️ Ошибка данных"
+
+    parts = []
+
+    # Заголовок
+    parts.append(f"⭐ <b>{s.get('name', 'Без названия')}</b>")
+    parts.append(f"🗂 Категория: <i>{s.get('category', '—')}</i>")
+
+    # Описание — с сохранением переносов строк пользователя
+    desc = str(s.get('desc', '')).strip()
+    if desc:
+        parts.append("")  # пустая строка = межстрочный интервал
+        parts.append("📝 <b>Описание:</b>")
+        # Каждую строку описания добавляем отдельно
+        for line in desc.split("\n"):
+            line = line.strip()
+            if line:
+                parts.append(line)
+
+    # Стоимость
+    price = str(s.get('price', '')).strip()
+    if price:
+        parts.append("")
+        parts.append(f"💰 <b>Стоимость:</b> {price}")
+
+    # Локация
+    city = str(s.get('city', '')).strip()
+    address = str(s.get('address', '')).strip()
+    if city or address:
+        loc_parts = []
+        if city:
+            loc_parts.append(city)
+        if address:
+            loc_parts.append(address)
+        parts.append("")
+        parts.append(f"📍 <b>Локация:</b> {', '.join(loc_parts)}")
+
+    # Сайт
+    website = str(s.get('website', '')).strip()
+    if website:
+        parts.append("")
+        parts.append(f"🌐 <b>Сайт:</b> {website}")
+
+    # Контакты
+    phone = str(s.get('phone', '')).strip()
+    tg = str(s.get('telegram', '')).strip()
+    wa = str(s.get('whatsapp', '')).strip()
+
+    contacts = []
+    if phone:
+        contacts.append(f"📞 {phone}")
+    if tg:
+        contacts.append(f"✈️ {tg}")
+    if wa:
+        contacts.append(f"📱 {wa}")
+
+    if contacts:
+        parts.append("")
+        parts.append("<b>Контакты:</b>")
+        parts.extend(contacts)
+
+    return "\n".join(parts)
+
+def service_buttons(s: dict, with_back: bool = True) -> InlineKeyboardMarkup:
+    if not isinstance(s, dict):
+        return InlineKeyboardMarkup()
+
+    kb = InlineKeyboardMarkup(row_width=2)
+
+    tg = str(s.get("telegram", "")).strip()
+    wa = str(s.get("whatsapp", "")).strip()
+    vk = str(s.get("vk", "")).strip()
+    ig = str(s.get("instagram", "")).strip()
+    website = str(s.get("website", "")).strip()
+    loc = s.get("location")
+
+    if tg:
+        if tg.startswith("http"):
+            tg_url = tg
+        else:
+            username = tg.replace("@", "").strip()
+            tg_url = f"https://t.me/{username}" if username else None
+        if tg_url:
+            kb.add(InlineKeyboardButton("✈️ Telegram", url=tg_url))
+
+    if wa:
+        wa_num = "".join([c for c in wa if c.isdigit()])
+        if wa_num:
+            kb.add(InlineKeyboardButton("📱 WhatsApp", url=f"https://wa.me/{wa_num}"))
+
+    if vk and vk.startswith("http"):
+        kb.add(InlineKeyboardButton("🔵 VK", url=vk))
+
+    if ig and ig.startswith("http"):
+        kb.add(InlineKeyboardButton("📸 Instagram", url=ig))
+
+    if website and website.startswith("http"):
+        kb.add(InlineKeyboardButton("🌐 Сайт", url=website))
+
+    if isinstance(loc, dict):
+        lat = loc.get("lat")
+        lon = loc.get("lon")
+        if lat is not None and lon is not None:
+            try:
+                lat = float(lat)
+                lon = float(lon)
+                kb.add(InlineKeyboardButton("🗺 На карте", url=f"https://maps.google.com/?q={lat},{lon}"))
+            except:
+                pass
+
+    if with_back:
+        kb.add(InlineKeyboardButton("📋 К списку услуг", callback_data="vip:list"))
+
+    return kb
+
+async def send_service_to_user(target, s: dict, with_back: bool = True):
+    """
+    Отправляет услугу: альбом фото сверху, текст с кнопками снизу.
+    """
+    text = service_text(s)
+    buttons = service_buttons(s, with_back=with_back)
+    photos = s.get("photos", [])
+
+    if photos:
+        try:
+            if len(photos) == 1:
+                await target.answer_photo(
+                    photo=photos[0],
+                    caption=text,
+                    parse_mode="HTML",
+                    reply_markup=buttons
+                )
+            else:
+                # Альбом фото
+                media = [InputMediaPhoto(media=ph) for ph in photos[:10]]
+                await target.answer_media_group(media=media)
+                # Текст отдельно под альбомом
+                await target.answer(text, parse_mode="HTML", reply_markup=buttons)
+            return
+        except Exception as e:
+            logging.error(f"Ошибка отправки фото: {e}")
+
+    await target.answer(text, parse_mode="HTML", reply_markup=buttons)
+
+# ============================================================
+# START + DEBUG
+# ============================================================
+@dp.message_handler(commands=["start"], state="*")
+async def start(message: types.Message, state: FSMContext):
+    await state.finish()
+    add_user(message.from_user.id)
+    load_settings()
+    services_store()
+    migrate_weather_subs()
+    await message.answer(
+        "🏔 <b>Гид по Кавказу и КЧР</b>\n"
+        "Домбай • Теберда • Архыз\n\n"
+        "Выберите раздел 👇",
+        parse_mode="HTML",
+        reply_markup=main_keyboard(message.from_user.id)
+    )
+
+@dp.message_handler(commands=["files"])
+async def files_debug(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    def size(path):
+        try:
+            return os.path.getsize(path)
+        except:
+            return "нет файла"
+    await message.answer(
+        "📁 Пути файлов:\n\n"
+        f"BASE_DIR: {BASE_DIR}\n\n"
+        f"USERS: {USERS_FILE} | {size(USERS_FILE)}\n"
+        f"SUBS: {SUBS_FILE} | {size(SUBS_FILE)}\n"
+        f"LIMITS: {LIMITS_FILE} | {size(LIMITS_FILE)}\n"
+        f"SERVICES: {SERVICES_FILE} | {size(SERVICES_FILE)}\n"
+        f"SETTINGS: {SETTINGS_FILE} | {size(SETTINGS_FILE)}\n"
+        f"ADMINS: {ADMINS_FILE} | {size(ADMINS_FILE)}"
+    )
+
+@dp.message_handler(commands=["vipdebug"])
+async def vipdebug(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    store = services_store()
+    debug_text = "⭐ VIP DEBUG\n\n"
+    debug_text += f"approved: {len(store.get('approved', []))}\n"
+    debug_text += f"pending: {len(store.get('pending', []))}\n\n"
+    if store.get('approved'):
+        debug_text += "Одобренные:\n"
+        for idx, s in enumerate(store['approved'], 1):
+            debug_text += f"{idx}. {s.get('name', 'N/A')} | photos: {len(s.get('photos', []))}\n"
+    await message.answer(debug_text)
+
+@dp.message_handler(commands=["admins"])
+async def list_admins_cmd(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    admins = load_admins()
+    text = "👥 <b>Администраторы:</b>\n\n"
+    for i, aid in enumerate(admins, 1):
+        mark = "👑" if aid == SUPER_ADMIN_ID else "🔑"
+        text += f"{i}. {mark} <code>{aid}</code>\n"
+    await message.answer(text, parse_mode="HTML")
+
+# ============================================================
+# КНОПКИ
+# ============================================================
+@dp.message_handler(lambda m: norm(m.text) == BTN_SITE, state="*")
+async def site(message: types.Message, state: FSMContext):
+    await state.finish()
+    kb = InlineKeyboardMarkup().add(InlineKeyboardButton("Открыть сайт", url=SITE_URL))
+    await message.answer("🌐 Официальный сайт:", reply_markup=kb)
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_MUSIC, state="*")
+async def music(message: types.Message, state: FSMContext):
+    await state.finish()
+    kb = InlineKeyboardMarkup().add(InlineKeyboardButton("Перейти", url=MUSIC_URL))
+    await message.answer("🎵 Music:", reply_markup=kb)
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_CHANNEL, state="*")
+async def channel(message: types.Message, state: FSMContext):
+    await state.finish()
+    kb = InlineKeyboardMarkup().add(InlineKeyboardButton("Перейти", url=CHANNEL_URL))
+    await message.answer("📣 Новости КЧР:", reply_markup=kb)
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_CHAT, state="*")
+async def chat(message: types.Message, state: FSMContext):
+    await state.finish()
+    kb = InlineKeyboardMarkup().add(InlineKeyboardButton("Войти в чат", url=CHAT_URL))
+    await message.answer("💬 Чат туристов:", reply_markup=kb)
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_SOS, state="*")
+async def sos(message: types.Message, state: FSMContext):
+    await state.finish()
+    await message.answer(
+        "🆘 <b>Экстренные службы:</b>\n\n"
+        "📞 <b>112</b> — единый\n"
+        "📞 <b>103</b> — скорая\n"
+        "📞 <b>102</b> — полиция\n"
+        "📞 <b>101</b> — пожарные\n"
+        "📞 <b>88782200112</b> — МЧС КЧР",
+        parse_mode="HTML"
+    )
+
+# ============================================================
+# ПОГОДА
+# ============================================================
+CITY_MAP = {
+    "dombay": {"name": "Домбай", "lat": 43.29, "lon": 41.63},
+    "teberda": {"name": "Теберда", "lat": 43.45, "lon": 41.74},
+    "arkhyz": {"name": "Архыз", "lat": 43.56, "lon": 41.28},
+    "cherkessk": {"name": "Черкесск", "lat": 44.22, "lon": 42.06},
+    "karachaevsk": {"name": "Карачаевск", "lat": 43.77, "lon": 41.91},
+}
+
+WEATHER_CODE = {
+    0: "☀️ Ясно", 1: "🌤 Преимущественно ясно", 2: "⛅ Переменная облачность", 3: "☁️ Пасмурно",
+    45: "🌫 Туман", 48: "🌫 Туман (изморозь)",
+    61: "🌧 Дождь слабый", 63: "🌧 Дождь", 65: "🌧 Дождь сильный",
+    71: "🌨 Снег слабый", 73: "🌨 Снег", 75: "❄️ Снег сильный",
+    80: "🌦 Ливни", 81: "🌦 Ливни", 82: "⛈ Ливни сильные",
+    95: "⛈ Гроза",
+}
+
+def migrate_weather_subs():
+    subs = load_json(SUBS_FILE, {})
+    if isinstance(subs, list):
+        subs = {str(uid): "dombay" for uid in subs}
+        save_json(SUBS_FILE, subs)
+    if not isinstance(subs, dict):
+        subs = {}
+        save_json(SUBS_FILE, subs)
+    return subs
+
+async def get_weather(city_code: str) -> str:
+    city = CITY_MAP[city_code]
+    lat, lon = city["lat"], city["lon"]
+    url = (
+        "https://api.open-meteo.com/v1/forecast"
+        f"?latitude={lat}&longitude={lon}"
+        "&current_weather=true"
+        "&hourly=apparent_temperature,relativehumidity_2m,precipitation,visibility,windgusts_10m"
+        "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max"
+        "&timezone=Europe%2FMoscow"
+    )
+    try:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15)) as s:
+            async with s.get(url) as r:
+                data = await r.json()
+        cw = data.get("current_weather", {})
+        hourly = data.get("hourly", {})
+        daily = data.get("daily", {})
+        t = cw.get("temperature")
+        wind = cw.get("windspeed")
+        wcode = cw.get("weathercode")
+        ctime = cw.get("time")
+        desc = WEATHER_CODE.get(wcode, f"Код: {wcode}")
+        idx = None
+        times = hourly.get("time", [])
+        if ctime in times:
+            idx = times.index(ctime)
+
+        def hget(key):
+            arr = hourly.get(key, [])
+            if idx is None or idx >= len(arr):
+                return None
+            return arr[idx]
+
+        feels = hget("apparent_temperature")
+        hum = hget("relativehumidity_2m")
+        precip_now = hget("precipitation")
+        vis = hget("visibility")
+        gust = hget("windgusts_10m")
+        tmax = daily.get("temperature_2m_max", [None])[0]
+        tmin = daily.get("temperature_2m_min", [None])[0]
+        pr_sum = daily.get("precipitation_sum", [None])[0]
+        wind_max = daily.get("windspeed_10m_max", [None])[0]
+
+        tips = []
+        if pr_sum is not None and pr_sum >= 5:
+            tips.append("осадки: дождевик + чехол на рюкзак, обувь мембранная")
+        if gust is not None and gust >= 35:
+            tips.append("сильные порывы: избегай гребней/перевалов")
+        if t is not None and t <= 5:
+            tips.append("прохладно: слои (термо + флис + ветровка)")
+        if not tips:
+            tips.append("условия нормальные, но возьми ветровку — погода в горах меняется быстро")
+
+        def fmt_vis(m):
+            if m is None:
+                return "-"
+            if m >= 1000:
+                return f"{m/1000:.1f} км"
+            return f"{m} м"
+
+        return (
+            f"{desc}\n"
+            f"🌡 {t}°C (ощущается {feels}°C)\n"
+            f"💧 Влажность: {hum}%\n"
+            f"🌧 Осадки сейчас: {precip_now} мм\n"
+            f"💨 Ветер: {wind} км/ч, порывы: {gust} км/ч\n"
+            f"👁 Видимость: {fmt_vis(vis)}\n\n"
+            f"<b>Сегодня:</b>\n"
+            f"🔼 Макс: {tmax}°C\n"
+            f"🔽 Мин: {tmin}°C\n"
+            f"🌧 Осадки: {pr_sum} мм\n"
+            f"💨 Ветер макс: {wind_max} км/ч\n\n"
+            "💡 <b>Совет:</b>\n" + "\n".join([f"• {x}" for x in tips])
+        )
+    except Exception as e:
+        logging.error(f"Ошибка погоды: {e}")
+        return "⚠️ Не удалось получить погоду. Попробуйте позже."
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_WEATHER, state="*")
+async def weather_menu(message: types.Message, state: FSMContext):
+    await state.finish()
+    migrate_weather_subs()
+    kb = InlineKeyboardMarkup(row_width=2)
+    for code, c in CITY_MAP.items():
+        kb.insert(InlineKeyboardButton(c["name"], callback_data=f"wcity:{code}"))
+    kb.add(
+        InlineKeyboardButton("📋 Моя подписка", callback_data="w:my"),
+        InlineKeyboardButton("❌ Отписаться", callback_data="w:unsub"),
+    )
+    await message.answer("🌤 Выберите город:", reply_markup=kb)
+
+@dp.callback_query_handler(lambda c: c.data.startswith("wcity:"))
+async def weather_city(callback: types.CallbackQuery):
+    code = callback.data.split(":", 1)[1]
+    text = await get_weather(code)
+    kb = InlineKeyboardMarkup().add(
+        InlineKeyboardButton("✅ Подписаться (10:00 МСК)", callback_data=f"wsub:{code}"),
+        InlineKeyboardButton("❌ Отписаться", callback_data="w:unsub")
+    )
+    await callback.message.answer(
+        f"🌤 <b>Погода — {CITY_MAP[code]['name']}</b>\n\n{text}",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+    await callback.answer()
+
+@dp.callback_query_handler(lambda c: c.data.startswith("wsub:"))
+async def weather_sub(callback: types.CallbackQuery):
+    code = callback.data.split(":", 1)[1]
+    subs = migrate_weather_subs()
+    subs[str(callback.from_user.id)] = code
+    save_json(SUBS_FILE, subs)
+    await callback.answer(f"✅ Подписка ({CITY_MAP[code]['name']}, 10:00 МСК)")
+
+@dp.callback_query_handler(lambda c: c.data == "w:unsub")
+async def weather_unsub(callback: types.CallbackQuery):
+    subs = migrate_weather_subs()
+    uid = str(callback.from_user.id)
+    if uid in subs:
+        subs.pop(uid, None)
+        save_json(SUBS_FILE, subs)
+        await callback.answer("✅ Отписка")
+    else:
+        await callback.answer("У вас нет подписки")
+
+@dp.callback_query_handler(lambda c: c.data == "w:my")
+async def weather_my(callback: types.CallbackQuery):
+    subs = migrate_weather_subs()
+    code = subs.get(str(callback.from_user.id))
+    await callback.answer()
+    if not code:
+        await callback.message.answer("📋 Подписки нет.")
+    else:
+        await callback.message.answer(
+            f"📋 Подписка: {CITY_MAP[code]['name']}\n"
+            f"⏰ Автоотправка: 10:00 МСК"
+        )
+
+def seconds_until_next_10_msk() -> int:
+    tz = pytz.timezone("Europe/Moscow")
+    now = datetime.datetime.now(tz)
+    target = now.replace(hour=10, minute=0, second=0, microsecond=0)
+    if now >= target:
+        target = target + datetime.timedelta(days=1)
+    return max(1, int((target - now).total_seconds()))
+
+async def auto_weather():
+    while True:
+        await asyncio.sleep(seconds_until_next_10_msk())
+        subs = migrate_weather_subs()
+        for uid, code in subs.items():
+            try:
+                text = await get_weather(code)
+                await bot.send_message(
+                    int(uid),
+                    f"🌤 <b>Погода (10:00 МСК) — {CITY_MAP[code]['name']}</b>\n\n{text}",
+                    parse_mode="HTML"
+                )
+            except:
+                pass
+        await asyncio.sleep(2)
+
+# ============================================================
+# AI ГИД
+# ============================================================
+async def ask_ai(prompt: str):
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": GROQ_MODEL,
+        "messages": [
+            {"role": "system", "content": AI_SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 700,
+        "temperature": 0.7
+    }
+    try:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as s:
+            async with s.post(GROQ_API_URL, headers=headers, json=payload) as r:
+                resp_text = await r.text()
+                logging.info(f"AI status: {r.status}, body: {resp_text[:200]}")
+                if r.status == 401:
+                    return False, "⚠️ Ошибка авторизации AI. Проверьте ключ API."
+                if r.status == 404:
+                    return False, "⚠️ AI: модель не найдена. Проверьте GROQ_MODEL и GROQ_API_URL."
+                if r.status == 429:
+                    return False, "⚠️ Лимит запросов AI исчерпан. Попробуйте позже."
+                if r.status != 200:
+                    return False, f"⚠️ Ошибка AI (код {r.status})."
+                data = json.loads(resp_text)
+                return True, data["choices"][0]["message"]["content"]
+    except asyncio.TimeoutError:
+        return False, "⚠️ AI не ответил вовремя. Попробуйте ещё раз."
+    except Exception as e:
+        logging.error(f"AI error: {e}")
+        return False, "⚠️ AI временно недоступен."
+
+@dp.message_handler(lambda m: norm(m.text) == BTN_AI, state="*")
+async def ai_toggle(message: types.Message, state: FSMContext):
+    await state.finish()
+    uid = message.from_user.id
+    AI_STATE[uid] = not AI_STATE.get(uid, False)
+    if AI_STATE[uid]:
+        ok_limit, remaining = check_limit(uid)
+        await message.answer(
+            "🤖 <b>AI Гид включён</b>\n\n"
+            "Задавай вопросы про КЧР:\n"
+            "• Куда сходить и что посмотреть\n"
+            "• Маршруты по уровню сложности\n"
+            "• Какую взять экипировку\n"
+            "• Безопасность в горах\n"
+            "• Как добраться и где жить\n\n"
+            f"💬 Осталось запросов сегодня: <b>{remaining}</b>\n\n"
+            "Чтобы выключить — нажми «🤖 AI Гид» ещё раз.",
+            parse_mode="HTML"
+        )
+    else:
+        await message.answer("✅ AI Гид выключен.")
+
+# ============================================================
+# VIP УСЛУГИ — формы
+# ============================================================
+class ServiceForm(StatesGroup):
+    category = State()
+    name = State()
+    desc = State()
+    price = State()
+    city = State()
+    address = State()
+    location = State()
+    phone = State()
+    telegram = State()
+    whatsapp = State()
+    vk = State()
+    instagram = State()
+    website = State()
+    photo1 = State()
+    photo2 = State()
+    confirm = State()
+
+class AdminServiceForm(StatesGroup):
+    category = State()
+    name = State()
+    desc = State()
+    price = State()
+    city = State()
+    address = State()
+    phone = State()
+    telegram = State()
+    whatsapp = State()
+    website = State()
+    photo1 = State()
+    photo2 = State()
+    confirm = State()
+
+class AdminEdit(StatesGroup):
+    limit = State()
+    ttl = State()
+    broadcast_text = State()
+    edit_field = State()
+    edit_value = State()
+    add_admin = State()
+    remove_admin = State()
+
+@dp.message_handler(lambda m: norm(m.text) == CANCEL_BTN, state="*")
+async def cancel_any(message: types.Message, state: FSMContext):
+    await state.finish()
+    await message.answer(
+        "❌ Отменено.",
+        reply_markup=main_keyboard(message.from_user.id)
+    )
+
+def build_vip_list_keyboard(approved):
+    kb = InlineKeyboardMarkup(row_width=1)
+    for idx, s in enumerate(approved):
+        name = s.get('name', 'Без названия')
+        category = s.get('category', '')
+        button_text = f"⭐ {name}"
+        if category:
+            button_text += f" — {category}"
+        if len(button_text) > 60:
+            button_text = button_text[:57] + "..."
+        kb.add(InlineKeyboardButton(button_text, callback_data=f"vip:view:{idx}"))
+    return kb
+
+# ============================================================
+# ПОКАЗ VIP
+# ============================================================
+@dp.message_handler(lambda m: norm(m.text) == BTN_VIP_SERVICES, state="*")
+async def vip_show_list(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state and ("ServiceForm" in str(current_state) or "AdminServiceForm" in str(current_state)):
+        await message.answer(
+            "⚠️ Вы сейчас заполняете форму.\n"
+            "Завершите или нажмите ❌ Отмена.",
+            reply_markup=cancel_kb()
+        )
+        return
+
+    await state.finish()
+    store = services_store()
+    approved = store.get("approved", [])
+
+    intro_text = (
+        "⭐ <b>VIP Услуги</b>\n\n"
+        "Проверенные партнёры и сервисы:\n"
+        "• 🧭 Гиды и инструкторы\n"
+        "• 🚗 Трансферы и такси\n"
+        "• 🎿 Прокат снаряжения\n"
+        "• 🏠 Жильё и туры\n\n"
+        "🔗 <b>Остальные сервисы — в приложении!</b>"
+    )
+
+    if not approved:
+        await message.answer(
+            intro_text + "\n\n📋 Пока нет активных VIP услуг.",
+            parse_mode="HTML"
+        )
+        return
+
+    kb = build_vip_list_keyboard(approved)
+    await message.answer(
+        intro_text + "\n\n👇 <b>Выберите услугу:</b>",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+@dp.callback_query_handler(lambda c: c.data.startswith("vip:view:"))
+async def vip_view_service(callback: types.CallbackQuery):
+    try:
+        idx = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка", show_alert=True)
+        return
+
+    store = services_store()
+    approved = store.get("approved", [])
+
+    if idx >= len(approved) or idx < 0:
+        await callback.answer("Услуга не найдена", show_alert=True)
+        return
+
+    s = approved[idx]
+    await callback.answer()
+
+    try:
+        await send_service_to_user(callback.message, s, with_back=True)
+    except Exception as e:
+        logging.error(f"Ошибка отправки услуги: {e}")
+        await callback.message.answer(f"⚠️ Ошибка: {str(e)[:100]}")
+
+@dp.callback_query_handler(lambda c: c.data == "vip:list")
+async def vip_back_to_list(callback: types.CallbackQuery):
+    await callback.answer()
+    store = services_store()
+    approved = store.get("approved", [])
+
+    if not approved:
+        await callback.message.answer("📋 Нет активных VIP услуг.")
+        return
+
+    kb = build_vip_list_keyboard(approved)
+    await callback.message.answer(
+        "⭐ <b>VIP Услуги</b>\n\n👇 Выберите услугу:",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+# ============================================================
+# ДОБАВЛЕНИЕ VIP (пользователь)
+# ============================================================
+@dp.message_handler(lambda m: norm(m.text) == BTN_ADD_VIP, state="*")
+async def vip_add_start(message: types.Message, state: FSMContext):
+    await state.finish()
+    store = services_store()
+    limit = get_services_limit()
+    if len(store.get("approved", [])) >= limit:
+        await message.answer(f"❌ Лимит VIP услуг достигнут ({limit}).")
+        return
+    if str(message.from_user.id) in approved_owner_ids(store):
+        kb = InlineKeyboardMarkup().add(
+            InlineKeyboardButton("✏️ Редактировать мою услугу", callback_data="vip:edit_my")
+        )
+        await message.answer(
+            "⚠️ У вас уже есть одобренная VIP услуга.\n\n"
+            "Хотите её отредактировать?",
+            reply_markup=kb
+        )
+        return
+
+    await message.answer(
+        "📋 <b>Добавление VIP услуги</b>\n\n"
+        f"{progress_bar(1)}\n\n"
+        "📂 Введите <b>категорию</b>\n"
+        "<i>Примеры: Гид / Трансфер / Прокат / Жильё / Тур</i>",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.category.set()
+
+@dp.message_handler(state=ServiceForm.category)
+async def vip_category(message: types.Message, state: FSMContext):
+    cat = norm(message.text)
+    if len(cat) < 2:
+        await message.answer("❌ Категория слишком короткая.")
+        return
+    await state.update_data(category=cat)
+    await message.answer(
+        f"{progress_bar(2)}\n\n✏️ Введите <b>название</b> услуги:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.name)
+async def vip_name(message: types.Message, state: FSMContext):
+    name = norm(message.text)
+    if len(name) < 2:
+        await message.answer("❌ Название слишком короткое.")
+        return
+    await state.update_data(name=name)
+    await message.answer(
+        f"{progress_bar(3)}\n\n"
+        "📝 Введите <b>описание</b> услуги:\n\n"
+        "<i>💡 Пишите с новой строки — форматирование сохранится.\n"
+        "Каждый пункт с новой строки будет отображаться отдельно.</i>",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.desc)
+async def vip_desc(message: types.Message, state: FSMContext):
+    await state.update_data(desc=norm_multiline(message.text))
+    await message.answer(
+        f"{progress_bar(4)}\n\n"
+        "💰 Введите <b>стоимость</b>\n"
+        "<i>Примеры: 5000₽, от 3000₽, договорная</i>",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.price)
+async def vip_price(message: types.Message, state: FSMContext):
+    await state.update_data(price=norm(message.text))
+    await message.answer(
+        f"{progress_bar(5)}\n\n"
+        "🏙 Введите <b>город</b>\n"
+        "<i>Примеры: Домбай, Теберда, Архыз</i>",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.city)
+async def vip_city(message: types.Message, state: FSMContext):
+    await state.update_data(city=norm(message.text))
+    await message.answer(
+        f"{progress_bar(6)}\n\n📍 Введите <b>адрес</b>:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.address)
+async def vip_address(message: types.Message, state: FSMContext):
+    await state.update_data(address=norm(message.text))
+    await message.answer(
+        f"{progress_bar(7)}\n\n"
+        "🗺 Отправьте <b>геолокацию</b> или нажмите «Пропустить»",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(content_types=types.ContentType.LOCATION, state=ServiceForm.location)
+async def vip_location_geo(message: types.Message, state: FSMContext):
+    loc = message.location
+    await state.update_data(location={"lat": loc.latitude, "lon": loc.longitude})
+    await message.answer(
+        f"{progress_bar(8)}\n\n📞 Введите <b>телефон</b>:",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.location)
+async def vip_location_skip(message: types.Message, state: FSMContext):
+    if norm(message.text) == SKIP_BTN:
+        await message.answer(
+            f"{progress_bar(8)}\n\n📞 Введите <b>телефон</b>:",
+            parse_mode="HTML",
+            reply_markup=skip_kb()
+        )
+        await ServiceForm.next()
+    else:
+        await message.answer("⚠️ Отправьте геолокацию или нажмите «Пропустить».", reply_markup=skip_kb())
+
+@dp.message_handler(state=ServiceForm.phone)
+async def vip_phone(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(phone=norm(message.text))
+    await message.answer(
+        f"{progress_bar(9)}\n\n"
+        "✈️ Введите <b>Telegram</b>\n"
+        "<i>Можно: @username, https://t.me/username или ссылку на канал</i>",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.telegram)
+async def vip_tg(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        tg_val = norm(message.text)
+        if tg_val and not tg_val.startswith("http") and not tg_val.startswith("@"):
+            if tg_val.startswith("t.me/"):
+                tg_val = "https://" + tg_val
+            else:
+                tg_val = "@" + tg_val
+        await state.update_data(telegram=tg_val)
+    await message.answer(
+        f"{progress_bar(10)}\n\n"
+        "📱 Введите номер <b>WhatsApp</b>\n"
+        "<i>Пример: +79001234567</i>",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.whatsapp)
+async def vip_wa(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(whatsapp=norm(message.text))
+    await message.answer(
+        f"{progress_bar(11)}\n\n🔵 Ссылка на <b>VK</b> (https://...):",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.vk)
+async def vip_vk(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(vk=norm(message.text))
+    await message.answer(
+        f"{progress_bar(12)}\n\n📸 Ссылка на <b>Instagram</b> (https://...):",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.instagram)
+async def vip_inst(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(instagram=norm(message.text))
+    await message.answer(
+        f"{progress_bar(13)}\n\n🌐 Ссылка на <b>сайт</b> (https://...):",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.website)
+async def vip_website(message: types.Message, state: FSMContext):
+    if norm(message.text) != SKIP_BTN:
+        site_val = norm(message.text)
+        if site_val and not site_val.startswith("http"):
+            site_val = "https://" + site_val
+        await state.update_data(website=site_val)
+    await message.answer(
+        f"{progress_bar(14)}\n\n"
+        "📷 Отправьте <b>первое фото</b> (или пропустите)\n\n"
+        "⚠️ По одному фото!",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=ServiceForm.photo1)
+async def vip_photo1_image(message: types.Message, state: FSMContext):
+    await state.update_data(photo1=message.photo[-1].file_id)
+    await message.answer(
+        f"{progress_bar(15)}\n\n"
+        "✅ Фото 1 получено!\n\n"
+        "📷 Отправьте <b>второе фото</b> (или пропустите):",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await ServiceForm.next()
+
+@dp.message_handler(state=ServiceForm.photo1)
+async def vip_photo1_skip(message: types.Message, state: FSMContext):
+    if norm(message.text) == SKIP_BTN:
+        await message.answer(
+            f"{progress_bar(15)}\n\n📷 Второе фото (или пропустите):",
+            parse_mode="HTML",
+            reply_markup=skip_kb()
+        )
+        await ServiceForm.next()
+    else:
+        await message.answer("⚠️ Отправьте фото или нажмите «Пропустить».", reply_markup=skip_kb())
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=ServiceForm.photo2)
+async def vip_photo2_image(message: types.Message, state: FSMContext):
+    await state.update_data(photo2=message.photo[-1].file_id)
+    await vip_show_confirm(message, state)
+
+@dp.message_handler(state=ServiceForm.photo2)
+async def vip_photo2_skip(message: types.Message, state: FSMContext):
+    if norm(message.text) == SKIP_BTN:
+        await vip_show_confirm(message, state)
+    else:
+        await message.answer("⚠️ Отправьте фото или нажмите «Пропустить».", reply_markup=skip_kb())
+
+async def vip_show_confirm(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    photos = []
+    if data.get("photo1"):
+        photos.append(data["photo1"])
+    if data.get("photo2"):
+        photos.append(data["photo2"])
+
+    service = {
+        "owner_id": message.from_user.id,
+        "category": data.get("category", ""),
+        "name": data.get("name", ""),
+        "desc": data.get("desc", ""),
+        "price": data.get("price", ""),
+        "city": data.get("city", ""),
+        "address": data.get("address", ""),
+        "location": data.get("location"),
+        "phone": data.get("phone", ""),
+        "telegram": data.get("telegram", ""),
+        "whatsapp": data.get("whatsapp", ""),
+        "vk": data.get("vk", ""),
+        "instagram": data.get("instagram", ""),
+        "website": data.get("website", ""),
+        "photos": photos,
+        "created_at": datetime.datetime.utcnow().isoformat()
+    }
+    await state.update_data(_preview_service=service)
+
+    preview_text = "👁 <b>Предпросмотр вашей заявки:</b>\n\n" + service_text(service)
+    if photos:
+        preview_text += f"\n\n📷 Фото: {len(photos)} шт."
+
+    await message.answer(
+        preview_text,
+        parse_mode="HTML",
+        reply_markup=confirm_kb()
+    )
+    await ServiceForm.confirm.set()
+
+@dp.message_handler(lambda m: norm(m.text) == CONFIRM_BTN, state=ServiceForm.confirm)
+async def vip_confirm_send(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    service = data.get("_preview_service")
+    if not service:
+        await message.answer("❌ Ошибка. Начните заново.", reply_markup=main_keyboard(message.from_user.id))
+        await state.finish()
+        return
+    await vip_finalize(message, state, service)
+
+async def vip_finalize(message: types.Message, state: FSMContext, service: dict):
+    store = services_store()
+    store["pending"].append(service)
+    save_json(SERVICES_FILE, store)
+
+    photos = service.get("photos", [])
+
+    kb = InlineKeyboardMarkup(row_width=2)
+    kb.add(
+        InlineKeyboardButton("✅ Одобрить", callback_data=f"s:approve:{service['owner_id']}"),
+        InlineKeyboardButton("❌ Отклонить", callback_data=f"s:reject:{service['owner_id']}")
+    )
+    kb.add(InlineKeyboardButton("✏️ Редактировать", callback_data=f"s:edit:{service['owner_id']}"))
+
+    admin_text = (
+        f"📋 <b>Новая VIP заявка</b>\n"
+        f"👤 @{message.from_user.username or 'нет'} (ID: {message.from_user.id})\n\n"
+        + service_text(service)
+    )
+
+    # Отправляем всем админам
+    admins = load_admins()
+    for admin_id in admins:
+        try:
+            if photos:
+                if len(photos) == 1:
+                    await bot.send_photo(admin_id, photo=photos[0], caption=admin_text, parse_mode="HTML", reply_markup=kb)
+                else:
+                    media = [InputMediaPhoto(media=ph) for ph in photos]
+                    await bot.send_media_group(admin_id, media=media)
+                    await bot.send_message(admin_id, admin_text, parse_mode="HTML", reply_markup=kb)
+            else:
+                await bot.send_message(admin_id, admin_text, parse_mode="HTML", reply_markup=kb)
+        except Exception as e:
+            logging.error(f"Ошибка отправки заявки админу {admin_id}: {e}")
+
+    await message.answer(
+        "✅ <b>Заявка отправлена на модерацию!</b>\n\n"
+        "Мы уведомим вас после проверки.",
+        parse_mode="HTML",
+        reply_markup=main_keyboard(message.from_user.id)
+    )
+    await state.finish()
+
+# ============================================================
+# РЕДАКТИРОВАНИЕ СВОЕЙ УСЛУГИ
+# ============================================================
+@dp.callback_query_handler(lambda c: c.data == "vip:edit_my")
+async def vip_edit_my(callback: types.CallbackQuery):
+    uid = str(callback.from_user.id)
+    store = services_store()
+    my_service = None
+    for s in store.get("approved", []):
+        if str(s.get("owner_id")) == uid:
+            my_service = s
+            break
+
+    if not my_service:
+        await callback.answer("Услуга не найдена", show_alert=True)
+        return
+
+    await callback.answer()
+    kb = InlineKeyboardMarkup(row_width=1)
+    kb.add(
+        InlineKeyboardButton("✏️ Описание", callback_data="edit_my:desc"),
+        InlineKeyboardButton("💰 Цена", callback_data="edit_my:price"),
+        InlineKeyboardButton("📞 Телефон", callback_data="edit_my:phone"),
+        InlineKeyboardButton("✈️ Telegram", callback_data="edit_my:telegram"),
+        InlineKeyboardButton("📱 WhatsApp", callback_data="edit_my:whatsapp"),
+        InlineKeyboardButton("🌐 Сайт", callback_data="edit_my:website"),
+    )
+    await callback.message.answer(
+        "✏️ <b>Редактирование вашей VIP услуги</b>\n\n"
+        "Что хотите изменить?",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+@dp.callback_query_handler(lambda c: c.data.startswith("edit_my:"))
+async def vip_edit_my_field(callback: types.CallbackQuery, state: FSMContext):
+    field = callback.data.split(":")[1]
+    field_names = {
+        "desc": "описание", "price": "цену", "phone": "телефон",
+        "telegram": "Telegram", "whatsapp": "WhatsApp", "website": "сайт"
+    }
+    await callback.answer()
+    await state.update_data(edit_field=field, edit_owner_id=callback.from_user.id)
+    await callback.message.answer(
+        f"✏️ Введите новое <b>{field_names.get(field, field)}</b>:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminEdit.edit_value.set()
+
+@dp.message_handler(state=AdminEdit.edit_value)
+async def vip_edit_my_save(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    field = data.get("edit_field")
+    owner_id = data.get("edit_owner_id")
+
+    if not field or not owner_id:
+        await state.finish()
+        return
+
+    new_value = message.text.strip()
+    if field == "desc":
+        new_value = norm_multiline(message.text)
+    elif field == "telegram":
+        if new_value and not new_value.startswith("http") and not new_value.startswith("@"):
+            new_value = "@" + new_value
+    elif field == "website":
+        if new_value and not new_value.startswith("http"):
+            new_value = "https://" + new_value
+
+    store = services_store()
+    updated = False
+    for s in store["approved"]:
+        if str(s.get("owner_id")) == str(owner_id):
+            s[field] = new_value
+            updated = True
+            break
+
+    if updated:
+        save_json(SERVICES_FILE, store)
+        await message.answer("✅ <b>Данные обновлены!</b>", parse_mode="HTML", reply_markup=main_keyboard(message.from_user.id))
+        admins = load_admins()
+        for admin_id in admins:
+            try:
+                await bot.send_message(
+                    admin_id,
+                    f"✏️ Пользователь {owner_id} изменил поле «{field}»\n"
+                    f"Новое значение: {new_value}"
+                )
+            except:
+                pass
+    else:
+        await message.answer("❌ Услуга не найдена.", reply_markup=main_keyboard(message.from_user.id))
+
+    await state.finish()
+
+# ============================================================
+# ОДОБРЕНИЕ / ОТКЛОНЕНИЕ
+# ============================================================
+@dp.callback_query_handler(lambda c: c.data.startswith("s:approve:"))
+async def vip_approve(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        owner_id = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка данных", show_alert=True)
+        return
+
+    store = services_store()
+    limit = get_services_limit()
+    if len(store.get("approved", [])) >= limit:
+        await callback.answer(f"Лимит VIP достигнут ({limit})", show_alert=True)
+        return
+    if str(owner_id) in approved_owner_ids(store):
+        store["pending"] = [x for x in store.get("pending", []) if int(x.get("owner_id", -1)) != owner_id]
+        save_json(SERVICES_FILE, store)
+        await callback.answer("У владельца уже есть VIP.", show_alert=True)
+        return
+
+    pending = store.get("pending", [])
+    target = None
+    for s in pending:
+        if int(s.get("owner_id", -1)) == owner_id:
+            target = s
+            break
+    if not target:
+        await callback.answer("Заявка не найдена", show_alert=True)
+        return
+
+    store["pending"] = [x for x in pending if int(x.get("owner_id", -1)) != owner_id]
+    store["approved"].append(target)
+    save_json(SERVICES_FILE, store)
+    await callback.answer("✅ Одобрено!")
+
+    try:
+        await bot.send_message(
+            owner_id,
+            f"✅ <b>Ваша VIP услуга одобрена и опубликована!</b>\n\n"
+            f"⏰ Автоудаление через {get_service_ttl_days()} дней.",
+            parse_mode="HTML"
+        )
+    except:
+        pass
+
+@dp.callback_query_handler(lambda c: c.data.startswith("s:reject:"))
+async def vip_reject(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        owner_id = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка данных", show_alert=True)
+        return
+
+    store = services_store()
+    store["pending"] = [x for x in store.get("pending", []) if int(x.get("owner_id", -1)) != owner_id]
+    save_json(SERVICES_FILE, store)
+    await callback.answer("❌ Отклонено")
+    try:
+        await bot.send_message(
+            owner_id,
+            "❌ <b>Ваша заявка на VIP услугу отклонена.</b>\n\n"
+            "Для уточнения — напишите администратору.",
+            parse_mode="HTML"
+        )
+    except:
+        pass
+
+@dp.callback_query_handler(lambda c: c.data.startswith("s:edit:"))
+async def vip_edit_admin(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        owner_id = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка данных", show_alert=True)
+        return
+
+    store = services_store()
+    target = None
+    for lst in ["pending", "approved"]:
+        for s in store.get(lst, []):
+            if int(s.get("owner_id", -1)) == owner_id:
+                target = s
+                break
+
+    if not target:
+        await callback.answer("Заявка не найдена", show_alert=True)
+        return
+
+    await callback.answer()
+    kb = InlineKeyboardMarkup(row_width=1)
+    kb.add(
+        InlineKeyboardButton("✏️ Название", callback_data=f"adm:editf:{owner_id}:name"),
+        InlineKeyboardButton("📝 Описание", callback_data=f"adm:editf:{owner_id}:desc"),
+        InlineKeyboardButton("💰 Цена", callback_data=f"adm:editf:{owner_id}:price"),
+        InlineKeyboardButton("🏙 Город", callback_data=f"adm:editf:{owner_id}:city"),
+        InlineKeyboardButton("📞 Телефон", callback_data=f"adm:editf:{owner_id}:phone"),
+        InlineKeyboardButton("🌐 Сайт", callback_data=f"adm:editf:{owner_id}:website"),
+        InlineKeyboardButton("✅ Одобрить", callback_data=f"s:approve:{owner_id}"),
+        InlineKeyboardButton("❌ Отклонить", callback_data=f"s:reject:{owner_id}"),
+    )
+    await callback.message.answer(
+        f"✏️ <b>Редактирование заявки</b>\n"
+        f"Owner ID: {owner_id}\n\n"
+        "Выберите поле:",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+@dp.callback_query_handler(lambda c: c.data.startswith("adm:editf:"))
+async def admin_edit_field_start(callback: types.CallbackQuery, state: FSMContext):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    parts = callback.data.split(":")
+    owner_id = int(parts[2])
+    field = parts[3]
+    await callback.answer()
+    await state.update_data(adm_edit_owner=owner_id, adm_edit_field=field)
+    await callback.message.answer(
+        f"✏️ Новое значение для <b>{field}</b>:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminEdit.edit_field.set()
+
+@dp.message_handler(state=AdminEdit.edit_field)
+async def admin_edit_field_save(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    data = await state.get_data()
+    owner_id = data.get("adm_edit_owner")
+    field = data.get("adm_edit_field")
+    new_value = norm_multiline(message.text) if field == "desc" else norm(message.text)
+
+    store = services_store()
+    updated = False
+    for lst in ["pending", "approved"]:
+        for s in store[lst]:
+            if int(s.get("owner_id", -1)) == owner_id:
+                s[field] = new_value
+                updated = True
+                break
+
+    if updated:
+        save_json(SERVICES_FILE, store)
+        await message.answer("✅ Поле обновлено.", reply_markup=admin_keyboard(message.from_user.id))
+    else:
+        await message.answer("❌ Не найдено.", reply_markup=admin_keyboard(message.from_user.id))
+    await state.finish()
+
+# ============================================================
+# АВТОУДАЛЕНИЕ VIP
+# ============================================================
+def _parse_iso(dt_str: str):
+    try:
+        return datetime.datetime.fromisoformat(dt_str)
+    except:
+        return None
+
+async def auto_prune_services():
+    while True:
+        try:
+            ttl_days = get_service_ttl_days()
+            cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=ttl_days)
+            store = services_store()
+            keep, removed = [], []
+            for s in store.get("approved", []):
+                created = _parse_iso(s.get("created_at", ""))
+                if created and created < cutoff:
+                    removed.append(s)
+                else:
+                    keep.append(s)
+            if removed:
+                store["approved"] = keep
+                save_json(SERVICES_FILE, store)
+                for s in removed:
+                    try:
+                        await bot.send_message(
+                            s["owner_id"],
+                            "⏰ Ваша VIP услуга удалена по истечении срока.\n"
+                            "Вы можете добавить её снова."
+                        )
+                    except:
+                        pass
+        except Exception as e:
+            logging.error(f"Ошибка pruning: {e}")
+        await asyncio.sleep(3600)
+
+# ============================================================
+# АДМИН-ПАНЕЛЬ
+# ============================================================
+@dp.message_handler(lambda m: norm(m.text) == BTN_ADMIN_PANEL, state="*")
+async def admin_panel(message: types.Message, state: FSMContext):
+    await state.finish()
+    if not is_admin(message.from_user.id):
+        return
+    store = services_store()
+    admins = load_admins()
+    await message.answer(
+        "⚙️ <b>Админ-панель</b>\n\n"
+        f"⭐ VIP лимит: {get_services_limit()}\n"
+        f"⏳ VIP срок: {get_service_ttl_days()} дней\n"
+        f"✅ Одобрено: {len(store.get('approved', []))}\n"
+        f"📋 На модерации: {len(store.get('pending', []))}\n"
+        f"👥 Администраторов: {len(admins)}\n\n"
+        "Команды:\n"
+        "/files — пути файлов\n"
+        "/vipdebug — проверка VIP\n"
+        "/admins — список администраторов",
+        parse_mode="HTML",
+        reply_markup=admin_keyboard(message.from_user.id)
+    )
+
+@dp.message_handler(lambda m: norm(m.text) == A_BACK, state="*")
+async def admin_back(message: types.Message, state: FSMContext):
+    await state.finish()
+    if not is_admin(message.from_user.id):
+        return
+    await message.answer("Главное меню:", reply_markup=main_keyboard(message.from_user.id))
+
+# ЗАЯВКИ НА МОДЕРАЦИИ
+@dp.message_handler(lambda m: norm(m.text) == A_PENDING, state="*")
+async def admin_pending(message: types.Message, state: FSMContext):
+    await state.finish()
+    if not is_admin(message.from_user.id):
+        return
+    store = services_store()
+    pending = store.get("pending", [])
+    if not pending:
+        await message.answer("📋 Нет заявок на модерации.", reply_markup=admin_keyboard(message.from_user.id))
+        return
+
+    for s in pending:
+        text = service_text(s) + f"\n\n👤 Owner ID: <code>{s.get('owner_id')}</code>"
+        photos = s.get("photos", [])
+        kb = InlineKeyboardMarkup(row_width=2)
+        kb.add(
+            InlineKeyboardButton("✅ Одобрить", callback_data=f"s:approve:{s.get('owner_id')}"),
+            InlineKeyboardButton("❌ Отклонить", callback_data=f"s:reject:{s.get('owner_id')}")
+        )
+        kb.add(InlineKeyboardButton("✏️ Редактировать", callback_data=f"s:edit:{s.get('owner_id')}"))
+
+        try:
+            if photos:
+                if len(photos) == 1:
+                    await message.answer_photo(photos[0], caption=text, parse_mode="HTML", reply_markup=kb)
+                else:
+                    media = [InputMediaPhoto(media=ph) for ph in photos]
+                    await message.answer_media_group(media=media)
+                    await message.answer(text, parse_mode="HTML", reply_markup=kb)
+            else:
+                await message.answer(text, parse_mode="HTML", reply_markup=kb)
+        except Exception as e:
+            logging.error(f"Ошибка показа заявки: {e}")
+            await message.answer(text, parse_mode="HTML", reply_markup=kb)
+
+# ДОБАВЛЕНИЕ VIP АДМИНИСТРАТОРОМ
+@dp.message_handler(lambda m: norm(m.text) == A_ADD_VIP_ADMIN, state="*")
+async def admin_add_vip_start(message: types.Message, state: FSMContext):
+    await state.finish()
+    if not is_admin(message.from_user.id):
+        return
+    await message.answer(
+        "➕ <b>Добавление VIP услуги (Админ)</b>\n\n"
+        f"{progress_bar(1)}\n\n"
+        "📂 Введите категорию:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminServiceForm.category.set()
+
+@dp.message_handler(state=AdminServiceForm.category)
+async def admin_vip_category(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    cat = norm(message.text)
+    if len(cat) < 2:
+        await message.answer("❌ Слишком короткая.")
+        return
+    await state.update_data(category=cat)
+    await message.answer(f"{progress_bar(2)}\n\n✏️ Название:", parse_mode="HTML", reply_markup=cancel_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.name)
+async def admin_vip_name(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    name = norm(message.text)
+    if len(name) < 2:
+        await message.answer("❌ Слишком короткое.")
+        return
+    await state.update_data(name=name)
+    await message.answer(
+        f"{progress_bar(3)}\n\n📝 Описание (каждый пункт с новой строки):",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.desc)
+async def admin_vip_desc(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    await state.update_data(desc=norm_multiline(message.text))
+    await message.answer(f"{progress_bar(4)}\n\n💰 Стоимость:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.price)
+async def admin_vip_price(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(price=norm(message.text))
+    await message.answer(f"{progress_bar(5)}\n\n🏙 Город:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.city)
+async def admin_vip_city(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(city=norm(message.text))
+    await message.answer(f"{progress_bar(6)}\n\n📍 Адрес:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.address)
+async def admin_vip_address(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(address=norm(message.text))
+    await message.answer(f"{progress_bar(7)}\n\n📞 Телефон:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.phone)
+async def admin_vip_phone(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(phone=norm(message.text))
+    await message.answer(
+        f"{progress_bar(8)}\n\n✈️ Telegram\n<i>@username или https://t.me/...</i>",
+        parse_mode="HTML",
+        reply_markup=skip_kb()
+    )
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.telegram)
+async def admin_vip_tg(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        tg_val = norm(message.text)
+        if tg_val and not tg_val.startswith("http") and not tg_val.startswith("@"):
+            tg_val = "@" + tg_val
+        await state.update_data(telegram=tg_val)
+    await message.answer(f"{progress_bar(9)}\n\n📱 WhatsApp:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.whatsapp)
+async def admin_vip_wa(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        await state.update_data(whatsapp=norm(message.text))
+    await message.answer(f"{progress_bar(10)}\n\n🌐 Сайт (https://...):", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.website)
+async def admin_vip_website(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) != SKIP_BTN:
+        site_val = norm(message.text)
+        if site_val and not site_val.startswith("http"):
+            site_val = "https://" + site_val
+        await state.update_data(website=site_val)
+    await message.answer(f"{progress_bar(11)}\n\n📷 Фото 1:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=AdminServiceForm.photo1)
+async def admin_vip_photo1(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    await state.update_data(photo1=message.photo[-1].file_id)
+    await message.answer(f"{progress_bar(12)}\n\n📷 Фото 2:", parse_mode="HTML", reply_markup=skip_kb())
+    await AdminServiceForm.next()
+
+@dp.message_handler(state=AdminServiceForm.photo1)
+async def admin_vip_photo1_skip(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) == SKIP_BTN:
+        await message.answer(f"{progress_bar(12)}\n\n📷 Фото 2:", parse_mode="HTML", reply_markup=skip_kb())
+        await AdminServiceForm.next()
+    else:
+        await message.answer("⚠️ Отправьте фото или пропустите.", reply_markup=skip_kb())
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=AdminServiceForm.photo2)
+async def admin_vip_photo2(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    await state.update_data(photo2=message.photo[-1].file_id)
+    await admin_vip_show_confirm(message, state)
+
+@dp.message_handler(state=AdminServiceForm.photo2)
+async def admin_vip_photo2_skip(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    if norm(message.text) == SKIP_BTN:
+        await admin_vip_show_confirm(message, state)
+    else:
+        await message.answer("⚠️ Отправьте фото или пропустите.", reply_markup=skip_kb())
+
+async def admin_vip_show_confirm(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    photos = []
+    if data.get("photo1"):
+        photos.append(data["photo1"])
+    if data.get("photo2"):
+        photos.append(data["photo2"])
+
+    service = {
+        "owner_id": SUPER_ADMIN_ID,
+        "category": data.get("category", ""),
+        "name": data.get("name", ""),
+        "desc": data.get("desc", ""),
+        "price": data.get("price", ""),
+        "city": data.get("city", ""),
+        "address": data.get("address", ""),
+        "location": data.get("location"),
+        "phone": data.get("phone", ""),
+        "telegram": data.get("telegram", ""),
+        "whatsapp": data.get("whatsapp", ""),
+        "vk": data.get("vk", ""),
+        "instagram": data.get("instagram", ""),
+        "website": data.get("website", ""),
+        "photos": photos,
+        "created_at": datetime.datetime.utcnow().isoformat()
+    }
+    await state.update_data(_preview_service=service)
+
+    preview_text = "👁 <b>Предпросмотр:</b>\n\n" + service_text(service)
+    if photos:
+        preview_text += f"\n\n📷 Фото: {len(photos)} шт."
+
+    await message.answer(preview_text, parse_mode="HTML", reply_markup=confirm_kb())
+    await AdminServiceForm.confirm.set()
+
+@dp.message_handler(lambda m: norm(m.text) == CONFIRM_BTN, state=AdminServiceForm.confirm)
+async def admin_vip_confirm(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    data = await state.get_data()
+    service = data.get("_preview_service")
+    if not service:
+        await message.answer("❌ Ошибка. Начните заново.", reply_markup=admin_keyboard(message.from_user.id))
+        await state.finish()
+        return
+
+    store = services_store()
+    store["approved"].append(service)
+    save_json(SERVICES_FILE, store)
+    await state.finish()
+    await message.answer(
+        "✅ <b>VIP услуга добавлена и опубликована!</b>",
+        parse_mode="HTML",
+        reply_markup=admin_keyboard(message.from_user.id)
+    )
+
+# УПРАВЛЕНИЕ VIP
+@dp.message_handler(lambda m: norm(m.text) == A_MANAGE_VIP, state="*")
+async def admin_manage_vip(message: types.Message, state: FSMContext):
+    await state.finish()
+    if not is_admin(message.from_user.id):
+        return
+    store = services_store()
+    approved = store.get("approved", [])
+    if not approved:
+        await message.answer("Нет опубликованных VIP услуг.", reply_markup=admin_keyboard(message.from_user.id))
+        return
+
+    kb = InlineKeyboardMarkup(row_width=2)
+    for idx, s in enumerate(approved):
+        name = s.get('name', 'Без названия')
+        btn_view = InlineKeyboardButton(f"👁 {name[:25]}", callback_data=f"adm:view:{idx}")
+        btn_del = InlineKeyboardButton("❌ Удалить", callback_data=f"adm:del:{s.get('owner_id')}")
+        kb.row(btn_view, btn_del)
+
+    await message.answer(
+        f"⭐ <b>VIP услуги ({len(approved)}):</b>",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+@dp.callback_query_handler(lambda c: c.data.startswith("adm:view:"))
+async def admin_view_service(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        idx = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка", show_alert=True)
+        return
+
+    store = services_store()
+    approved = store.get("approved", [])
+    if idx >= len(approved):
+        await callback.answer("Не найдена", show_alert=True)
+        return
+
+    s = approved[idx]
+    text = service_text(s) + f"\n\n👤 owner_id: <code>{s.get('owner_id')}</code>"
+    photos = s.get("photos", [])
+
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("❌ Удалить", callback_data=f"adm:del:{s.get('owner_id')}"))
+    kb.add(InlineKeyboardButton("✏️ Редактировать", callback_data=f"s:edit:{s.get('owner_id')}"))
+
+    await callback.answer()
+    try:
+        if photos:
+            if len(photos) == 1:
+                await callback.message.answer_photo(photos[0], caption=text, parse_mode="HTML", reply_markup=kb)
+            else:
+                media = [InputMediaPhoto(media=ph) for ph in photos]
+                await callback.message.answer_media_group(media=media)
+                await callback.message.answer(text, parse_mode="HTML", reply_markup=kb)
+        else:
+            await callback.message.answer(text, parse_mode="HTML", reply_markup=kb)
+    except Exception as e:
+        logging.error(f"Ошибка: {e}")
+        await callback.message.answer(text, parse_mode="HTML", reply_markup=kb)
+
+@dp.callback_query_handler(lambda c: c.data.startswith("adm:del:"))
+async def admin_delete_vip(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        owner_id = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка данных", show_alert=True)
+        return
+
+    store = services_store()
+    store["approved"] = [s for s in store.get("approved", []) if int(s.get("owner_id", -1)) != owner_id]
+    save_json(SERVICES_FILE, store)
+    await callback.answer("✅ Удалено!", show_alert=True)
+    try:
+        await bot.send_message(owner_id, "❌ Ваша VIP услуга удалена администратором.")
+    except:
+        pass
+
+# НАСТРОЙКИ
+@dp.message_handler(lambda m: norm(m.text) == A_SET_LIMIT)
+async def admin_set_limit_start(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    await message.answer(f"Введите новый лимит VIP (сейчас {get_services_limit()}):", reply_markup=cancel_kb())
+    await AdminEdit.limit.set()
+
+@dp.message_handler(state=AdminEdit.limit)
+async def admin_set_limit_finish(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    try:
+        n = int(norm(message.text))
+        if n < 1:
+            raise ValueError()
+        set_services_limit(n)
+        await message.answer(f"✅ Лимит VIP: {n}", reply_markup=admin_keyboard(message.from_user.id))
+        await state.finish()
+    except:
+        await message.answer("❌ Введите целое число >= 1")
+
+@dp.message_handler(lambda m: norm(m.text) == A_SET_TTL)
+async def admin_set_ttl_start(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    await message.answer(f"Введите срок VIP в днях (сейчас {get_service_ttl_days()}):", reply_markup=cancel_kb())
+    await AdminEdit.ttl.set()
+
+@dp.message_handler(state=AdminEdit.ttl)
+async def admin_set_ttl_finish(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    try:
+        n = int(norm(message.text))
+        if n < 1:
+            raise ValueError()
+        set_service_ttl_days(n)
+        await message.answer(f"✅ Срок VIP: {n} дней", reply_markup=admin_keyboard(message.from_user.id))
+        await state.finish()
+    except:
+        await message.answer("❌ Введите целое число >= 1")
+
+# ============================================================
+# УПРАВЛЕНИЕ АДМИНИСТРАТОРАМИ (только супер-админ)
+# ============================================================
+@dp.message_handler(lambda m: norm(m.text) == A_ADMINS, state="*")
+async def manage_admins(message: types.Message, state: FSMContext):
+    await state.finish()
+    if message.from_user.id != SUPER_ADMIN_ID:
+        return
+
+    admins = load_admins()
+    text = "👥 <b>Администраторы:</b>\n\n"
+    for i, aid in enumerate(admins, 1):
+        mark = "👑" if aid == SUPER_ADMIN_ID else "🔑"
+        text += f"{i}. {mark} <code>{aid}</code>\n"
+
+    kb = InlineKeyboardMarkup(row_width=1)
+    kb.add(
+        InlineKeyboardButton("➕ Добавить админа", callback_data="admins:add"),
+        InlineKeyboardButton("➖ Удалить админа", callback_data="admins:remove"),
+    )
+    await message.answer(text, parse_mode="HTML", reply_markup=kb)
+
+@dp.callback_query_handler(lambda c: c.data == "admins:add")
+async def admins_add_start(callback: types.CallbackQuery, state: FSMContext):
+    if callback.from_user.id != SUPER_ADMIN_ID:
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    await callback.answer()
+    await callback.message.answer(
+        "➕ <b>Добавление администратора</b>\n\n"
+        "Введите Telegram ID нового администратора:\n"
+        "<i>Узнать ID можно через @userinfobot</i>",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminEdit.add_admin.set()
+
+@dp.message_handler(state=AdminEdit.add_admin)
+async def admins_add_finish(message: types.Message, state: FSMContext):
+    if message.from_user.id != SUPER_ADMIN_ID:
+        await state.finish()
+        return
+    try:
+        new_id = int(norm(message.text))
+    except:
+        await message.answer("❌ Введите числовой Telegram ID.")
+        return
+
+    admins = load_admins()
+    if new_id in admins:
+        await message.answer(f"⚠️ ID <code>{new_id}</code> уже является администратором.", parse_mode="HTML")
+        await state.finish()
+        return
+
+    admins.append(new_id)
+    save_admins(admins)
+
+    # Уведомляем нового админа
+    try:
+        await bot.send_message(
+            new_id,
+            "🔑 <b>Вы назначены администратором бота!</b>\n\n"
+            "Теперь вам доступна панель управления.",
+            parse_mode="HTML"
+        )
+    except:
+        pass
+
+    await message.answer(
+        f"✅ Администратор <code>{new_id}</code> добавлен!",
+        parse_mode="HTML",
+        reply_markup=admin_keyboard(message.from_user.id)
+    )
+    await state.finish()
+
+@dp.callback_query_handler(lambda c: c.data == "admins:remove")
+async def admins_remove_start(callback: types.CallbackQuery, state: FSMContext):
+    if callback.from_user.id != SUPER_ADMIN_ID:
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+
+    admins = load_admins()
+    others = [a for a in admins if a != SUPER_ADMIN_ID]
+
+    if not others:
+        await callback.answer("Нет дополнительных администраторов.", show_alert=True)
+        return
+
+    await callback.answer()
+    kb = InlineKeyboardMarkup(row_width=1)
+    for aid in others:
+        kb.add(InlineKeyboardButton(f"❌ Удалить {aid}", callback_data=f"admins:del:{aid}"))
+    kb.add(InlineKeyboardButton("◀️ Назад", callback_data="admins:cancel"))
+
+    await callback.message.answer(
+        "➖ <b>Выберите администратора для удаления:</b>",
+        parse_mode="HTML",
+        reply_markup=kb
+    )
+
+@dp.callback_query_handler(lambda c: c.data.startswith("admins:del:"))
+async def admins_delete(callback: types.CallbackQuery):
+    if callback.from_user.id != SUPER_ADMIN_ID:
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    try:
+        del_id = int(callback.data.split(":")[2])
+    except:
+        await callback.answer("Ошибка", show_alert=True)
+        return
+
+    if del_id == SUPER_ADMIN_ID:
+        await callback.answer("Нельзя удалить главного админа!", show_alert=True)
+        return
+
+    admins = load_admins()
+    if del_id in admins:
+        admins.remove(del_id)
+        save_admins(admins)
+        await callback.answer(f"✅ Удалён {del_id}")
+        try:
+            await bot.send_message(del_id, "ℹ️ Вы больше не являетесь администратором бота.")
+        except:
+            pass
+        await callback.message.answer(
+            f"✅ Администратор <code>{del_id}</code> удалён.",
+            parse_mode="HTML",
+            reply_markup=admin_keyboard(callback.from_user.id)
+        )
+    else:
+        await callback.answer("Не найден", show_alert=True)
+
+@dp.callback_query_handler(lambda c: c.data == "admins:cancel")
+async def admins_cancel(callback: types.CallbackQuery):
+    await callback.answer()
+    await callback.message.answer("◀️ Отменено.", reply_markup=admin_keyboard(callback.from_user.id))
+
+# РАССЫЛКА
+@dp.message_handler(lambda m: norm(m.text) == A_BROADCAST)
+async def broadcast_menu(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    await message.answer(
+        "📢 <b>Рассылка</b>\n\n"
+        "Введите текст для рассылки всем пользователям:",
+        parse_mode="HTML",
+        reply_markup=cancel_kb()
+    )
+    await AdminEdit.broadcast_text.set()
+
+@dp.message_handler(state=AdminEdit.broadcast_text)
+async def broadcast_send(message: types.Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        await state.finish()
+        return
+    text = message.text.strip()
+    if not text:
+        await message.answer("❌ Пустой текст.")
+        return
+    users = load_json(USERS_FILE, [])
+    sent = 0
+    failed = 0
+    await message.answer(f"⏳ Отправляю {len(users)} пользователям...")
+    for uid in users:
+        try:
+            await bot.send_message(uid, text)
+            sent += 1
+        except:
+            failed += 1
+        await asyncio.sleep(0.05)
+    try:
+        await bot.send_message(CHANNEL_ID, text)
+    except:
+        pass
+    await message.answer(
+        f"✅ Отправлено: {sent}\n❌ Ошибки: {failed}",
+        reply_markup=admin_keyboard(message.from_user.id)
+    )
+    await state.finish()
+
+@dp.message_handler(commands=["send"])
+async def send_cmd(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    text = message.get_args().strip()
+    if not text:
+        await message.answer("Использование: /send текст")
+        return
+    users = load_json(USERS_FILE, [])
+    sent = 0
+    failed = 0
+    for uid in users:
+        try:
+            await bot.send_message(uid, text)
+            sent += 1
+        except:
+            failed += 1
+    try:
+        await bot.send_message(CHANNEL_ID, text)
+    except:
+        pass
+    await message.answer(f"✅ Отправлено: {sent}\n❌ Ошибки: {failed}", reply_markup=admin_keyboard(message.from_user.id))
+
+# СТАТИСТИКА
+@dp.message_handler(lambda m: norm(m.text) == A_STATS)
+async def stats(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    users = load_json(USERS_FILE, [])
+    subs = migrate_weather_subs()
+    limits = load_json(LIMITS_FILE, {})
+    store = services_store()
+    admins = load_admins()
+    today = datetime.date.today().isoformat()
+    today_count = sum(int(v.get("count", 0)) for v in limits.values() if v.get("date") == today)
+    await message.answer(
+        "📊 <b>Статистика</b>\n\n"
+        f"👥 Пользователей: {len(users)}\n"
+        f"🌤 Подписки на погоду: {len(subs)}\n"
+        f"🤖 AI запросов сегодня: {today_count}\n"
+        f"⭐ VIP (одобрено): {len(store.get('approved', []))}\n"
+        f"📋 VIP (на модерации): {len(store.get('pending', []))}\n"
+        f"👥 Администраторов: {len(admins)}\n\n"
+        f"🔢 VIP лимит: {get_services_limit()}\n"
+        f"⏳ VIP срок: {get_service_ttl_days()} дней",
+        parse_mode="HTML",
+        reply_markup=admin_keyboard(message.from_user.id)
+    )
+
+# ============================================================
+# ОБЩИЙ ТЕКСТ (AI / fallback)
+# ============================================================
+@dp.message_handler()
+async def text_handler(message: types.Message):
+    add_user(message.from_user.id)
+    uid = message.from_user.id
+    text = (message.text or "").strip()
+
+    if AI_STATE.get(uid):
+        ok_limit, remaining = check_limit(uid)
+        if not ok_limit:
+            await message.answer(
+                "❌ Дневной лимит AI исчерпан.\n"
+                "Лимит обновится завтра в 00:00."
+            )
+            return
+
+        await bot.send_chat_action(message.chat.id, types.ChatActions.TYPING)
+        ok, reply = await ask_ai(text)
+        if ok:
+            use_limit(uid)
+            remaining -= 1
+            suffix = f"\n\n💬 Осталось запросов: {remaining}" if remaining > 0 else ""
+            await message.answer(reply + suffix)
+        else:
+            # При ошибке AI не выключаем режим, просто сообщаем
+            await message.answer(reply)
+        return
+
+    await message.answer(
+        "👇 Выберите раздел в меню или нажмите /start",
+        reply_markup=main_keyboard(uid)
+    )
+
+# ============================================================
+# HEALTHCHECK
+# ============================================================
+HEALTHCHECK_INTERVAL = 60
+HEALTHCHECK_FAILS = 3
+
+async def telegram_healthcheck():
+    fails = 0
+    while True:
+        try:
+            await asyncio.wait_for(bot.get_me(), timeout=10)
+            fails = 0
+        except Exception as e:
+            fails += 1
+            logging.error("Healthcheck fail %s/%s: %s", fails, HEALTHCHECK_FAILS, e)
+            if fails >= HEALTHCHECK_FAILS:
+                os._exit(1)
+        await asyncio.sleep(HEALTHCHECK_INTERVAL)
+
+# ================= STARTUP =================
+async def on_startup(_):
+    ensure_json_file(USERS_FILE, [])
+    ensure_json_file(SUBS_FILE, {})
+    ensure_json_file(LIMITS_FILE, {})
+    ensure_json_file(SERVICES_FILE, {"pending": [], "approved": []})
+    ensure_json_file(SETTINGS_FILE, {"services_limit": 5, "service_ttl_days": 30})
+    ensure_json_file(ADMINS_FILE, [SUPER_ADMIN_ID])
+    load_settings()
+    services_store()
+    migrate_weather_subs()
+    asyncio.create_task(auto_weather())
+    asyncio.create_task(auto_prune_services())
+    asyncio.create_task(telegram_healthcheck())
+    logging.info("✅ Bot started! Admins: %s", load_admins())
+
+# ================= RUN =================
+if __name__ == "__main__":
+    executor.start_polling(dp, skip_updates=True, timeout=30, on_startup=on_startup)
