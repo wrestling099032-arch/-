@@ -1,0 +1,174 @@
+{
+  "cafe": {
+    "name": "Sushi & Ramen",
+    "tagline": "",
+    "address": "",
+    "phone": "",
+    "wifi": "",
+    "currency": "Rp",
+    "accent": "#c8402f",
+    "footer": "Prices are before restaurant tax and service charge. Pictures are for illustration only."
+  },
+  "categories": [
+    {
+      "id": "c-appetizers", "name": "Appetizers", "emoji": "🥟", "visible": true,
+      "items": [
+        { "id": "i-ebi-furai", "name": "Ebi Furai", "description": "Shrimp coated in crispy breadcrumbs and deep-fried until crispy and golden", "price": 30000, "image": "images/ebi-furai.jpg", "available": true, "tags": [] },
+        { "id": "i-salmon-salad", "name": "Salmon Salad", "description": "Fresh salmon slice, seaweed, lettuce, kyuuri, with shoyu dressing sauce", "price": 54000, "image": "images/salmon-salad.jpg", "available": true, "tags": ["hit", "raw"] },
+        { "id": "i-gyoza", "name": "Gyoza (Fried/Steamed)", "description": "Japanese style dumplings filled with chicken, vegetables, and onion", "price": 33000, "options": [{ "name": "Fried/Steamed", "price": 33000 }, { "name": "Spicy", "price": 35000 }], "image": "images/gyoza.jpg", "available": true, "tags": [] },
+        { "id": "i-takoyaki", "name": "Takoyaki", "description": "Fried takoyaki with special sauce, mayonnaise, and katsuobushi", "price": 27000, "image": "images/takoyaki.jpg", "available": true, "tags": [] },
+        { "id": "i-chizu-karaage", "name": "Chizu Karaage", "description": "Crispy bite-size fried chicken with sizzling cheese sauce", "price": 41000, "image": "images/chizu-karaage.jpg", "available": true, "tags": [] },
+        { "id": "i-ebi-tempura", "name": "Ebi Tempura", "description": "Japanese style fried shrimp", "price": 45000, "image": "images/ebi-tempura.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-gyoza-skin", "name": "Gyoza Skin", "description": "Gyoza skin chips with special seasoning", "price": 13000, "options": [{ "name": "Original", "price": 13000 }, { "name": "Nori", "price": 15000 }, { "name": "Spicy", "price": 15000 }], "image": "images/gyoza-skin.jpg", "available": true, "tags": [] },
+        { "id": "i-tori-karaage", "name": "Tori Karaage", "description": "Japanese style bite-size fried chicken", "price": 33000, "options": [{ "name": "Original", "price": 33000 }, { "name": "Spicy", "price": 35000 }], "image": "images/tori-karaage.jpg", "available": true, "tags": [] },
+        { "id": "i-crab-sticks", "name": "Crispy Crab Sticks", "description": "Fried shredded crab stick with special seasoning", "price": 26000, "options": [{ "name": "Original", "price": 26000 }, { "name": "Spicy", "price": 28000 }], "image": "images/crab-sticks.jpg", "available": true, "tags": [] },
+        { "id": "i-tempura-moriawase", "name": "Tempura Moriawase", "description": "Assorted tempura with 2 pcs of ebi tempura and 4 pcs of vegetables tempura", "price": 43000, "image": "images/tempura-moriawase.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-edamame", "name": "Edamame", "description": "Boiled Japanese soybeans, sprinkled with salt", "price": 17000, "options": [{ "name": "Original", "price": 17000 }, { "name": "Spicy", "price": 19000 }], "image": "images/edamame.jpg", "available": true, "tags": [] },
+        { "id": "i-pompom-potato", "name": "Pom-pom Potato", "description": "Fried potato balls, crispy outside, soft inside", "price": 19000, "image": "images/pompom-potato.jpg", "available": true, "tags": [] },
+        { "id": "i-wakame-salad", "name": "Wakame Salad", "description": "Seaweed, lettuce, tomato, cabbage, kyuuri, with sesame dressing sauce", "price": 32000, "image": "images/wakame-salad.jpg", "available": true, "tags": [] },
+        { "id": "i-salmon-head", "name": "Grilled Salmon Head Teriyaki", "description": "Sweet and salty marinated salmon head", "price": 30000, "image": "images/salmon-head.jpg", "available": true, "tags": [] },
+        { "id": "i-agedashi-tofu", "name": "Agedashi Tofu", "description": "Deep-fried tofu with tempura sauce", "price": 22000, "image": "images/agedashi-tofu.jpg", "available": true, "tags": [] },
+        { "id": "i-miso-soup", "name": "Miso Soup", "description": "", "price": 12000, "image": "", "available": true, "tags": [] },
+        { "id": "i-gohan", "name": "Gohan (Rice)", "description": "", "price": 10000, "image": "", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-sushi", "name": "Sushi", "emoji": "🍣", "visible": true,
+      "items": [
+        { "id": "i-salmon-mentai-nigiri", "name": "Salmon Mentai Nigiri (2 pcs)", "description": "Salmon with sushi rice and mentai sauce", "price": 36000, "image": "images/salmon-mentai-nigiri.jpg", "available": true, "tags": ["hit", "raw"] },
+        { "id": "i-kani-mentai-nigiri", "name": "Kani Mentai Nigiri (2 pcs)", "description": "Crab stick with sushi rice and mentai sauce", "price": 23000, "image": "images/kani-mentai-nigiri.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-tuna-mentai-nigiri", "name": "Tuna Mentai Nigiri (2 pcs)", "description": "Tuna with sushi rice and mentai sauce", "price": 30000, "image": "images/tuna-mentai-nigiri.jpg", "available": true, "tags": [] },
+        { "id": "i-tamago-mentai-nigiri", "name": "Tamago Mentai Nigiri (2 pcs)", "description": "Sweetened Japanese fried egg with sushi rice and mentai sauce", "price": 23000, "image": "images/tamago-mentai-nigiri.jpg", "available": true, "tags": [] },
+        { "id": "i-roasted-salmon-sushi", "name": "Roasted Salmon Sushi (2 pcs)", "description": "Half cooked salmon with sushi rice and ponzu sauce", "price": 35000, "image": "images/roasted-salmon-sushi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-maguro-sushi", "name": "Maguro Sushi (2 pcs)", "description": "Tuna with sushi rice", "price": 27000, "image": "images/maguro-sushi.jpg", "available": true, "tags": ["hit", "raw"] },
+        { "id": "i-salmon-sushi", "name": "Salmon Sushi (2 pcs)", "description": "Salmon with sushi rice", "price": 35000, "image": "images/salmon-sushi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-salmon-sakura", "name": "Salmon Sakura (2 pcs)", "description": "Salmon with mayonnaise, black sesame, and sushi rice", "price": 39000, "image": "images/salmon-sakura.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-japanese-salad-inari", "name": "Japanese Salad Inari", "description": "", "price": 30000, "image": "images/japanese-salad-inari.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-corn-mayo-inari", "name": "Corn Mayo Inari", "description": "", "price": 27000, "image": "images/corn-mayo-inari.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-chuka-wakame-sushi", "name": "Chuka Wakame Sushi", "description": "", "price": 29000, "image": "images/chuka-wakame-sushi.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chuka-idako-sushi", "name": "Chuka Idako Sushi", "description": "", "price": 31000, "image": "images/chuka-idako-sushi.jpg", "available": true, "tags": [] },
+        { "id": "i-tobiko-sushi", "name": "Tobiko Sushi", "description": "", "price": 29000, "image": "images/tobiko-sushi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-kani-sushi", "name": "Kani Sushi", "description": "", "price": 24000, "image": "images/kani-sushi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-tamago-sushi", "name": "Tamago Sushi", "description": "", "price": 23000, "image": "images/tamago-sushi.jpg", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-sashimi", "name": "Sashimi", "emoji": "🐟", "visible": true,
+      "items": [
+        { "id": "i-chuka-wakame-sashimi", "name": "Chuka Wakame Sashimi", "description": "Fresh seasoned seaweed with white sesame seed", "price": 33000, "image": "images/chuka-wakame-sashimi.jpg", "available": true, "tags": [] },
+        { "id": "i-maguro-sashimi", "name": "Maguro Sashimi", "description": "Fresh sliced tuna", "price": 42000, "image": "images/maguro-sashimi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-sashimi-set", "name": "Sashimi Set", "description": "Signature sashimi platter set of salmon, tuna, chuka kurage, and chuka idako", "price": 88000, "image": "images/sashimi-set.jpg", "available": true, "tags": ["hit", "raw"] },
+        { "id": "i-salmon-sashimi", "name": "Salmon Sashimi", "description": "Fresh sliced salmon", "price": 55000, "image": "images/salmon-sashimi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-chuka-idako-sashimi", "name": "Chuka Idako Sashimi", "description": "Fresh seasoned baby octopus with white sesame seed", "price": 45000, "image": "images/chuka-idako-sashimi.jpg", "available": true, "tags": [] },
+        { "id": "i-chuka-kurage-sashimi", "name": "Chuka Kurage Sashimi", "description": "Fresh seasoned jellyfish with white sesame seed", "price": 33000, "image": "images/chuka-kurage-sashimi.jpg", "available": true, "tags": ["raw"] },
+        { "id": "i-tuna-tataki", "name": "Tuna Tataki", "description": "Fresh sliced tuna with sesame and nanban sauce, served with black & white sesame dressing salad and katsuobushi on top", "price": 62000, "image": "images/tuna-tataki.jpg", "available": true, "tags": ["hit", "raw"] }
+      ]
+    },
+    {
+      "id": "c-ramen", "name": "Ramen", "emoji": "🍜", "visible": true,
+      "items": [
+        { "id": "i-teriyaki-ramen", "name": "Teriyaki Ramen", "description": "Shoyu/curry ramen with beef/chicken teriyaki, egg, mushroom, corn, and spring onion", "price": 45000, "options": [{ "name": "Beef", "price": 47000 }, { "name": "Chicken", "price": 45000 }], "image": "images/teriyaki-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-sapporo-garlic-ramen", "name": "Sapporo Garlic Sesame Ramen", "description": "Special chicken broth ramen with grilled chicken, egg, mushroom, and spring onion", "price": 42000, "image": "images/sapporo-garlic-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-dry-ramen", "name": "Dry Ramen", "description": "Savory dry ramen with selection of topping, egg, mushroom, nori, and spring onion", "price": 38000, "options": [{ "name": "Beef", "price": 44000 }, { "name": "Chicken", "price": 38000 }], "image": "images/dry-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-chicken-katsu-ramen", "name": "Chicken Katsu Ramen", "description": "Shoyu/curry soup with chicken katsu, egg, mushroom, corn, and spring onion", "price": 43000, "image": "images/chicken-katsu-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-hotplate-ramen", "name": "Hotplate Ramen", "description": "Hotplate ramen with selection of topping, paprika, and onion", "price": 43000, "options": [{ "name": "Beef", "price": 48000 }, { "name": "Chicken", "price": 43000 }], "image": "images/hotplate-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-beef-paitan-ramen", "name": "Beef Paitan Ramen", "description": "Special paitan broth ramen with beef teriyaki, egg, mushroom, corn, narutomaki, and spring onion", "price": 51000, "image": "images/beef-paitan-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-shibuya-black-ramen", "name": "Shibuya Black Ramen", "description": "Special black garlic sesame broth ramen with marinated chicken, sautéed mushroom, and egg", "price": 48000, "image": "images/shibuya-black-ramen.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chizu-chicken-ramen", "name": "Chizu Chicken Ramen", "description": "Special cheese ramen with fried chicken, ajitama (egg), mushroom, corn, narutomaki, and spring onion", "price": 49000, "options": [{ "name": "Original", "price": 49000 }, { "name": "Spicy", "price": 50000 }], "image": "images/chizu-chicken-ramen.jpg", "available": true, "tags": [] },
+        { "id": "i-spicy-beef-paitan", "name": "Spicy Beef Ramen with Tori Paitan", "description": "Spicy paitan broth ramen with beef teriyaki, minced spicy chicken, egg, mushroom, narutomaki, and spring onion", "price": 51000, "image": "images/spicy-beef-paitan.jpg", "available": true, "tags": ["hit", "spicy"] },
+        { "id": "i-spicy-miso-ramen", "name": "Sapporo Spicy Miso Ramen", "description": "Spicy miso ramen with crab stick tempura, egg, mushroom, narutomaki, and spring onion", "price": 42000, "image": "images/spicy-miso-ramen.jpg", "available": true, "tags": ["spicy"] },
+        { "id": "i-spicy-dry-ramen", "name": "Spicy Dry Ramen", "description": "Spicy dry ramen with marinated chicken, egg, nori, fried shallot, and spring onion", "price": 41000, "image": "images/spicy-dry-ramen.jpg", "available": true, "tags": ["spicy"] },
+        { "id": "i-spicy-ramen", "name": "Spicy Ramen", "description": "Spicy shoyu/curry ramen with beef teriyaki, minced spicy chicken, egg, mushroom, corn, narutomaki, and spring onion", "price": 50000, "image": "images/spicy-ramen.jpg", "available": true, "tags": ["hit", "spicy"] },
+        { "id": "i-yokohama-ramen", "name": "Yokohama Spicy Ramen", "description": "Special mala ramen with steamed gyoza, mushroom, egg, and spring onion", "price": 48000, "image": "images/yokohama-ramen.jpg", "available": true, "tags": ["spicy"] },
+        { "id": "i-curry-paitan-ramen", "name": "Chicken Curry Paitan Ramen", "description": "Special curry paitan ramen with marinated chicken, egg, mushroom, corn, narutomaki, and spring onion", "price": 50000, "image": "images/curry-paitan-ramen.jpg", "available": true, "tags": ["spicy"] }
+      ]
+    },
+    {
+      "id": "c-ramen-addons", "name": "Ramen Add-ons", "emoji": "➕", "visible": true,
+      "items": [
+        { "id": "i-addon-sambal", "name": "Sambal Geprek", "description": "", "price": 6000, "image": "", "available": true, "tags": ["spicy"] },
+        { "id": "i-addon-nori", "name": "Crispy Nori (2 pcs)", "description": "", "price": 6000, "image": "", "available": true, "tags": [] },
+        { "id": "i-addon-egg", "name": "Telur 1/2 (Half Egg)", "description": "", "price": 8000, "image": "", "available": true, "tags": [] },
+        { "id": "i-addon-gyoza", "name": "Gyoza (2 pcs)", "description": "", "price": 14000, "image": "", "available": true, "tags": [] },
+        { "id": "i-addon-karaage", "name": "Tori Karaage (2 pcs)", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
+        { "id": "i-addon-charsiu", "name": "Chicken Charsiu (2 pcs)", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
+        { "id": "i-addon-beef", "name": "Beef Teriyaki", "description": "", "price": 16000, "image": "", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-donburi", "name": "Donburi", "emoji": "🍚", "visible": true,
+      "items": [
+        { "id": "i-hokkaido-beef-don", "name": "Hokkaido Beef Donburi", "description": "Beef rice bowl with nanban sauce, sunny-side up egg, onion, and white sesame seed", "price": 43000, "image": "images/hokkaido-beef-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-hokkaido-chicken-don", "name": "Hokkaido Chicken Donburi", "description": "Chicken karaage rice bowl with nanban sauce, scrambled egg, nori, and white sesame seed", "price": 39000, "image": "images/hokkaido-chicken-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-hokkaido-dory-don", "name": "Hokkaido Dory Donburi", "description": "Dory katsu rice bowl with tartar sauce", "price": 38000, "image": "images/hokkaido-dory-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-dory-katsu-don", "name": "Dory Katsu Donburi", "description": "Dory katsu rice bowl with scrambled egg", "price": 39000, "image": "images/dory-katsu-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chicken-katsu-toji", "name": "Chicken Katsu Toji Donburi", "description": "Chicken katsu rice bowl with toji sauce and omelette", "price": 39000, "image": "images/chicken-katsu-toji.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-katsu-curry-don", "name": "Katsu Curry Donburi", "description": "Beef/chicken katsu rice bowl with curry sauce", "price": 44000, "options": [{ "name": "Beef", "price": 47000 }, { "name": "Chicken", "price": 44000 }], "image": "images/katsu-curry-don.jpg", "available": true, "tags": [] },
+        { "id": "i-ichi-mentai-don", "name": "Ichi Mentai Don", "description": "Mini rice bowl with salmon & crab stick, mentai sauce, cheese mayonnaise, and nori", "price": 35000, "image": "images/ichi-mentai-don.jpg", "available": true, "tags": [] },
+        { "id": "i-salmon-teriyaki-don", "name": "Salmon Teriyaki Donburi", "description": "", "price": 60000, "image": "images/salmon-teriyaki-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-beef-teriyaki-don", "name": "Beef Teriyaki Donburi", "description": "", "price": 45000, "image": "images/beef-teriyaki-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-namazu-don", "name": "Namazu Donburi", "description": "", "price": 43000, "image": "images/namazu-don.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-gyu-toji-don", "name": "Gyu Toji Donburi (Savory)", "description": "", "price": 45000, "image": "images/gyu-toji-don.jpg", "available": true, "tags": ["hit", "raw"] },
+        { "id": "i-chicken-teriyaki-don", "name": "Chicken Teriyaki Donburi", "description": "", "price": 39000, "image": "images/chicken-teriyaki-don.jpg", "available": true, "tags": [] },
+        { "id": "i-chicken-katsu-don", "name": "Chicken Katsu Donburi", "description": "", "price": 39000, "image": "images/chicken-katsu-don.jpg", "available": true, "tags": ["hit"] }
+      ]
+    },
+    {
+      "id": "c-teppanyaki", "name": "Teppanyaki", "emoji": "🔥", "visible": true,
+      "items": [
+        { "id": "i-salmon-teppanyaki", "name": "Salmon Teppanyaki", "description": "Salmon teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 68000, "image": "images/salmon-teppanyaki.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-beef-teppanyaki", "name": "Beef Teppanyaki", "description": "Beef teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 65000, "image": "images/beef-teppanyaki.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chicken-teppanyaki", "name": "Chicken Teppanyaki", "description": "Chicken teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 54000, "image": "images/chicken-teppanyaki.jpg", "available": true, "tags": ["hit"] }
+      ]
+    },
+    {
+      "id": "c-bento", "name": "Bento", "emoji": "🍱", "visible": true,
+      "items": [
+        { "id": "i-beef-teriyaki-bento", "name": "Beef Teriyaki Bento", "description": "Beef teriyaki bento with sweet potato tempura and salad side dish", "price": 54000, "image": "images/beef-teriyaki-bento.jpg", "available": true, "tags": [] },
+        { "id": "i-tempura-karaage-bento", "name": "Tempura Karaage Bento", "description": "Ebi tempura & chicken karaage bento with sweet potato tempura and salad side dish", "price": 45000, "image": "images/tempura-karaage-bento.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chicken-goma-bento", "name": "Chicken Goma Bento", "description": "Sesame fried chicken bento with sweet potato tempura and salad side dish", "price": 44000, "image": "images/chicken-goma-bento.jpg", "available": true, "tags": [] },
+        { "id": "i-salmon-yakiniku-bento", "name": "Salmon Yakiniku Bento", "description": "Salmon yakiniku bento with sweet potato tempura and salad side dish", "price": 60000, "image": "images/salmon-yakiniku-bento.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-chicken-yakiniku-bento", "name": "Chicken Yakiniku Bento", "description": "Chicken yakiniku bento with sweet potato tempura and salad side dish", "price": 44000, "image": "images/chicken-yakiniku-bento.jpg", "available": true, "tags": [] },
+        { "id": "i-chicken-katsu-curry-bento", "name": "Chicken Katsu Curry Bento", "description": "Chicken katsu curry bento with sweet potato tempura and salad side dish", "price": 49000, "image": "images/chicken-katsu-curry-bento.jpg", "available": true, "tags": ["hit"] }
+      ]
+    },
+    {
+      "id": "c-kids", "name": "Kids Menu", "emoji": "🧸", "visible": true,
+      "items": [
+        { "id": "i-kids-amami", "name": "Mini Kuma Kids Meal", "description": "Kids-friendly meals: nori rice, fried salmon ball, fried tofu, and gyu amami", "price": 36000, "options": [{ "name": "Beef Amami", "price": 41000 }, { "name": "Chicken Amami", "price": 36000 }], "image": "images/kids-amami.jpg", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-platter", "name": "Sushi Platter", "emoji": "🎁", "visible": true,
+      "items": [
+        { "id": "i-sushi-platter", "name": "Sushi Platter Ookiikuma", "description": "24 sushi: 4 Ebi Furai Mentai Roll, 4 Tori BBQ Roll, 4 Sakana Roll, 4 Tori Tsoboro Roll, 4 Tori Kawa Roll, 4 Nori Maki. Take away & online delivery only.", "price": 90000, "image": "images/sushi-platter.jpg", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-coffee", "name": "Coffee Series", "emoji": "☕", "visible": true,
+      "items": [
+        { "id": "i-yuzu-coffee", "name": "Yuzu Coffee", "description": "", "price": 26000, "image": "images/yuzu-coffee.jpg", "available": true, "tags": [] },
+        { "id": "i-peach-coffee", "name": "Peach Coffee", "description": "", "price": 26000, "image": "images/peach-coffee.jpg", "available": true, "tags": [] },
+        { "id": "i-matcha-latte", "name": "Matcha Brown Sugar Latte", "description": "", "price": 27000, "image": "images/matcha-latte.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-black-ping-coffee", "name": "Black Ping Coffee", "description": "", "price": 27000, "image": "images/black-ping-coffee.jpg", "available": true, "tags": [] },
+        { "id": "i-butterscotch-latte", "name": "Butterscotch Latte", "description": "", "price": 27000, "image": "images/butterscotch-latte.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-coffee-latte", "name": "Coffee Latte", "description": "", "price": 26000, "image": "images/coffee-latte.jpg", "available": true, "tags": [] }
+      ]
+    },
+    {
+      "id": "c-drinks", "name": "Drinks", "emoji": "🥤", "visible": true,
+      "items": [
+        { "id": "i-carafe", "name": "Carafe (1 Litre)", "description": "", "price": 40000, "options": [{ "name": "Lemonade", "price": 40000 }, { "name": "Orange", "price": 40000 }, { "name": "Blackcurrant", "price": 40000 }, { "name": "Milo", "price": 42000 }], "image": "images/lemonade-carafe.jpg", "available": true, "tags": ["hit"] },
+        { "id": "i-milo", "name": "Milo", "description": "", "price": 18000, "image": "", "available": true, "tags": [] },
+        { "id": "i-lemon-tea", "name": "Lemon Tea", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
+        { "id": "i-lemonade", "name": "Lemonade", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
+        { "id": "i-orange-juice", "name": "Orange Juice", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
+        { "id": "i-blackcurrant", "name": "Blackcurrant", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
+        { "id": "i-tehbotol", "name": "Tehbotol Sosro Kotak", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
+        { "id": "i-lychee-ocha", "name": "Lychee Ocha", "description": "Free refill Ocha Original", "price": 16000, "image": "", "available": true, "tags": [] },
+        { "id": "i-ocha", "name": "Ocha", "description": "", "price": 13000, "image": "", "available": true, "tags": [] },
+        { "id": "i-mineral-water", "name": "Mineral Water", "description": "", "price": 11000, "image": "", "available": true, "tags": [] }
+      ]
+    }
+  ]
+}

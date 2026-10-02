@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Menu Admin</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<style>
+:root{--accent:#c8402f;--bg:#f6f3ef;--card:#fff;--text:#24201d;--muted:#7b726b;--line:#e7e0d8;--ok:#1f8a4c;--danger:#c62828;--soft:#f1ece6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:110px}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+h1,h2,h3{margin:0;line-height:1.2}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+.hidden{display:none!important}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;font-weight:600;min-height:44px;text-decoration:none;color:var(--text)}
+.btn:hover{border-color:#cfc5ba}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:var(--danger);border-color:#f0c9c9}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.icon{width:40px;height:40px;min-height:40px;padding:0;border-radius:10px;font-size:17px}
+
+/* Sign-in screens */
+.auth{max-width:440px;margin:40px auto;padding:0 16px}
+.panel{background:var(--card);border-radius:18px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.05)}
+.auth h1{font-size:24px;margin-bottom:6px}
+.auth p.lead{color:var(--muted);margin:0 0 18px}
+label.f{display:block;margin:14px 0 6px;font-weight:600;font-size:15px}
+.hint{color:var(--muted);font-size:13.5px;margin-top:4px}
+input[type=text],input[type=password],input[type=number],input[type=tel],textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;font-size:16px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:80px;resize:vertical}
+.steps{background:var(--soft);border-radius:12px;padding:12px 14px 12px 32px;margin:10px 0 0;font-size:14px}
+.steps li{margin:4px 0}
+.msg{margin-top:14px;padding:10px 12px;border-radius:10px;font-size:14px}
+.msg.err{background:#fdecec;color:var(--danger)}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--muted);font-size:14px}
+
+/* Header */
+.top{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.top .wrap{display:flex;align-items:center;gap:10px;min-height:60px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.top .brand{font-weight:800;font-size:18px;flex:1;min-width:160px}
+.top .brand small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.top nav{display:flex;gap:6px;flex-wrap:wrap}
+.top nav .btn{padding:8px 12px;min-height:38px;font-size:14px}
+.tabs{display:flex;gap:6px;margin:16px 0}
+.tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:12px;font-weight:700;color:var(--muted)}
+.tabs button.on{background:var(--card);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.06)}
+
+/* Categories */
+.cat{background:var(--card);border-radius:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden}
+.cat-head{display:flex;align-items:center;gap:6px;padding:10px 10px 10px 6px}
+.cat-title{flex:1;display:flex;align-items:center;gap:8px;border:0;background:none;text-align:left;padding:8px;min-width:0;font-weight:800;font-size:17px}
+.cat-title .arrow{transition:transform .15s;color:var(--muted);font-size:13px}
+.cat.open .cat-title .arrow{transform:rotate(90deg)}
+.cat-title .ttl{display:flex;flex-direction:column;min-width:0}
+.cat-title .cnt{font-weight:500;color:var(--muted);font-size:13px}
+.cat-title .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:480px){.cat-head .icon{width:36px;height:36px;min-height:36px}.cat-head{gap:4px}}
+.badge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:#eee;color:#666;white-space:nowrap}
+.cat-body{display:none;border-top:1px solid var(--line);padding:8px 10px 12px}
+.cat.open .cat-body{display:block}
+.row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--soft)}
+.row:last-of-type{border-bottom:0}
+.row .th{width:52px;height:52px;border-radius:10px;background:var(--soft);flex:0 0 52px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px}
+.row .th img{width:100%;height:100%;object-fit:cover}
+.row .info{flex:1;min-width:0;cursor:pointer}
+.row .info b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .info span{color:var(--muted);font-size:13.5px}
+.row.off .th,.row.off .info{opacity:.45}
+.row .arrows{display:flex;flex-direction:column;gap:2px}
+.row .arrows button{width:34px;height:24px;border:1px solid var(--line);background:#fff;border-radius:7px;font-size:11px;line-height:1;padding:0}
+.add-line{margin-top:8px}
+
+/* Switch */
+.sw{position:relative;display:inline-block;width:50px;height:30px;flex:0 0 50px}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;background:#cfc8c1;border-radius:30px;transition:.2s;cursor:pointer}
+.sw span::before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw input:checked + span{background:var(--ok)}
+.sw input:checked + span::before{transform:translateX(20px)}
+.swline{display:flex;align-items:center;gap:12px;margin-top:16px;font-weight:600}
+
+/* Edit dialog */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.modal .box{background:var(--card);width:100%;max-width:560px;max-height:94vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom))}
+@media (min-width:640px){.modal{align-items:center}.modal .box{border-radius:20px}}
+.modal h2{font-size:20px;margin-bottom:4px}
+.photo{display:flex;gap:14px;align-items:center;margin-top:12px}
+.photo .prev{width:110px;height:110px;border-radius:14px;background:var(--soft);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:40px;flex:0 0 110px}
+.photo .prev img{width:100%;height:100%;object-fit:cover}
+.photo .acts{display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;font-size:14px;user-select:none}
+.chips input{accent-color:var(--accent)}
+.opts .orow{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.opts .orow input:first-child{flex:1.4}
+.opts .orow input:nth-child(2){flex:1}
+.opts .orow button{flex:0 0 40px}
+.mbtns{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
+.mbtns .grow{flex:1}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.swatches button{width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.swatches button.on{box-shadow:0 0 0 2px var(--text)}
+.swatches input[type=color]{width:44px;height:38px;border:0;background:none;padding:0}
+
+/* Save bar */
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#24201d;color:#fff;padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
+.savebar .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.savebar .t{flex:1;min-width:180px;font-size:14.5px}
+.savebar .btn{border-color:transparent}
+.savebar .btn.ghost{background:transparent;color:#fff;border-color:#5a524c}
+
+.busy{position:fixed;inset:0;z-index:60;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-weight:600;text-align:center;padding:20px}
+.spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:70;background:#24201d;color:#fff;padding:12px 18px;border-radius:12px;max-width:92vw;box-shadow:0 6px 24px rgba(0,0,0,.2);font-size:15px}
+.toast.ok{background:var(--ok)}.toast.err{background:var(--danger)}
+.card{background:var(--card);border-radius:16px;padding:20px;margin-bottom:12px}
+.card p{margin:6px 0 0;color:var(--muted);font-size:14.5px}
+.empty-note{color:var(--muted);font-size:14px;padding:8px 4px}
+</style>
+</head>
+<body>
+
+<!-- 1. First-time setup -->
+<div class="auth hidden" id="scrSetup">
+  <div class="panel">
+    <h1>👋 First-time setup</h1>
+    <p class="lead">You only need to do this once on each device (phone, computer).</p>
+
+    <label class="f" for="sToken">GitHub access key (token)</label>
+    <input type="password" id="sToken" placeholder="ghp_…" autocomplete="off">
+    <ol class="steps">
+      <li>Tap <a id="tokenLink" target="_blank" rel="noopener">create a key on GitHub</a> (opens in a new tab).</li>
+      <li>Under <b>Expiration</b>, choose <b>No expiration</b>.</li>
+      <li>Scroll down and press the green <b>Generate token</b> button.</li>
+      <li>Copy the key (it starts with <code>ghp_</code>) and paste it here.</li>
+    </ol>
+
+    <label class="f" for="sPass">Create a password for this admin panel</label>
+    <input type="password" id="sPass" autocomplete="new-password" placeholder="At least 4 characters">
+    <label class="f" for="sPass2">Repeat the password</label>
+    <input type="password" id="sPass2" autocomplete="new-password">
+
+    <details id="repoBox">
+      <summary>Advanced: repository</summary>
+      <label class="f" for="sOwner">GitHub username</label>
+      <input type="text" id="sOwner" autocomplete="off" autocapitalize="off">
+      <label class="f" for="sRepo">Repository name</label>
+      <input type="text" id="sRepo" autocomplete="off" autocapitalize="off">
+      <div class="hint">Usually filled in automatically.</div>
+    </details>
+
+    <div class="msg err hidden" id="sErr"></div>
+    <button class="btn primary block" id="sGo" style="margin-top:20px">Save and sign in</button>
+  </div>
+</div>
+
+<!-- 2. Sign in -->
+<div class="auth hidden" id="scrLogin">
+  <div class="panel">
+    <h1>🔐 Menu admin</h1>
+    <p class="lead" id="lRepo"></p>
+    <form id="lForm">
+      <label class="f" for="lPass">Password</label>
+      <input type="password" id="lPass" autocomplete="current-password">
+      <div class="msg err hidden" id="lErr"></div>
+      <button class="btn primary block" style="margin-top:18px">Sign in</button>
+    </form>
+    <p class="hint" style="margin-top:18px">Forgot the password or using a new device? <a href="#" id="lReset">Set up again</a></p>
+  </div>
+</div>
+
+<!-- 3. Editor -->
+<div class="hidden" id="scrApp">
+  <header class="top">
+    <div class="wrap">
+      <div class="brand"><span id="brandName">Menu</span><small>Menu admin</small></div>
+      <nav>
+        <a class="btn" href="./" target="_blank">👁 View menu</a>
+        <a class="btn" href="qr.html" target="_blank">🖨 QR codes</a>
+        <button class="btn" id="btnLogout">Sign out</button>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="tabs">
+      <button data-tab="menu" class="on">🍽 Dishes</button>
+      <button data-tab="cafe">☕ Café info</button>
+      <button data-tab="backup">💾 Backup</button>
+    </div>
+    <div id="tabMenu"></div>
+    <div id="tabCafe" class="hidden"></div>
+    <div id="tabBackup" class="hidden">
+      <div class="card">
+        <h3>Download a backup</h3>
+        <p>Saves the whole menu (without photos) to one file. Useful before big changes.</p>
+        <button class="btn" id="btnExport" style="margin-top:12px">⬇️ Download menu.json</button>
+      </div>
+      <div class="card">
+        <h3>Restore from a backup</h3>
+        <p>Load a menu.json file you downloaded earlier, then press “Publish”.</p>
+        <label class="btn" style="margin-top:12px">⬆️ Choose file<input type="file" id="fileImport" accept=".json,application/json" hidden></label>
+      </div>
+      <div class="card">
+        <h3>Discard all unpublished changes</h3>
+        <p>Return the menu to what is live on the website right now.</p>
+        <button class="btn danger" id="btnRevert2" style="margin-top:12px">↩️ Discard changes</button>
+      </div>
+    </div>
+  </div>
+  <div class="savebar hidden" id="savebar">
+    <div class="wrap">
+      <div class="t">✏️ You have unpublished changes</div>
+      <button class="btn ghost" id="btnRevert">Discard</button>
+      <button class="btn primary" id="btnPublish">🚀 Publish</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div class="busy hidden" id="busy"><div class="spin"></div><div id="busyText">Loading…</div></div>
+
+<script>
+(function () {
+  'use strict';
+  var LS = 'menuAdmin.v1', DRAFT = 'menuAdmin.draft';
+  var TAGS = [['hit', '★ Favorite'], ['spicy', '🌶 Spicy'], ['raw', '🐟 Raw'], ['new', '✨ New'], ['veg', '🌱 Vegetarian']];
+  var COLORS = ['#c8402f', '#b5562b', '#8a5a3c', '#2f6b4f', '#3a6ea5', '#5b4a8a', '#a23b6b', '#24201d'];
+
+  var cfg = null;          // {owner, repo, branch, salt, iv, ct}
+  var token = null;        // decrypted key (kept in memory only)
+  var data = null;         // current menu
+  var savedJson = '';      // what is published
+  var pending = {};        // new photos: path -> dataURL (not uploaded yet)
+  var recent = {};         // recently uploaded photos (while the site rebuilds)
+  var openCats = {};
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---------- Helpers ----------
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function show(id) { ['scrSetup', 'scrLogin', 'scrApp'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
+  function busy(t) { $('busyText').textContent = t || ''; $('busy').classList.toggle('hidden', !t); }
+  function toast(t, kind, ms) {
+    var el = document.createElement('div');
+    el.className = 'toast ' + (kind || '');
+    el.textContent = t;
+    document.body.appendChild(el);
+    setTimeout(function () { el.remove(); }, ms || 3500);
+  }
+  function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function money(p) {
+    if (p === '' || p == null || isNaN(p)) return 'no price';
+    return (data.cafe.currency ? data.cafe.currency + ' ' : '') + new Intl.NumberFormat('en-US').format(p);
+  }
+  function priceText(i) {
+    if (i.options && i.options.length) return i.options.map(function (o) { return o.name + ' ' + money(o.price); }).join(' · ');
+    return money(i.price);
+  }
+  function imgSrc(p) { return pending[p] || recent[p] || p; }
+  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+  function parsePrice(v) {
+    var raw = String(v).replace(/[\s,]/g, '');
+    if (raw === '') return '';
+    var n = Number(raw);
+    return isNaN(n) || n < 0 ? NaN : n;
+  }
+
+  function bytesToB64(bytes) {
+    var s = '';
+    for (var i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  }
+  function b64ToBytes(b64) {
+    var s = atob(b64.replace(/\s/g, '')), a = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+    return a;
+  }
+
+  // ---------- Encrypting the key with the password ----------
+  async function deriveKey(pass, salt) {
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function encryptToken(tok, pass) {
+    var salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    var key = await deriveKey(pass, salt);
+    var ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(tok)));
+    return { salt: bytesToB64(salt), iv: bytesToB64(iv), ct: bytesToB64(ct) };
+  }
+  async function decryptToken(c, pass) {
+    var key = await deriveKey(pass, b64ToBytes(c.salt));
+    var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(c.iv) }, key, b64ToBytes(c.ct));
+    return new TextDecoder().decode(pt);
+  }
+
+  // ---------- GitHub ----------
+  async function gh(path, opts) {
+    opts = opts || {};
+    var r = await fetch('https://api.github.com/repos/' + encodeURIComponent(cfg.owner) + '/' + encodeURIComponent(cfg.repo) + path, {
+      method: opts.method || 'GET',
+      cache: 'no-store',
+      headers: Object.assign({ 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + (opts.token || token) }, opts.body ? { 'Content-Type': 'application/json' } : {}),
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    });
+    if (!r.ok) {
+      var e = new Error('GitHub ' + r.status);
+      e.status = r.status;
+      try { e.detail = (await r.json()).message; } catch (x) {}
+      throw e;
+    }
+    return r.status === 204 ? null : r.json();
+  }
+  function ghError(e) {
+    if (!navigator.onLine) return 'No internet connection. Check your connection and try again.';
+    if (e.status === 401) return 'The access key is invalid or expired. Press “Sign out” → “Set up again” and create a new key.';
+    if (e.status === 403) return 'The key has no permission to make changes. Create a new key with the “repo” box ticked.';
+    if (e.status === 404) return 'Repository not found. Check the GitHub username and repository name.';
+    return 'Could not reach GitHub (' + (e.status || e.message) + '). Please try again in a minute.';
+  }
+
+  function detectRepo() {
+    var h = location.hostname;
+    if (!/\.github\.io$/i.test(h)) return null;
+    var owner = h.split('.')[0];
+    var seg = location.pathname.split('/').filter(Boolean)[0];
+    var repo = seg && !/\.html?$/i.test(seg) ? seg : h.toLowerCase();
+    return { owner: owner, repo: repo };
+  }
+
+  // ---------- First-time setup ----------
+  function initSetup() {
+    var d = detectRepo();
+    $('sOwner').value = (cfg && cfg.owner) || (d && d.owner) || '';
+    $('sRepo').value = (cfg && cfg.repo) || (d && d.repo) || '';
+    $('repoBox').open = !d;
+    $('tokenLink').href = 'https://github.com/settings/tokens/new?scopes=repo&description=' + encodeURIComponent('Menu admin (' + location.hostname + ')');
+    $('sErr').classList.add('hidden');
+    show('scrSetup');
+  }
+  $('sGo').addEventListener('click', async function () {
+    var tok = $('sToken').value.trim(), p1 = $('sPass').value, p2 = $('sPass2').value;
+    var owner = $('sOwner').value.trim(), repo = $('sRepo').value.trim();
+    var err = function (t) { $('sErr').textContent = t; $('sErr').classList.remove('hidden'); };
+    if (!tok) return err('Paste your GitHub access key.');
+    if (p1.length < 4) return err('The password must be at least 4 characters.');
+    if (p1 !== p2) return err('The passwords do not match.');
+    if (!owner || !repo) { $('repoBox').open = true; return err('Enter the GitHub username and repository name.'); }
+    busy('Checking the key…');
+    try {
+      cfg = { owner: owner, repo: repo };
+      var info = await gh('', { token: tok });
+      if (info.permissions && !info.permissions.push) throw Object.assign(new Error(), { status: 403 });
+      var enc = await encryptToken(tok, p1);
+      cfg = Object.assign({ owner: owner, repo: repo, branch: info.default_branch }, enc);
+      lsSet(LS, cfg);
+      token = tok;
+      $('sToken').value = $('sPass').value = $('sPass2').value = '';
+      await loadMenu();
+    } catch (e) {
+      busy();
+      err(ghError(e));
+    }
+  });
+
+  // ---------- Sign in ----------
+  $('lForm').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    $('lErr').classList.add('hidden');
+    busy('Signing in…');
+    try {
+      token = await decryptToken(cfg, $('lPass').value);
+    } catch (e) {
+      busy();
+      $('lErr').textContent = 'Wrong password.';
+      $('lErr').classList.remove('hidden');
+      return;
+    }
+    $('lPass').value = '';
+    try { await loadMenu(); } catch (e) { busy(); $('lErr').textContent = ghError(e); $('lErr').classList.remove('hidden'); }
+  });
+  $('lReset').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!confirm('Set up again? You will need a GitHub access key (you can create a new one).')) return;
+    initSetup();
+  });
+  $('btnLogout').addEventListener('click', function () {
+    if (isDirty() && !confirm('You have unpublished changes. They will be kept on this device as a draft. Sign out?')) return;
+    token = null; data = null;
+    show('scrLogin');
+  });
+
+  // ---------- Loading the menu ----------
+  function normalize(d) {
+    d = d && typeof d === 'object' ? d : {};
+    d.cafe = Object.assign({ name: '', tagline: '', address: '', phone: '', wifi: '', currency: 'Rp', accent: '#c8402f', footer: '' }, d.cafe || {});
+    d.categories = Array.isArray(d.categories) ? d.categories : [];
+    d.categories.forEach(function (c) {
+      c.id = c.id || uid('c-');
+      c.name = c.name || 'Untitled';
+      if (c.visible === undefined) c.visible = true;
+      c.items = Array.isArray(c.items) ? c.items : [];
+      c.items.forEach(function (i) {
+        i.id = i.id || uid('i-');
+        i.tags = Array.isArray(i.tags) ? i.tags : [];
+        if (i.available === undefined) i.available = true;
+      });
+    });
+    return d;
+  }
+  async function loadMenu() {
+    busy('Loading the menu…');
+    var f = await gh('/contents/menu.json?ref=' + encodeURIComponent(cfg.branch));
+    var text = new TextDecoder().decode(b64ToBytes(f.content));
+    data = normalize(JSON.parse(text));
+    savedJson = JSON.stringify(data);
+    pending = {};
+    var dr = lsGet(DRAFT);
+    if (dr && dr.json && dr.json !== savedJson) {
+      busy();
+      if (confirm('Unpublished changes from last time were found. Restore them?')) {
+        data = normalize(JSON.parse(dr.json));
+        pending = dr.images || {};
+      } else lsDel(DRAFT);
+    }
+    busy();
+    show('scrApp');
+    renderAll();
+  }
+
+  // ---------- Changes / draft ----------
+  function isDirty() { return data && (JSON.stringify(data) !== savedJson || Object.keys(pending).length > 0); }
+  var draftTimer;
+  function changed(rerender) {
+    if (rerender !== false) renderMenu();
+    $('brandName').textContent = data.cafe.name || 'Menu';
+    $('savebar').classList.toggle('hidden', !isDirty());
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(function () {
+      if (!isDirty()) return lsDel(DRAFT);
+      if (!lsSet(DRAFT, { json: JSON.stringify(data), images: pending })) lsSet(DRAFT, { json: JSON.stringify(data), images: {} });
+    }, 400);
+  }
+  window.addEventListener('beforeunload', function (e) { if (isDirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+  function revert() {
+    if (!confirm('Discard all changes that are not published yet?')) return;
+    data = normalize(JSON.parse(savedJson));
+    pending = {};
+    lsDel(DRAFT);
+    renderAll();
+    toast('Changes discarded');
+  }
+  $('btnRevert').addEventListener('click', revert);
+  $('btnRevert2').addEventListener('click', revert);
+
+  // ---------- Publishing (one commit) ----------
+  $('btnPublish').addEventListener('click', async function () {
+    var used = {};
+    data.categories.forEach(function (c) { c.items.forEach(function (i) { if (i.image) used[i.image] = 1; }); });
+    var imgs = Object.keys(pending).filter(function (p) { return used[p]; });
+    try {
+      busy('Publishing…');
+      var ref = await gh('/git/ref/heads/' + encodeURIComponent(cfg.branch));
+      var head = ref.object.sha;
+      var commit = await gh('/git/commits/' + head);
+      var tree = [];
+      for (var n = 0; n < imgs.length; n++) {
+        busy('Uploading photo ' + (n + 1) + ' of ' + imgs.length + '…');
+        var blob = await gh('/git/blobs', { method: 'POST', body: { content: pending[imgs[n]].split(',')[1], encoding: 'base64' } });
+        tree.push({ path: imgs[n], mode: '100644', type: 'blob', sha: blob.sha });
+      }
+      busy('Saving the menu…');
+      var json = JSON.stringify(data, null, 2) + '\n';
+      var mblob = await gh('/git/blobs', { method: 'POST', body: { content: json, encoding: 'utf-8' } });
+      tree.push({ path: 'menu.json', mode: '100644', type: 'blob', sha: mblob.sha });
+      var newTree = await gh('/git/trees', { method: 'POST', body: { base_tree: commit.tree.sha, tree: tree } });
+      var newCommit = await gh('/git/commits', { method: 'POST', body: { message: 'Menu update ' + new Date().toISOString().slice(0, 16).replace('T', ' '), tree: newTree.sha, parents: [head] } });
+      await gh('/git/refs/heads/' + encodeURIComponent(cfg.branch), { method: 'PATCH', body: { sha: newCommit.sha } });
+      imgs.forEach(function (p) { recent[p] = pending[p]; });
+      pending = {};
+      savedJson = JSON.stringify(data);
+      lsDel(DRAFT);
+      busy();
+      changed(false);
+      toast('✅ Published! The menu will update in 1–2 minutes.', 'ok', 6000);
+    } catch (e) {
+      busy();
+      toast(ghError(e), 'err', 7000);
+    }
+  });
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.tabs button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      ['menu', 'cafe', 'backup'].forEach(function (t) {
+        $('tab' + t[0].toUpperCase() + t.slice(1)).classList.toggle('hidden', t !== b.getAttribute('data-tab'));
+      });
+    });
+  });
+
+  function renderAll() { renderMenu(); renderCafe(); changed(false); }
+
+  // ---------- “Dishes” tab ----------
+  function thumb(i, emoji) {
+    return i.image ? '<img src="' + esc(imgSrc(i.image)) + '" alt="" loading="lazy" onerror="this.replaceWith(\'📷\')">' : esc(emoji || '🍽️');
+  }
+  function renderMenu() {
+    var h = '';
+    if (!data.categories.length) h += '<div class="card"><h3>The menu is empty</h3><p>Start by adding a category, for example “Breakfast” or “Drinks”.</p></div>';
+    data.categories.forEach(function (c, ci) {
+      var hiddenCnt = c.items.filter(function (i) { return !i.available; }).length;
+      h += '<div class="cat' + (openCats[c.id] ? ' open' : '') + '">' +
+        '<div class="cat-head">' +
+        '<button class="cat-title" data-act="fold" data-c="' + ci + '"><span class="arrow">▶</span>' +
+        (c.emoji ? '<span>' + esc(c.emoji) + '</span>' : '') + '<span class="ttl"><span class="nm">' + esc(c.name) + '</span>' +
+        '<span class="cnt">' + plural(c.items.length, 'item', 'items') + (hiddenCnt ? ', ' + hiddenCnt + ' hidden' : '') +
+        (c.visible === false ? ' <span class="badge">category hidden</span>' : '') + '</span></span></button>' +
+        '<button class="btn icon" data-act="cup" data-c="' + ci + '" title="Move up"' + (ci === 0 ? ' disabled' : '') + '>↑</button>' +
+        '<button class="btn icon" data-act="cdown" data-c="' + ci + '" title="Move down"' + (ci === data.categories.length - 1 ? ' disabled' : '') + '>↓</button>' +
+        '<button class="btn icon" data-act="cedit" data-c="' + ci + '" title="Edit category">✏️</button>' +
+        '</div><div class="cat-body">';
+      if (!c.items.length) h += '<div class="empty-note">No items in this category yet.</div>';
+      c.items.forEach(function (i, ii) {
+        h += '<div class="row' + (i.available ? '' : ' off') + '">' +
+          '<div class="th">' + thumb(i, c.emoji) + '</div>' +
+          '<div class="info" data-act="iedit" data-c="' + ci + '" data-i="' + ii + '"><b>' + esc(i.name) + '</b><span>' + esc(priceText(i)) + (i.available ? '' : ' · hidden') + '</span></div>' +
+          '<label class="sw" title="Show on the menu"><input type="checkbox" data-act="avail" data-c="' + ci + '" data-i="' + ii + '"' + (i.available ? ' checked' : '') + '><span></span></label>' +
+          '<div class="arrows"><button data-act="iup" data-c="' + ci + '" data-i="' + ii + '"' + (ii === 0 ? ' disabled' : '') + ' title="Move up">▲</button>' +
+          '<button data-act="idown" data-c="' + ci + '" data-i="' + ii + '"' + (ii === c.items.length - 1 ? ' disabled' : '') + ' title="Move down">▼</button></div>' +
+          '</div>';
+      });
+      h += '<button class="btn block add-line" data-act="iadd" data-c="' + ci + '">＋ Add item to “' + esc(c.name) + '”</button></div></div>';
+    });
+    h += '<button class="btn primary block" data-act="cadd" style="margin-top:6px">＋ Add category</button>' +
+      '<p class="hint" style="text-align:center;margin-top:14px">Tap a category to see its items. Tap an item to edit it.<br>The switch on the right shows or hides an item on the menu (e.g. when it is sold out).</p>';
+    $('tabMenu').innerHTML = h;
+  }
+  function swap(arr, a, b) { var t = arr[a]; arr[a] = arr[b]; arr[b] = t; }
+
+  $('tabMenu').addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+    var act = el.getAttribute('data-act'), ci = +el.getAttribute('data-c'), ii = +el.getAttribute('data-i');
+    var cats = data.categories;
+    if (act === 'avail') return; // handled in “change”
+    if (act === 'fold') { openCats[cats[ci].id] = !openCats[cats[ci].id]; return renderMenu(); }
+    if (act === 'cup') { swap(cats, ci, ci - 1); return changed(); }
+    if (act === 'cdown') { swap(cats, ci, ci + 1); return changed(); }
+    if (act === 'cedit') return editCategory(ci);
+    if (act === 'cadd') return editCategory(-1);
+    if (act === 'iup') { swap(cats[ci].items, ii, ii - 1); return changed(); }
+    if (act === 'idown') { swap(cats[ci].items, ii, ii + 1); return changed(); }
+    if (act === 'iedit') return editItem(ci, ii);
+    if (act === 'iadd') return editItem(ci, -1);
+  });
+  $('tabMenu').addEventListener('change', function (e) {
+    var el = e.target;
+    if (el.getAttribute('data-act') !== 'avail') return;
+    var it = data.categories[+el.getAttribute('data-c')].items[+el.getAttribute('data-i')];
+    it.available = el.checked;
+    changed();
+    toast(el.checked ? '“' + it.name + '” is back on the menu' : '“' + it.name + '” is hidden from the menu');
+  });
+
+  // ---------- Dialogs ----------
+  function modal(html) {
+    $('modalRoot').innerHTML = '<div class="modal"><div class="box">' + html + '</div></div>';
+    var m = $('modalRoot').firstChild;
+    m.addEventListener('click', function (e) { if (e.target === m) closeModal(); });
+    return m;
+  }
+  function closeModal() { $('modalRoot').innerHTML = ''; }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+  function editCategory(ci) {
+    var isNew = ci < 0, c = isNew ? { name: '', emoji: '', visible: true, items: [] } : data.categories[ci];
+    var m = modal(
+      '<h2>' + (isNew ? 'New category' : 'Category') + '</h2>' +
+      '<label class="f">Name</label><input type="text" id="mName" value="' + esc(c.name) + '" placeholder="e.g. Breakfast">' +
+      '<label class="f">Icon (optional)</label><input type="text" id="mEmoji" value="' + esc(c.emoji || '') + '" placeholder="🥐" maxlength="4" style="width:90px">' +
+      '<div class="hint">An emoji shown next to the name, and in place of a photo when an item has none.</div>' +
+      '<div class="swline"><label class="sw"><input type="checkbox" id="mVis"' + (c.visible !== false ? ' checked' : '') + '><span></span></label> Show this category on the menu</div>' +
+      '<div class="mbtns">' + (isNew ? '' : '<button class="btn danger" id="mDel">🗑 Delete</button>') +
+      '<span class="grow"></span><button class="btn" id="mCancel">Cancel</button><button class="btn primary" id="mSave">Save</button></div>'
+    );
+    m.querySelector('#mName').focus();
+    m.querySelector('#mCancel').onclick = closeModal;
+    m.querySelector('#mSave').onclick = function () {
+      var name = m.querySelector('#mName').value.trim();
+      if (!name) return toast('Enter a category name', 'err');
+      c.name = name;
+      c.emoji = m.querySelector('#mEmoji').value.trim();
+      c.visible = m.querySelector('#mVis').checked;
+      if (isNew) { c.id = uid('c-'); data.categories.push(c); openCats[c.id] = true; }
+      closeModal(); changed();
+    };
+    if (!isNew) m.querySelector('#mDel').onclick = function () {
+      var msg = c.items.length ? 'Delete the category “' + c.name + '” and all its items (' + c.items.length + ')?' : 'Delete the category “' + c.name + '”?';
+      if (!confirm(msg)) return;
+      data.categories.splice(ci, 1);
+      closeModal(); changed();
+    };
+  }
+
+  function optRow(o) {
+    return '<div class="orow"><input type="text" placeholder="e.g. Beef" value="' + esc(o ? o.name : '') + '">' +
+      '<input type="text" inputmode="decimal" placeholder="Price" value="' + esc(o ? o.price : '') + '">' +
+      '<button class="btn icon" data-del title="Remove option">✕</button></div>';
+  }
+
+  function editItem(ci, ii) {
+    var isNew = ii < 0, cat = data.categories[ci];
+    var it = isNew ? { name: '', description: '', price: '', image: '', available: true, tags: [] } : cat.items[ii];
+    var img = it.image;
+    var cur = data.cafe.currency ? ' (' + esc(data.cafe.currency) + ')' : '';
+    var m = modal(
+      '<h2>' + (isNew ? 'New item' : 'Item') + '</h2>' +
+      '<div class="photo"><div class="prev" id="mPrev"></div><div class="acts">' +
+      '<label class="btn">📷 ' + (img ? 'Change photo' : 'Add photo') + '<input type="file" id="mFile" accept="image/*" hidden></label>' +
+      '<button class="btn" id="mNoPhoto">Remove photo</button></div></div>' +
+      '<label class="f">Name</label><input type="text" id="mName" value="' + esc(it.name) + '" placeholder="e.g. Salmon Sushi (2 pcs)">' +
+      '<label class="f">Description</label><textarea id="mDesc" placeholder="Ingredients, how it is served">' + esc(it.description) + '</textarea>' +
+      '<label class="f">Price' + cur + '</label><input type="text" inputmode="decimal" id="mPrice" value="' + esc(it.price) + '" placeholder="35000">' +
+      '<label class="f">Price options (optional)</label>' +
+      '<div class="hint" style="margin:-2px 0 8px">For dishes with choices, e.g. Beef 47000 / Chicken 45000. Leave empty if there is one price.</div>' +
+      '<div class="opts" id="mOpts">' + (it.options || []).map(optRow).join('') + '</div>' +
+      '<button class="btn" id="mAddOpt">＋ Add option</button>' +
+      '<label class="f">Labels</label><div class="chips">' + TAGS.map(function (t) {
+        return '<label><input type="checkbox" value="' + t[0] + '"' + (it.tags.indexOf(t[0]) !== -1 ? ' checked' : '') + '> ' + t[1] + '</label>';
+      }).join('') + '</div>' +
+      '<label class="f">Category</label><select id="mCat">' + data.categories.map(function (c, k) {
+        return '<option value="' + k + '"' + (k === ci ? ' selected' : '') + '>' + esc((c.emoji ? c.emoji + ' ' : '') + c.name) + '</option>';
+      }).join('') + '</select>' +
+      '<div class="swline"><label class="sw"><input type="checkbox" id="mAvail"' + (it.available ? ' checked' : '') + '><span></span></label> Show on the menu (available)</div>' +
+      '<div class="mbtns">' + (isNew ? '' : '<button class="btn danger" id="mDel">🗑 Delete</button>') +
+      '<span class="grow"></span><button class="btn" id="mCancel">Cancel</button><button class="btn primary" id="mSave">Save</button></div>'
+    );
+    function preview() {
+      m.querySelector('#mPrev').innerHTML = img ? '<img src="' + esc(imgSrc(img)) + '" alt="" onerror="this.replaceWith(\'📷\')">' : esc(cat.emoji || '🍽️');
+      m.querySelector('#mNoPhoto').classList.toggle('hidden', !img);
+    }
+    preview();
+    if (isNew) m.querySelector('#mName').focus();
+    m.querySelector('#mAddOpt').onclick = function () {
+      m.querySelector('#mOpts').insertAdjacentHTML('beforeend', optRow(null));
+      m.querySelector('#mOpts .orow:last-child input').focus();
+    };
+    m.querySelector('#mOpts').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-del]'); if (b) b.parentNode.remove();
+    });
+    m.querySelector('#mFile').onchange = async function () {
+      var file = this.files[0]; if (!file) return;
+      try {
+        busy('Processing photo…');
+        var url = await resizeImage(file, 800);
+        img = 'images/' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + '.jpg';
+        pending[img] = url;
+        busy(); preview();
+      } catch (e) { busy(); toast('Could not open this photo. Try another one (JPG or PNG).', 'err'); }
+    };
+    m.querySelector('#mNoPhoto').onclick = function () { img = ''; preview(); };
+    m.querySelector('#mCancel').onclick = closeModal;
+    m.querySelector('#mSave').onclick = function () {
+      var name = m.querySelector('#mName').value.trim();
+      if (!name) return toast('Enter the item name', 'err');
+      var price = parsePrice(m.querySelector('#mPrice').value);
+      if (price !== '' && isNaN(price)) return toast('The price must be a number, e.g. 35000', 'err');
+      var opts = [], bad = false;
+      m.querySelectorAll('#mOpts .orow').forEach(function (r) {
+        var inp = r.querySelectorAll('input'), on = inp[0].value.trim(), op = parsePrice(inp[1].value);
+        if (!on && op === '') return;
+        if (!on || op === '' || isNaN(op)) bad = true;
+        opts.push({ name: on, price: op });
+      });
+      if (bad) return toast('Each price option needs a name and a number', 'err');
+      if (opts.length && price === '') price = Math.min.apply(null, opts.map(function (o) { return o.price; }));
+      it.name = name;
+      it.description = m.querySelector('#mDesc').value.trim();
+      it.price = price;
+      if (opts.length) it.options = opts; else delete it.options;
+      it.image = img;
+      it.available = m.querySelector('#mAvail').checked;
+      it.tags = [].map.call(m.querySelectorAll('.chips input:checked'), function (x) { return x.value; });
+      var to = +m.querySelector('#mCat').value;
+      if (isNew) { it.id = uid('i-'); data.categories[to].items.push(it); }
+      else if (to !== ci) { cat.items.splice(ii, 1); data.categories[to].items.push(it); }
+      openCats[data.categories[to].id] = true;
+      // drop queued photos that are no longer used anywhere
+      Object.keys(pending).forEach(function (p) {
+        if (!data.categories.some(function (c) { return c.items.some(function (x) { return x.image === p; }); })) delete pending[p];
+      });
+      closeModal(); changed();
+    };
+    if (!isNew) m.querySelector('#mDel').onclick = function () {
+      if (!confirm('Delete “' + it.name + '”?')) return;
+      cat.items.splice(ii, 1);
+      closeModal(); changed();
+    };
+  }
+
+  // Shrink photos to 800×800 (centre square) so the menu loads fast
+  function resizeImage(file, size) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var s = Math.min(im.naturalWidth, im.naturalHeight), out = Math.min(size, s);
+        var cv = document.createElement('canvas'); cv.width = cv.height = out;
+        var g = cv.getContext('2d');
+        g.imageSmoothingQuality = 'high';
+        g.drawImage(im, (im.naturalWidth - s) / 2, (im.naturalHeight - s) / 2, s, s, 0, 0, out, out);
+        URL.revokeObjectURL(url);
+        resolve(cv.toDataURL('image/jpeg', 0.82));
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      im.src = url;
+    });
+  }
+
+  // ---------- “Café info” tab ----------
+  var FIELDS = [
+    ['name', 'Café name', 'text', 'Sushi & Ramen'],
+    ['tagline', 'Subtitle (optional)', 'text', 'Japanese food in Ubud'],
+    ['address', 'Address (optional)', 'text', 'Jl. Raya Ubud No. 1, Bali'],
+    ['phone', 'Phone (optional)', 'tel', '+62 812 3456 7890'],
+    ['wifi', 'Wi-Fi password (optional)', 'text', ''],
+    ['currency', 'Currency (shown before the price)', 'text', 'Rp']
+  ];
+  function renderCafe() {
+    var c = data.cafe;
+    var h = '<div class="card">' + FIELDS.map(function (f) {
+      return '<label class="f" for="cf_' + f[0] + '">' + f[1] + '</label><input type="' + f[2] + '" id="cf_' + f[0] + '" data-k="' + f[0] + '" value="' + esc(c[f[0]]) + '" placeholder="' + esc(f[3]) + '"' + (f[0] === 'currency' ? ' list="curList" style="width:140px"' : '') + '>';
+    }).join('') +
+      '<datalist id="curList"><option>Rp</option><option>IDR</option><option>$</option><option>€</option><option>₽</option></datalist>' +
+      '<label class="f" for="cf_footer">Note at the bottom of the menu</label><textarea id="cf_footer" data-k="footer" placeholder="e.g. Prices are before tax and service charge.">' + esc(c.footer) + '</textarea>' +
+      '<label class="f">Theme colour</label><div class="swatches" id="swatches">' + COLORS.map(function (col) {
+        return '<button style="background:' + col + '" data-col="' + col + '"' + (c.accent === col ? ' class="on"' : '') + ' title="' + col + '"></button>';
+      }).join('') + '<input type="color" id="cf_accent" value="' + esc(c.accent || '#c8402f') + '" title="Custom colour"></div>' +
+      '</div>';
+    $('tabCafe').innerHTML = h;
+  }
+  $('tabCafe').addEventListener('input', function (e) {
+    var k = e.target.getAttribute('data-k');
+    if (k) { data.cafe[k] = e.target.value; return changed(false); }
+    if (e.target.id === 'cf_accent') { data.cafe.accent = e.target.value; markSwatch(); changed(false); }
+  });
+  $('tabCafe').addEventListener('change', function (e) { if (e.target.getAttribute('data-k') === 'currency') renderMenu(); });
+  $('tabCafe').addEventListener('click', function (e) {
+    var col = e.target.getAttribute && e.target.getAttribute('data-col');
+    if (!col) return;
+    data.cafe.accent = col; $('cf_accent').value = col; markSwatch(); changed(false);
+  });
+  function markSwatch() {
+    document.querySelectorAll('#swatches button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-col') === data.cafe.accent); });
+  }
+
+  // ---------- “Backup” tab ----------
+  $('btnExport').addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    a.download = 'menu-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  $('fileImport').addEventListener('change', function () {
+    var f = this.files[0]; this.value = '';
+    if (!f) return;
+    f.text().then(function (t) {
+      var d = JSON.parse(t);
+      if (!d || !Array.isArray(d.categories)) throw new Error();
+      if (!confirm('Replace the current menu with the contents of “' + f.name + '”?')) return;
+      data = normalize(d);
+      renderAll();
+      toast('Menu loaded from the backup. Don’t forget to press “Publish”.', 'ok', 5000);
+    }).catch(function () { toast('This does not look like a menu file (menu.json).', 'err'); });
+  });
+
+  // ---------- Start ----------
+  if (!window.crypto || !crypto.subtle) {
+    document.body.innerHTML = '<div class="auth"><div class="panel"><h1>Open the admin panel via https://…</h1><p class="lead">The admin panel only works on the published website (GitHub Pages).</p></div></div>';
+    return;
+  }
+  cfg = lsGet(LS);
+  if (cfg && cfg.ct) {
+    $('lRepo').textContent = 'Repository: ' + cfg.owner + '/' + cfg.repo;
+    show('scrLogin');
+    setTimeout(function () { $('lPass').focus(); }, 50);
+  } else {
+    initSetup();
+  }
+})();
+</script>
+</body>
+</html>

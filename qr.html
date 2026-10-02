@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Table QR Codes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<style>
+:root{--accent:#c8402f;--bg:#eeeae5;--text:#24201d;--muted:#776e67;--line:#ddd5cc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.controls{max-width:900px;margin:0 auto;padding:20px 16px 8px}
+.controls h1{margin:0 0 4px;font-size:24px}
+.controls .lead{margin:0 0 16px;color:var(--muted)}
+.panel{background:#fff;border-radius:16px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}
+@media (max-width:640px){.panel{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+label.f{display:block;font-weight:600;font-size:14.5px;margin-bottom:5px}
+input[type=text],input[type=number],input[type=url]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.opt input{margin-top:4px;accent-color:var(--accent)}
+.opt small{display:block;color:var(--muted)}
+.chk{display:flex;gap:8px;align-items:center;cursor:pointer}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.tips{background:#fff8e6;border-radius:12px;padding:12px 14px 12px 32px;margin:14px 0 0;font-size:14px}
+.tips li{margin:3px 0}
+.warn{background:#fdecec;color:#b3261e;border-radius:12px;padding:12px 14px;margin-top:12px;display:none}
+.preview{padding:16px 16px 40px;overflow-x:auto}
+.pages{transform-origin:top left;width:210mm;margin:0 auto}
+.page{width:210mm;height:297mm;background:#fff;margin:0 auto 16px;box-shadow:0 2px 14px rgba(0,0,0,.12);display:grid;align-content:center;justify-content:center;overflow:hidden}
+
+/* Card */
+.card{position:relative;background:#fff;outline:.2mm dashed #c9c9c9;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.card .band{width:100%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;line-height:1.1;padding:0 3mm}
+.card .qr{display:block;margin:0 auto}
+.card .cap{color:#555;text-align:center;line-height:1.2;display:flex;align-items:center;gap:1.5mm}
+.card .cap svg{flex:0 0 auto}
+.card .num{font-weight:900;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.card .num span{color:#333;font-weight:700;letter-spacing:0}
+
+/* Standard: 63×88 mm, QR 50 mm */
+.s-std .page{grid-template-columns:repeat(3,63mm);grid-auto-rows:88mm}
+.s-std .card{width:63mm;height:88mm;padding-bottom:4mm}
+.s-std .band{height:15mm;font-size:4.6mm}
+.s-std .qr{width:50mm;height:50mm;margin-top:3mm}
+.s-std .cap{font-size:3.1mm;margin-top:2mm}
+.s-std .cap svg{width:4mm;height:4mm}
+.s-std .num{font-size:9mm;margin-top:auto}
+.s-std .num span{font-size:5mm}
+
+/* Large: 90×120 mm, QR 70 mm */
+.s-big .page{grid-template-columns:repeat(2,90mm);grid-auto-rows:120mm}
+.s-big .card{width:90mm;height:120mm;padding-bottom:5mm}
+.s-big .band{height:20mm;font-size:6.5mm}
+.s-big .qr{width:70mm;height:70mm;margin-top:4mm}
+.s-big .cap{font-size:4.2mm;margin-top:3mm}
+.s-big .cap svg{width:5.5mm;height:5.5mm}
+.s-big .num{font-size:12mm;margin-top:auto}
+.s-big .num span{font-size:6.5mm}
+
+@page{size:A4 portrait;margin:0}
+@media print{
+  body{background:#fff}
+  .controls{display:none}
+  .preview{padding:0;overflow:visible}
+  .pages{transform:none!important;width:auto;margin:0}
+  .page{margin:0;box-shadow:none;break-after:page;page-break-after:always}
+  .page:last-child{break-after:auto;page-break-after:auto}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="controls">
+  <h1>🖨 Table QR codes</h1>
+  <p class="lead">Set up and print. Each QR code opens the menu and shows the guest their table number.</p>
+  <div class="panel">
+    <div class="full">
+      <label class="f" for="url">Your menu address</label>
+      <input type="url" id="url" placeholder="https://name.github.io/menu/">
+    </div>
+    <div>
+      <label class="f" for="cafe">Café name on the card</label>
+      <input type="text" id="cafe">
+    </div>
+    <div>
+      <label class="f" for="cap">Text under the QR code</label>
+      <input type="text" id="cap" value="Scan to view the menu">
+    </div>
+    <div>
+      <label class="f" for="count">Number of tables</label>
+      <input type="number" id="count" value="20" min="1" max="200">
+    </div>
+    <div>
+      <label class="f" for="start">Start from number</label>
+      <input type="number" id="start" value="1" min="0">
+    </div>
+    <div class="full">
+      <label class="f">Size</label>
+      <label class="opt"><input type="radio" name="size" value="std" checked><span><b>Standard — card 6.3 × 8.8 cm, QR code 5 × 5 cm</b> (recommended)<small>9 per A4 sheet. Scans reliably from up to 50 cm — right from the seat. Works as a table sticker or in an acrylic table stand.</small></span></label>
+      <label class="opt"><input type="radio" name="size" value="big"><span><b>Large — card 9 × 12 cm, QR code 7 × 7 cm</b><small>4 per A4 sheet. For large tables, the bar, the entrance and windows.</small></span></label>
+      <label class="chk"><input type="checkbox" id="general"> Add one general QR code without a table number (for the entrance, counter, window)</label>
+    </div>
+    <div class="full btns">
+      <button class="btn primary" id="print">🖨 Print / save as PDF</button>
+      <button class="btn" id="png">⬇️ Download PNG (300 dpi, ZIP)</button>
+    </div>
+  </div>
+  <div class="warn" id="warn"></div>
+  <ul class="tips">
+    <li>In the print window choose <b>Save as PDF</b> to get a print-ready file for a print shop.</li>
+    <li>Print at <b>100% scale</b> (“Actual size”), not “Fit to page”.</li>
+    <li>Best printed on <b>A4 sticker paper</b> and laminated, so it survives wiping the tables.</li>
+    <li>Before printing them all, scan one code with a phone and check that the menu opens.</li>
+  </ul>
+</div>
+<div class="preview"><div class="pages" id="pages"></div></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>';
+  var SIZES = {
+    std: { w: 63, h: 88, cols: 3, rows: 3, band: 15, font: 4.6, qr: 50, qrTop: 3, cap: 3.1, capTop: 2, num: 9, numLabel: 5, pad: 4 },
+    big: { w: 90, h: 120, cols: 2, rows: 2, band: 20, font: 6.5, qr: 70, qrTop: 4, cap: 4.2, capTop: 3, num: 12, numLabel: 6.5, pad: 5 }
+  };
+  var accent = '#c8402f';
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function size() { return document.querySelector('input[name=size]:checked').value; }
+  function baseUrl() { return $('url').value.trim(); }
+  function linkFor(n) {
+    var u = baseUrl(); if (n == null) return u;
+    return u + (u.indexOf('?') === -1 ? '?' : '&') + 'table=' + n;
+  }
+  function makeQr(text) { var q = qrcode(0, 'M'); q.addData(text); q.make(); return q; }
+  function qrSvg(text) {
+    var q = makeQr(text), n = q.getModuleCount(), m = 2, d = '';
+    for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (q.isDark(r, c)) d += 'M' + (c + m) + ',' + (r + m) + 'h1v1h-1z';
+    return '<svg class="qr" viewBox="0 0 ' + (n + 2 * m) + ' ' + (n + 2 * m) + '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#111"/></svg>';
+  }
+  function tables() {
+    var count = Math.max(1, Math.min(200, parseInt($('count').value, 10) || 1));
+    var start = Math.max(0, parseInt($('start').value, 10) || 0);
+    var list = [];
+    if ($('general').checked) list.push(null);
+    for (var i = 0; i < count; i++) list.push(start + i);
+    return list;
+  }
+
+  function render() {
+    var warn = '';
+    if (!/^https?:\/\//i.test(baseUrl())) warn = 'Enter the menu address starting with https:// — otherwise the QR codes will not work.';
+    $('warn').textContent = warn;
+    $('warn').style.display = warn ? 'block' : 'none';
+    if (warn || typeof qrcode === 'undefined') { $('pages').innerHTML = ''; return; }
+
+    var s = SIZES[size()], per = s.cols * s.rows, list = tables(), cafe = $('cafe').value.trim(), cap = $('cap').value.trim();
+    document.body.className = 's-' + size();
+    var h = '';
+    for (var p = 0; p < list.length; p += per) {
+      h += '<div class="page">';
+      list.slice(p, p + per).forEach(function (n) {
+        h += '<div class="card"><div class="band">' + esc(cafe || 'Menu') + '</div>' + qrSvg(linkFor(n)) +
+          (cap ? '<div class="cap">' + PHONE + '<span>' + esc(cap) + '</span></div>' : '') +
+          '<div class="num">' + (n == null ? 'MENU' : '<span>Table </span>' + n) + '</div></div>';
+      });
+      h += '</div>';
+    }
+    $('pages').innerHTML = h;
+    fit();
+  }
+  function fit() {
+    var w = $('pages').parentNode.clientWidth - 32, pw = $('pages').offsetWidth;
+    var k = Math.min(1, w / pw);
+    $('pages').style.transform = k < 1 ? 'scale(' + k + ')' : '';
+    $('pages').style.marginBottom = k < 1 ? (-(1 - k) * $('pages').offsetHeight) + 'px' : '';
+  }
+
+  // PNG 300 dpi
+  function cardCanvas(n) {
+    var s = SIZES[size()], dpi = 300, k = dpi / 25.4;
+    var W = Math.round(s.w * k), H = Math.round(s.h * k);
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var g = cv.getContext('2d');
+    var font = '-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
+    g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+    // name band
+    g.fillStyle = accent; g.fillRect(0, 0, W, s.band * k);
+    var name = $('cafe').value.trim() || 'Menu', fs = s.font * k;
+    g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    do { g.font = '800 ' + fs + 'px ' + font; fs -= 2; } while (g.measureText(name).width > W - 6 * k && fs > 10);
+    g.fillText(name, W / 2, s.band * k / 2);
+    // QR
+    var q = makeQr(linkFor(n)), cnt = q.getModuleCount(), m = 2, total = cnt + 2 * m;
+    var qs = s.qr * k, x0 = (W - qs) / 2, y0 = (s.band + s.qrTop) * k, cell = qs / total;
+    g.fillStyle = '#111';
+    for (var r = 0; r < cnt; r++) for (var c = 0; c < cnt; c++) if (q.isDark(r, c))
+      g.fillRect(Math.floor(x0 + (c + m) * cell), Math.floor(y0 + (r + m) * cell), Math.ceil(cell), Math.ceil(cell));
+    // caption
+    var cap = $('cap').value.trim();
+    if (cap) {
+      var cs = s.cap * k;
+      do { g.font = '500 ' + cs + 'px ' + font; cs -= 1; } while (g.measureText(cap).width > W - 6 * k && cs > 8);
+      g.fillStyle = '#555';
+      g.fillText(cap, W / 2, y0 + qs + (s.capTop + s.cap / 2) * k);
+    }
+    // table number
+    g.fillStyle = accent; g.textBaseline = 'alphabetic';
+    var by = H - s.pad * k;
+    if (n == null) { g.font = '900 ' + s.num * k + 'px ' + font; g.fillText('MENU', W / 2, by); }
+    else {
+      g.font = '700 ' + s.numLabel * k + 'px ' + font; var lw = g.measureText('Table ').width;
+      g.font = '900 ' + s.num * k + 'px ' + font; var nw = g.measureText(String(n)).width;
+      var sx = (W - lw - nw) / 2;
+      g.textAlign = 'left';
+      g.fillStyle = '#333'; g.font = '700 ' + s.numLabel * k + 'px ' + font; g.fillText('Table ', sx, by);
+      g.fillStyle = accent; g.font = '900 ' + s.num * k + 'px ' + font; g.fillText(String(n), sx + lw, by);
+    }
+    return cv;
+  }
+  $('png').addEventListener('click', async function () {
+    if (!/^https?:\/\//i.test(baseUrl())) return render();
+    if (typeof JSZip === 'undefined') return alert('Please wait a couple of seconds for the page to load and try again.');
+    var btn = this; btn.disabled = true; btn.textContent = '⏳ Preparing files…';
+    var zip = new JSZip(), list = tables();
+    for (var i = 0; i < list.length; i++) {
+      var blob = await new Promise(function (res) { cardCanvas(list[i]).toBlob(res, 'image/png'); });
+      zip.file(list[i] == null ? 'qr-menu-general.png' : 'qr-table-' + String(list[i]).padStart(2, '0') + '.png', blob);
+    }
+    var out = await zip.generateAsync({ type: 'blob' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(out); a.download = 'table-qr-codes.zip'; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    btn.disabled = false; btn.textContent = '⬇️ Download PNG (300 dpi, ZIP)';
+  });
+  $('print').addEventListener('click', function () { render(); window.print(); });
+
+  ['url', 'cafe', 'cap', 'count', 'start'].forEach(function (id) { $(id).addEventListener('input', render); });
+  document.querySelectorAll('input[name=size], #general').forEach(function (el) { el.addEventListener('change', render); });
+  window.addEventListener('resize', fit);
+
+  // Defaults: this page's address and data from menu.json
+  if (/^https?:/.test(location.protocol)) $('url').value = location.href.split(/[?#]/)[0].replace(/qr\.html$/i, '');
+  fetch('menu.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+    var c = d.cafe || {};
+    if (!$('cafe').value) $('cafe').value = c.name || '';
+    if (c.accent) { accent = c.accent; document.documentElement.style.setProperty('--accent', accent); }
+    render();
+  }).catch(render);
+  if (typeof qrcode === 'undefined') $('warn').textContent = 'No internet — could not load the QR code generator.';
+  render();
+})();
+</script>
+</body>
+</html>
