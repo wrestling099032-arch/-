@@ -7,168 +7,2779 @@
     "wifi": "",
     "currency": "Rp",
     "accent": "#c8402f",
-    "footer": "Prices are before restaurant tax and service charge. Pictures are for illustration only."
+    "footer": "Prices are before restaurant tax and service charge. Pictures are for illustration only.",
+    "i18n": {
+      "ru": {
+        "footer": "Цены указаны без учёта налога ресторана и сервисного сбора. Фото носят иллюстративный характер."
+      },
+      "zh": {
+        "footer": "价格未含餐厅税及服务费。图片仅供参考。"
+      },
+      "id": {
+        "footer": "Harga sebelum pajak restoran dan pelayanan. Gambar hanya untuk ilustrasi."
+      }
+    }
   },
   "categories": [
     {
-      "id": "c-appetizers", "name": "Appetizers", "emoji": "🥟", "visible": true,
+      "id": "c-appetizers",
+      "name": "Appetizers",
+      "emoji": "🥟",
+      "visible": true,
       "items": [
-        { "id": "i-ebi-furai", "name": "Ebi Furai", "description": "Shrimp coated in crispy breadcrumbs and deep-fried until crispy and golden", "price": 30000, "image": "images/ebi-furai.jpg", "available": true, "tags": [] },
-        { "id": "i-salmon-salad", "name": "Salmon Salad", "description": "Fresh salmon slice, seaweed, lettuce, kyuuri, with shoyu dressing sauce", "price": 54000, "image": "images/salmon-salad.jpg", "available": true, "tags": ["hit", "raw"] },
-        { "id": "i-gyoza", "name": "Gyoza (Fried/Steamed)", "description": "Japanese style dumplings filled with chicken, vegetables, and onion", "price": 33000, "options": [{ "name": "Fried/Steamed", "price": 33000 }, { "name": "Spicy", "price": 35000 }], "image": "images/gyoza.jpg", "available": true, "tags": [] },
-        { "id": "i-takoyaki", "name": "Takoyaki", "description": "Fried takoyaki with special sauce, mayonnaise, and katsuobushi", "price": 27000, "image": "images/takoyaki.jpg", "available": true, "tags": [] },
-        { "id": "i-chizu-karaage", "name": "Chizu Karaage", "description": "Crispy bite-size fried chicken with sizzling cheese sauce", "price": 41000, "image": "images/chizu-karaage.jpg", "available": true, "tags": [] },
-        { "id": "i-ebi-tempura", "name": "Ebi Tempura", "description": "Japanese style fried shrimp", "price": 45000, "image": "images/ebi-tempura.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-gyoza-skin", "name": "Gyoza Skin", "description": "Gyoza skin chips with special seasoning", "price": 13000, "options": [{ "name": "Original", "price": 13000 }, { "name": "Nori", "price": 15000 }, { "name": "Spicy", "price": 15000 }], "image": "images/gyoza-skin.jpg", "available": true, "tags": [] },
-        { "id": "i-tori-karaage", "name": "Tori Karaage", "description": "Japanese style bite-size fried chicken", "price": 33000, "options": [{ "name": "Original", "price": 33000 }, { "name": "Spicy", "price": 35000 }], "image": "images/tori-karaage.jpg", "available": true, "tags": [] },
-        { "id": "i-crab-sticks", "name": "Crispy Crab Sticks", "description": "Fried shredded crab stick with special seasoning", "price": 26000, "options": [{ "name": "Original", "price": 26000 }, { "name": "Spicy", "price": 28000 }], "image": "images/crab-sticks.jpg", "available": true, "tags": [] },
-        { "id": "i-tempura-moriawase", "name": "Tempura Moriawase", "description": "Assorted tempura with 2 pcs of ebi tempura and 4 pcs of vegetables tempura", "price": 43000, "image": "images/tempura-moriawase.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-edamame", "name": "Edamame", "description": "Boiled Japanese soybeans, sprinkled with salt", "price": 17000, "options": [{ "name": "Original", "price": 17000 }, { "name": "Spicy", "price": 19000 }], "image": "images/edamame.jpg", "available": true, "tags": [] },
-        { "id": "i-pompom-potato", "name": "Pom-pom Potato", "description": "Fried potato balls, crispy outside, soft inside", "price": 19000, "image": "images/pompom-potato.jpg", "available": true, "tags": [] },
-        { "id": "i-wakame-salad", "name": "Wakame Salad", "description": "Seaweed, lettuce, tomato, cabbage, kyuuri, with sesame dressing sauce", "price": 32000, "image": "images/wakame-salad.jpg", "available": true, "tags": [] },
-        { "id": "i-salmon-head", "name": "Grilled Salmon Head Teriyaki", "description": "Sweet and salty marinated salmon head", "price": 30000, "image": "images/salmon-head.jpg", "available": true, "tags": [] },
-        { "id": "i-agedashi-tofu", "name": "Agedashi Tofu", "description": "Deep-fried tofu with tempura sauce", "price": 22000, "image": "images/agedashi-tofu.jpg", "available": true, "tags": [] },
-        { "id": "i-miso-soup", "name": "Miso Soup", "description": "", "price": 12000, "image": "", "available": true, "tags": [] },
-        { "id": "i-gohan", "name": "Gohan (Rice)", "description": "", "price": 10000, "image": "", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-ebi-furai",
+          "name": "Ebi Furai",
+          "description": "Shrimp coated in crispy breadcrumbs and deep-fried until crispy and golden",
+          "price": 30000,
+          "image": "images/ebi-furai.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Эби фурай",
+              "description": "Креветки в хрустящей панировке, обжаренные во фритюре до золотистой корочки"
+            },
+            "zh": {
+              "name": "日式炸虾",
+              "description": "裹上酥脆面包糠，炸至金黄酥脆的大虾"
+            },
+            "id": {
+              "name": "Ebi Furai",
+              "description": "Udang berbalut tepung roti renyah, digoreng hingga renyah dan keemasan"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-salad",
+          "name": "Salmon Salad",
+          "description": "Fresh salmon slice, seaweed, lettuce, kyuuri, with shoyu dressing sauce",
+          "price": 54000,
+          "image": "images/salmon-salad.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Салат с лососем",
+              "description": "Свежий лосось, водоросли, листья салата, огурец, заправка шою"
+            },
+            "zh": {
+              "name": "三文鱼沙拉",
+              "description": "新鲜三文鱼片、海藻、生菜、黄瓜，配酱油汁"
+            },
+            "id": {
+              "name": "Salad Salmon",
+              "description": "Irisan salmon segar, rumput laut, selada, timun, dengan saus shoyu"
+            }
+          }
+        },
+        {
+          "id": "i-gyoza",
+          "name": "Gyoza (Fried/Steamed)",
+          "description": "Japanese style dumplings filled with chicken, vegetables, and onion",
+          "price": 33000,
+          "options": [
+            {
+              "name": "Fried/Steamed",
+              "price": 33000
+            },
+            {
+              "name": "Spicy",
+              "price": 35000
+            }
+          ],
+          "image": "images/gyoza.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Гёдза (жареные / на пару)",
+              "description": "Японские пельмени с курицей, овощами и луком"
+            },
+            "zh": {
+              "name": "日式饺子（煎/蒸）",
+              "description": "鸡肉、蔬菜和洋葱馅的日式饺子"
+            },
+            "id": {
+              "name": "Gyoza (Goreng/Kukus)",
+              "description": "Pangsit ala Jepang isi ayam, sayuran, dan bawang"
+            }
+          }
+        },
+        {
+          "id": "i-takoyaki",
+          "name": "Takoyaki",
+          "description": "Fried takoyaki with special sauce, mayonnaise, and katsuobushi",
+          "price": 27000,
+          "image": "images/takoyaki.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Такояки",
+              "description": "Жареные шарики такояки с фирменным соусом, майонезом и стружкой кацуобуси"
+            },
+            "zh": {
+              "name": "章鱼小丸子",
+              "description": "章鱼烧配特制酱汁、蛋黄酱和木鱼花"
+            },
+            "id": {
+              "name": "Takoyaki",
+              "description": "Takoyaki goreng dengan saus spesial, mayones, dan katsuobushi"
+            }
+          }
+        },
+        {
+          "id": "i-chizu-karaage",
+          "name": "Chizu Karaage",
+          "description": "Crispy bite-size fried chicken with sizzling cheese sauce",
+          "price": 41000,
+          "image": "images/chizu-karaage.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Чизу караагэ",
+              "description": "Хрустящая курица кусочками в шипящем сырном соусе"
+            },
+            "zh": {
+              "name": "芝士炸鸡",
+              "description": "酥脆一口炸鸡配铁板芝士酱"
+            },
+            "id": {
+              "name": "Chizu Karaage",
+              "description": "Ayam goreng renyah potongan kecil dengan saus keju hot plate"
+            }
+          }
+        },
+        {
+          "id": "i-ebi-tempura",
+          "name": "Ebi Tempura",
+          "description": "Japanese style fried shrimp",
+          "price": 45000,
+          "image": "images/ebi-tempura.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Эби темпура",
+              "description": "Креветки, жаренные в кляре по-японски"
+            },
+            "zh": {
+              "name": "天妇罗炸虾",
+              "description": "日式炸虾"
+            },
+            "id": {
+              "name": "Ebi Tempura",
+              "description": "Udang goreng ala Jepang"
+            }
+          }
+        },
+        {
+          "id": "i-gyoza-skin",
+          "name": "Gyoza Skin",
+          "description": "Gyoza skin chips with special seasoning",
+          "price": 13000,
+          "options": [
+            {
+              "name": "Original",
+              "price": 13000
+            },
+            {
+              "name": "Nori",
+              "price": 15000
+            },
+            {
+              "name": "Spicy",
+              "price": 15000
+            }
+          ],
+          "image": "images/gyoza-skin.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Чипсы из гёдза",
+              "description": "Чипсы из теста для гёдза с фирменными специями"
+            },
+            "zh": {
+              "name": "饺子皮脆片",
+              "description": "特制调味饺子皮脆片"
+            },
+            "id": {
+              "name": "Gyoza Skin",
+              "description": "Keripik kulit gyoza dengan bumbu spesial"
+            }
+          }
+        },
+        {
+          "id": "i-tori-karaage",
+          "name": "Tori Karaage",
+          "description": "Japanese style bite-size fried chicken",
+          "price": 33000,
+          "options": [
+            {
+              "name": "Original",
+              "price": 33000
+            },
+            {
+              "name": "Spicy",
+              "price": 35000
+            }
+          ],
+          "image": "images/tori-karaage.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Тори караагэ",
+              "description": "Жареная курица кусочками по-японски"
+            },
+            "zh": {
+              "name": "日式炸鸡块",
+              "description": "日式一口炸鸡"
+            },
+            "id": {
+              "name": "Tori Karaage",
+              "description": "Ayam goreng potongan kecil ala Jepang"
+            }
+          }
+        },
+        {
+          "id": "i-crab-sticks",
+          "name": "Crispy Crab Sticks",
+          "description": "Fried shredded crab stick with special seasoning",
+          "price": 26000,
+          "options": [
+            {
+              "name": "Original",
+              "price": 26000
+            },
+            {
+              "name": "Spicy",
+              "price": 28000
+            }
+          ],
+          "image": "images/crab-sticks.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Хрустящие крабовые палочки",
+              "description": "Жареные тонко нарезанные крабовые палочки с фирменными специями"
+            },
+            "zh": {
+              "name": "香脆蟹柳丝",
+              "description": "特制调味炸蟹柳丝"
+            },
+            "id": {
+              "name": "Crispy Crab Sticks",
+              "description": "Crab stick suwir goreng dengan bumbu spesial"
+            }
+          }
+        },
+        {
+          "id": "i-tempura-moriawase",
+          "name": "Tempura Moriawase",
+          "description": "Assorted tempura with 2 pcs of ebi tempura and 4 pcs of vegetables tempura",
+          "price": 43000,
+          "image": "images/tempura-moriawase.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Темпура мориавасэ",
+              "description": "Ассорти темпуры: 2 креветки эби темпура и 4 кусочка овощной темпуры"
+            },
+            "zh": {
+              "name": "天妇罗拼盘",
+              "description": "2只炸虾天妇罗和4块蔬菜天妇罗"
+            },
+            "id": {
+              "name": "Tempura Moriawase",
+              "description": "Aneka tempura: 2 pcs ebi tempura dan 4 pcs tempura sayuran"
+            }
+          }
+        },
+        {
+          "id": "i-edamame",
+          "name": "Edamame",
+          "description": "Boiled Japanese soybeans, sprinkled with salt",
+          "price": 17000,
+          "options": [
+            {
+              "name": "Original",
+              "price": 17000
+            },
+            {
+              "name": "Spicy",
+              "price": 19000
+            }
+          ],
+          "image": "images/edamame.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Эдамамэ",
+              "description": "Отварные японские соевые бобы с солью"
+            },
+            "zh": {
+              "name": "毛豆",
+              "description": "盐水煮日式毛豆"
+            },
+            "id": {
+              "name": "Edamame",
+              "description": "Kedelai Jepang rebus ditaburi garam"
+            }
+          }
+        },
+        {
+          "id": "i-pompom-potato",
+          "name": "Pom-pom Potato",
+          "description": "Fried potato balls, crispy outside, soft inside",
+          "price": 19000,
+          "image": "images/pompom-potato.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Картофельные шарики",
+              "description": "Жареные картофельные шарики: хрустящие снаружи, мягкие внутри"
+            },
+            "zh": {
+              "name": "土豆球",
+              "description": "外酥里嫩的炸土豆球"
+            },
+            "id": {
+              "name": "Pom-pom Potato",
+              "description": "Bola kentang goreng, renyah di luar, lembut di dalam"
+            }
+          }
+        },
+        {
+          "id": "i-wakame-salad",
+          "name": "Wakame Salad",
+          "description": "Seaweed, lettuce, tomato, cabbage, kyuuri, with sesame dressing sauce",
+          "price": 32000,
+          "image": "images/wakame-salad.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Салат вакамэ",
+              "description": "Водоросли, листья салата, томат, капуста, огурец, кунжутная заправка"
+            },
+            "zh": {
+              "name": "裙带菜沙拉",
+              "description": "海藻、生菜、番茄、卷心菜、黄瓜，配芝麻酱"
+            },
+            "id": {
+              "name": "Salad Wakame",
+              "description": "Rumput laut, selada, tomat, kol, timun, dengan saus wijen"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-head",
+          "name": "Grilled Salmon Head Teriyaki",
+          "description": "Sweet and salty marinated salmon head",
+          "price": 30000,
+          "image": "images/salmon-head.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Голова лосося терияки на гриле",
+              "description": "Маринованная голова лосося, сладко-солёная"
+            },
+            "zh": {
+              "name": "照烧烤三文鱼头",
+              "description": "甜咸口味腌制三文鱼头"
+            },
+            "id": {
+              "name": "Kepala Salmon Bakar Teriyaki",
+              "description": "Kepala salmon marinasi rasa manis gurih"
+            }
+          }
+        },
+        {
+          "id": "i-agedashi-tofu",
+          "name": "Agedashi Tofu",
+          "description": "Deep-fried tofu with tempura sauce",
+          "price": 22000,
+          "image": "images/agedashi-tofu.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Агэдаси тофу",
+              "description": "Тофу во фритюре с соусом для темпуры"
+            },
+            "zh": {
+              "name": "日式炸豆腐",
+              "description": "炸豆腐配天妇罗汁"
+            },
+            "id": {
+              "name": "Agedashi Tofu",
+              "description": "Tahu goreng dengan saus tempura"
+            }
+          }
+        },
+        {
+          "id": "i-miso-soup",
+          "name": "Miso Soup",
+          "description": "",
+          "price": 12000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Мисо-суп",
+              "description": ""
+            },
+            "zh": {
+              "name": "味噌汤",
+              "description": ""
+            },
+            "id": {
+              "name": "Sup Miso",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-gohan",
+          "name": "Gohan (Rice)",
+          "description": "",
+          "price": 10000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Гохан (рис)",
+              "description": ""
+            },
+            "zh": {
+              "name": "白米饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Gohan (Nasi)",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Закуски"
+        },
+        "zh": {
+          "name": "开胃菜"
+        },
+        "id": {
+          "name": "Hidangan Pembuka"
+        }
+      }
     },
     {
-      "id": "c-sushi", "name": "Sushi", "emoji": "🍣", "visible": true,
+      "id": "c-sushi",
+      "name": "Sushi",
+      "emoji": "🍣",
+      "visible": true,
       "items": [
-        { "id": "i-salmon-mentai-nigiri", "name": "Salmon Mentai Nigiri (2 pcs)", "description": "Salmon with sushi rice and mentai sauce", "price": 36000, "image": "images/salmon-mentai-nigiri.jpg", "available": true, "tags": ["hit", "raw"] },
-        { "id": "i-kani-mentai-nigiri", "name": "Kani Mentai Nigiri (2 pcs)", "description": "Crab stick with sushi rice and mentai sauce", "price": 23000, "image": "images/kani-mentai-nigiri.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-tuna-mentai-nigiri", "name": "Tuna Mentai Nigiri (2 pcs)", "description": "Tuna with sushi rice and mentai sauce", "price": 30000, "image": "images/tuna-mentai-nigiri.jpg", "available": true, "tags": [] },
-        { "id": "i-tamago-mentai-nigiri", "name": "Tamago Mentai Nigiri (2 pcs)", "description": "Sweetened Japanese fried egg with sushi rice and mentai sauce", "price": 23000, "image": "images/tamago-mentai-nigiri.jpg", "available": true, "tags": [] },
-        { "id": "i-roasted-salmon-sushi", "name": "Roasted Salmon Sushi (2 pcs)", "description": "Half cooked salmon with sushi rice and ponzu sauce", "price": 35000, "image": "images/roasted-salmon-sushi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-maguro-sushi", "name": "Maguro Sushi (2 pcs)", "description": "Tuna with sushi rice", "price": 27000, "image": "images/maguro-sushi.jpg", "available": true, "tags": ["hit", "raw"] },
-        { "id": "i-salmon-sushi", "name": "Salmon Sushi (2 pcs)", "description": "Salmon with sushi rice", "price": 35000, "image": "images/salmon-sushi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-salmon-sakura", "name": "Salmon Sakura (2 pcs)", "description": "Salmon with mayonnaise, black sesame, and sushi rice", "price": 39000, "image": "images/salmon-sakura.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-japanese-salad-inari", "name": "Japanese Salad Inari", "description": "", "price": 30000, "image": "images/japanese-salad-inari.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-corn-mayo-inari", "name": "Corn Mayo Inari", "description": "", "price": 27000, "image": "images/corn-mayo-inari.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-chuka-wakame-sushi", "name": "Chuka Wakame Sushi", "description": "", "price": 29000, "image": "images/chuka-wakame-sushi.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chuka-idako-sushi", "name": "Chuka Idako Sushi", "description": "", "price": 31000, "image": "images/chuka-idako-sushi.jpg", "available": true, "tags": [] },
-        { "id": "i-tobiko-sushi", "name": "Tobiko Sushi", "description": "", "price": 29000, "image": "images/tobiko-sushi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-kani-sushi", "name": "Kani Sushi", "description": "", "price": 24000, "image": "images/kani-sushi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-tamago-sushi", "name": "Tamago Sushi", "description": "", "price": 23000, "image": "images/tamago-sushi.jpg", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-salmon-mentai-nigiri",
+          "name": "Salmon Mentai Nigiri (2 pcs)",
+          "description": "Salmon with sushi rice and mentai sauce",
+          "price": 36000,
+          "image": "images/salmon-mentai-nigiri.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Нигири с лососем ментай (2 шт)",
+              "description": "Лосось с рисом для суши и соусом ментай"
+            },
+            "zh": {
+              "name": "明太子三文鱼握寿司（2个）",
+              "description": "三文鱼配寿司饭和明太子酱"
+            },
+            "id": {
+              "name": "Salmon Mentai Nigiri (2 pcs)",
+              "description": "Salmon dengan nasi sushi dan saus mentai"
+            }
+          }
+        },
+        {
+          "id": "i-kani-mentai-nigiri",
+          "name": "Kani Mentai Nigiri (2 pcs)",
+          "description": "Crab stick with sushi rice and mentai sauce",
+          "price": 23000,
+          "image": "images/kani-mentai-nigiri.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Нигири кани ментай (2 шт)",
+              "description": "Крабовая палочка с рисом для суши и соусом ментай"
+            },
+            "zh": {
+              "name": "明太子蟹柳握寿司（2个）",
+              "description": "蟹柳配寿司饭和明太子酱"
+            },
+            "id": {
+              "name": "Kani Mentai Nigiri (2 pcs)",
+              "description": "Crab stick dengan nasi sushi dan saus mentai"
+            }
+          }
+        },
+        {
+          "id": "i-tuna-mentai-nigiri",
+          "name": "Tuna Mentai Nigiri (2 pcs)",
+          "description": "Tuna with sushi rice and mentai sauce",
+          "price": 30000,
+          "image": "images/tuna-mentai-nigiri.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Нигири с тунцом ментай (2 шт)",
+              "description": "Тунец с рисом для суши и соусом ментай"
+            },
+            "zh": {
+              "name": "明太子金枪鱼握寿司（2个）",
+              "description": "金枪鱼配寿司饭和明太子酱"
+            },
+            "id": {
+              "name": "Tuna Mentai Nigiri (2 pcs)",
+              "description": "Tuna dengan nasi sushi dan saus mentai"
+            }
+          }
+        },
+        {
+          "id": "i-tamago-mentai-nigiri",
+          "name": "Tamago Mentai Nigiri (2 pcs)",
+          "description": "Sweetened Japanese fried egg with sushi rice and mentai sauce",
+          "price": 23000,
+          "image": "images/tamago-mentai-nigiri.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Нигири тамаго ментай (2 шт)",
+              "description": "Сладкий японский омлет с рисом для суши и соусом ментай"
+            },
+            "zh": {
+              "name": "明太子玉子握寿司（2个）",
+              "description": "日式甜蛋烧配寿司饭和明太子酱"
+            },
+            "id": {
+              "name": "Tamago Mentai Nigiri (2 pcs)",
+              "description": "Telur dadar manis ala Jepang dengan nasi sushi dan saus mentai"
+            }
+          }
+        },
+        {
+          "id": "i-roasted-salmon-sushi",
+          "name": "Roasted Salmon Sushi (2 pcs)",
+          "description": "Half cooked salmon with sushi rice and ponzu sauce",
+          "price": 35000,
+          "image": "images/roasted-salmon-sushi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Суши с обожжённым лососем (2 шт)",
+              "description": "Слегка обожжённый лосось с рисом для суши и соусом понзу"
+            },
+            "zh": {
+              "name": "炙烤三文鱼寿司（2个）",
+              "description": "半熟炙烤三文鱼配寿司饭和柚子醋"
+            },
+            "id": {
+              "name": "Roasted Salmon Sushi (2 pcs)",
+              "description": "Salmon setengah matang dengan nasi sushi dan saus ponzu"
+            }
+          }
+        },
+        {
+          "id": "i-maguro-sushi",
+          "name": "Maguro Sushi (2 pcs)",
+          "description": "Tuna with sushi rice",
+          "price": 27000,
+          "image": "images/maguro-sushi.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Магуро суши (2 шт)",
+              "description": "Тунец с рисом для суши"
+            },
+            "zh": {
+              "name": "金枪鱼寿司（2个）",
+              "description": "金枪鱼配寿司饭"
+            },
+            "id": {
+              "name": "Maguro Sushi (2 pcs)",
+              "description": "Tuna dengan nasi sushi"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-sushi",
+          "name": "Salmon Sushi (2 pcs)",
+          "description": "Salmon with sushi rice",
+          "price": 35000,
+          "image": "images/salmon-sushi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Суши с лососем (2 шт)",
+              "description": "Лосось с рисом для суши"
+            },
+            "zh": {
+              "name": "三文鱼寿司（2个）",
+              "description": "三文鱼配寿司饭"
+            },
+            "id": {
+              "name": "Salmon Sushi (2 pcs)",
+              "description": "Salmon dengan nasi sushi"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-sakura",
+          "name": "Salmon Sakura (2 pcs)",
+          "description": "Salmon with mayonnaise, black sesame, and sushi rice",
+          "price": 39000,
+          "image": "images/salmon-sakura.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Сакура с лососем (2 шт)",
+              "description": "Лосось с майонезом, чёрным кунжутом и рисом для суши"
+            },
+            "zh": {
+              "name": "三文鱼樱花寿司（2个）",
+              "description": "三文鱼配蛋黄酱、黑芝麻和寿司饭"
+            },
+            "id": {
+              "name": "Salmon Sakura (2 pcs)",
+              "description": "Salmon dengan mayones, wijen hitam, dan nasi sushi"
+            }
+          }
+        },
+        {
+          "id": "i-japanese-salad-inari",
+          "name": "Japanese Salad Inari",
+          "description": "",
+          "price": 30000,
+          "image": "images/japanese-salad-inari.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Инари с японским салатом",
+              "description": ""
+            },
+            "zh": {
+              "name": "日式沙拉稻荷寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Japanese Salad Inari",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-corn-mayo-inari",
+          "name": "Corn Mayo Inari",
+          "description": "",
+          "price": 27000,
+          "image": "images/corn-mayo-inari.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Инари с кукурузой и майонезом",
+              "description": ""
+            },
+            "zh": {
+              "name": "玉米蛋黄酱稻荷寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Corn Mayo Inari",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-chuka-wakame-sushi",
+          "name": "Chuka Wakame Sushi",
+          "description": "",
+          "price": 29000,
+          "image": "images/chuka-wakame-sushi.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Суши чука вакамэ",
+              "description": ""
+            },
+            "zh": {
+              "name": "中华裙带菜寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Chuka Wakame Sushi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-chuka-idako-sushi",
+          "name": "Chuka Idako Sushi",
+          "description": "",
+          "price": 31000,
+          "image": "images/chuka-idako-sushi.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Суши чука идако",
+              "description": ""
+            },
+            "zh": {
+              "name": "中华小章鱼寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Chuka Idako Sushi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-tobiko-sushi",
+          "name": "Tobiko Sushi",
+          "description": "",
+          "price": 29000,
+          "image": "images/tobiko-sushi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Тобико суши",
+              "description": ""
+            },
+            "zh": {
+              "name": "飞鱼籽寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Tobiko Sushi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-kani-sushi",
+          "name": "Kani Sushi",
+          "description": "",
+          "price": 24000,
+          "image": "images/kani-sushi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Кани суши",
+              "description": ""
+            },
+            "zh": {
+              "name": "蟹柳寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Kani Sushi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-tamago-sushi",
+          "name": "Tamago Sushi",
+          "description": "",
+          "price": 23000,
+          "image": "images/tamago-sushi.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Тамаго суши",
+              "description": ""
+            },
+            "zh": {
+              "name": "玉子寿司",
+              "description": ""
+            },
+            "id": {
+              "name": "Tamago Sushi",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Суши"
+        },
+        "zh": {
+          "name": "寿司"
+        },
+        "id": {
+          "name": "Sushi"
+        }
+      }
     },
     {
-      "id": "c-sashimi", "name": "Sashimi", "emoji": "🐟", "visible": true,
+      "id": "c-sashimi",
+      "name": "Sashimi",
+      "emoji": "🐟",
+      "visible": true,
       "items": [
-        { "id": "i-chuka-wakame-sashimi", "name": "Chuka Wakame Sashimi", "description": "Fresh seasoned seaweed with white sesame seed", "price": 33000, "image": "images/chuka-wakame-sashimi.jpg", "available": true, "tags": [] },
-        { "id": "i-maguro-sashimi", "name": "Maguro Sashimi", "description": "Fresh sliced tuna", "price": 42000, "image": "images/maguro-sashimi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-sashimi-set", "name": "Sashimi Set", "description": "Signature sashimi platter set of salmon, tuna, chuka kurage, and chuka idako", "price": 88000, "image": "images/sashimi-set.jpg", "available": true, "tags": ["hit", "raw"] },
-        { "id": "i-salmon-sashimi", "name": "Salmon Sashimi", "description": "Fresh sliced salmon", "price": 55000, "image": "images/salmon-sashimi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-chuka-idako-sashimi", "name": "Chuka Idako Sashimi", "description": "Fresh seasoned baby octopus with white sesame seed", "price": 45000, "image": "images/chuka-idako-sashimi.jpg", "available": true, "tags": [] },
-        { "id": "i-chuka-kurage-sashimi", "name": "Chuka Kurage Sashimi", "description": "Fresh seasoned jellyfish with white sesame seed", "price": 33000, "image": "images/chuka-kurage-sashimi.jpg", "available": true, "tags": ["raw"] },
-        { "id": "i-tuna-tataki", "name": "Tuna Tataki", "description": "Fresh sliced tuna with sesame and nanban sauce, served with black & white sesame dressing salad and katsuobushi on top", "price": 62000, "image": "images/tuna-tataki.jpg", "available": true, "tags": ["hit", "raw"] }
-      ]
+        {
+          "id": "i-chuka-wakame-sashimi",
+          "name": "Chuka Wakame Sashimi",
+          "description": "Fresh seasoned seaweed with white sesame seed",
+          "price": 33000,
+          "image": "images/chuka-wakame-sashimi.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Чука вакамэ",
+              "description": "Свежие маринованные водоросли с белым кунжутом"
+            },
+            "zh": {
+              "name": "中华裙带菜",
+              "description": "新鲜调味海藻配白芝麻"
+            },
+            "id": {
+              "name": "Chuka Wakame Sashimi",
+              "description": "Rumput laut segar berbumbu dengan wijen putih"
+            }
+          }
+        },
+        {
+          "id": "i-maguro-sashimi",
+          "name": "Maguro Sashimi",
+          "description": "Fresh sliced tuna",
+          "price": 42000,
+          "image": "images/maguro-sashimi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Сашими из тунца",
+              "description": "Свежий нарезанный тунец"
+            },
+            "zh": {
+              "name": "金枪鱼刺身",
+              "description": "新鲜金枪鱼片"
+            },
+            "id": {
+              "name": "Sashimi Tuna",
+              "description": "Irisan tuna segar"
+            }
+          }
+        },
+        {
+          "id": "i-sashimi-set",
+          "name": "Sashimi Set",
+          "description": "Signature sashimi platter set of salmon, tuna, chuka kurage, and chuka idako",
+          "price": 88000,
+          "image": "images/sashimi-set.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Сашими-сет",
+              "description": "Фирменное ассорти сашими: лосось, тунец, чука курагэ и чука идако"
+            },
+            "zh": {
+              "name": "刺身拼盘",
+              "description": "招牌刺身拼盘：三文鱼、金枪鱼、中华海蜇和中华小章鱼"
+            },
+            "id": {
+              "name": "Sashimi Set",
+              "description": "Platter sashimi andalan: salmon, tuna, chuka kurage, dan chuka idako"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-sashimi",
+          "name": "Salmon Sashimi",
+          "description": "Fresh sliced salmon",
+          "price": 55000,
+          "image": "images/salmon-sashimi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Сашими из лосося",
+              "description": "Свежий нарезанный лосось"
+            },
+            "zh": {
+              "name": "三文鱼刺身",
+              "description": "新鲜三文鱼片"
+            },
+            "id": {
+              "name": "Sashimi Salmon",
+              "description": "Irisan salmon segar"
+            }
+          }
+        },
+        {
+          "id": "i-chuka-idako-sashimi",
+          "name": "Chuka Idako Sashimi",
+          "description": "Fresh seasoned baby octopus with white sesame seed",
+          "price": 45000,
+          "image": "images/chuka-idako-sashimi.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Чука идако",
+              "description": "Свежие маринованные осьминожки с белым кунжутом"
+            },
+            "zh": {
+              "name": "中华小章鱼",
+              "description": "新鲜调味小章鱼配白芝麻"
+            },
+            "id": {
+              "name": "Chuka Idako Sashimi",
+              "description": "Gurita kecil segar berbumbu dengan wijen putih"
+            }
+          }
+        },
+        {
+          "id": "i-chuka-kurage-sashimi",
+          "name": "Chuka Kurage Sashimi",
+          "description": "Fresh seasoned jellyfish with white sesame seed",
+          "price": 33000,
+          "image": "images/chuka-kurage-sashimi.jpg",
+          "available": true,
+          "tags": [
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Чука курагэ",
+              "description": "Свежая маринованная медуза с белым кунжутом"
+            },
+            "zh": {
+              "name": "中华海蜇",
+              "description": "新鲜调味海蜇配白芝麻"
+            },
+            "id": {
+              "name": "Chuka Kurage Sashimi",
+              "description": "Ubur-ubur segar berbumbu dengan wijen putih"
+            }
+          }
+        },
+        {
+          "id": "i-tuna-tataki",
+          "name": "Tuna Tataki",
+          "description": "Fresh sliced tuna with sesame and nanban sauce, served with black & white sesame dressing salad and katsuobushi on top",
+          "price": 62000,
+          "image": "images/tuna-tataki.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Татаки из тунца",
+              "description": "Свежий тунец с кунжутом и соусом нанбан, салат с чёрно-белой кунжутной заправкой и кацуобуси сверху"
+            },
+            "zh": {
+              "name": "金枪鱼半敲烧",
+              "description": "新鲜金枪鱼片配芝麻和南蛮酱，佐黑白芝麻沙拉，上铺木鱼花"
+            },
+            "id": {
+              "name": "Tuna Tataki",
+              "description": "Irisan tuna segar dengan wijen dan saus nanban, disajikan dengan salad saus wijen hitam & putih dan katsuobushi di atasnya"
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Сашими"
+        },
+        "zh": {
+          "name": "刺身"
+        },
+        "id": {
+          "name": "Sashimi"
+        }
+      }
     },
     {
-      "id": "c-ramen", "name": "Ramen", "emoji": "🍜", "visible": true,
+      "id": "c-ramen",
+      "name": "Ramen",
+      "emoji": "🍜",
+      "visible": true,
       "items": [
-        { "id": "i-teriyaki-ramen", "name": "Teriyaki Ramen", "description": "Shoyu/curry ramen with beef/chicken teriyaki, egg, mushroom, corn, and spring onion", "price": 45000, "options": [{ "name": "Beef", "price": 47000 }, { "name": "Chicken", "price": 45000 }], "image": "images/teriyaki-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-sapporo-garlic-ramen", "name": "Sapporo Garlic Sesame Ramen", "description": "Special chicken broth ramen with grilled chicken, egg, mushroom, and spring onion", "price": 42000, "image": "images/sapporo-garlic-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-dry-ramen", "name": "Dry Ramen", "description": "Savory dry ramen with selection of topping, egg, mushroom, nori, and spring onion", "price": 38000, "options": [{ "name": "Beef", "price": 44000 }, { "name": "Chicken", "price": 38000 }], "image": "images/dry-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-chicken-katsu-ramen", "name": "Chicken Katsu Ramen", "description": "Shoyu/curry soup with chicken katsu, egg, mushroom, corn, and spring onion", "price": 43000, "image": "images/chicken-katsu-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-hotplate-ramen", "name": "Hotplate Ramen", "description": "Hotplate ramen with selection of topping, paprika, and onion", "price": 43000, "options": [{ "name": "Beef", "price": 48000 }, { "name": "Chicken", "price": 43000 }], "image": "images/hotplate-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-beef-paitan-ramen", "name": "Beef Paitan Ramen", "description": "Special paitan broth ramen with beef teriyaki, egg, mushroom, corn, narutomaki, and spring onion", "price": 51000, "image": "images/beef-paitan-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-shibuya-black-ramen", "name": "Shibuya Black Ramen", "description": "Special black garlic sesame broth ramen with marinated chicken, sautéed mushroom, and egg", "price": 48000, "image": "images/shibuya-black-ramen.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chizu-chicken-ramen", "name": "Chizu Chicken Ramen", "description": "Special cheese ramen with fried chicken, ajitama (egg), mushroom, corn, narutomaki, and spring onion", "price": 49000, "options": [{ "name": "Original", "price": 49000 }, { "name": "Spicy", "price": 50000 }], "image": "images/chizu-chicken-ramen.jpg", "available": true, "tags": [] },
-        { "id": "i-spicy-beef-paitan", "name": "Spicy Beef Ramen with Tori Paitan", "description": "Spicy paitan broth ramen with beef teriyaki, minced spicy chicken, egg, mushroom, narutomaki, and spring onion", "price": 51000, "image": "images/spicy-beef-paitan.jpg", "available": true, "tags": ["hit", "spicy"] },
-        { "id": "i-spicy-miso-ramen", "name": "Sapporo Spicy Miso Ramen", "description": "Spicy miso ramen with crab stick tempura, egg, mushroom, narutomaki, and spring onion", "price": 42000, "image": "images/spicy-miso-ramen.jpg", "available": true, "tags": ["spicy"] },
-        { "id": "i-spicy-dry-ramen", "name": "Spicy Dry Ramen", "description": "Spicy dry ramen with marinated chicken, egg, nori, fried shallot, and spring onion", "price": 41000, "image": "images/spicy-dry-ramen.jpg", "available": true, "tags": ["spicy"] },
-        { "id": "i-spicy-ramen", "name": "Spicy Ramen", "description": "Spicy shoyu/curry ramen with beef teriyaki, minced spicy chicken, egg, mushroom, corn, narutomaki, and spring onion", "price": 50000, "image": "images/spicy-ramen.jpg", "available": true, "tags": ["hit", "spicy"] },
-        { "id": "i-yokohama-ramen", "name": "Yokohama Spicy Ramen", "description": "Special mala ramen with steamed gyoza, mushroom, egg, and spring onion", "price": 48000, "image": "images/yokohama-ramen.jpg", "available": true, "tags": ["spicy"] },
-        { "id": "i-curry-paitan-ramen", "name": "Chicken Curry Paitan Ramen", "description": "Special curry paitan ramen with marinated chicken, egg, mushroom, corn, narutomaki, and spring onion", "price": 50000, "image": "images/curry-paitan-ramen.jpg", "available": true, "tags": ["spicy"] }
-      ]
+        {
+          "id": "i-teriyaki-ramen",
+          "name": "Teriyaki Ramen",
+          "description": "Shoyu/curry ramen with beef/chicken teriyaki, egg, mushroom, corn, and spring onion",
+          "price": 45000,
+          "options": [
+            {
+              "name": "Beef",
+              "price": 47000
+            },
+            {
+              "name": "Chicken",
+              "price": 45000
+            }
+          ],
+          "image": "images/teriyaki-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Терияки рамен",
+              "description": "Рамен на бульоне шою или карри с говядиной или курицей терияки, яйцом, грибами, кукурузой и зелёным луком"
+            },
+            "zh": {
+              "name": "照烧拉面",
+              "description": "酱油或咖喱汤底拉面，配照烧牛肉或鸡肉、鸡蛋、蘑菇、玉米和葱花"
+            },
+            "id": {
+              "name": "Ramen Teriyaki",
+              "description": "Ramen kuah shoyu/kari dengan sapi/ayam teriyaki, telur, jamur, jagung, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-sapporo-garlic-ramen",
+          "name": "Sapporo Garlic Sesame Ramen",
+          "description": "Special chicken broth ramen with grilled chicken, egg, mushroom, and spring onion",
+          "price": 42000,
+          "image": "images/sapporo-garlic-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Саппоро рамен с чесноком и кунжутом",
+              "description": "Рамен на фирменном курином бульоне с курицей гриль, яйцом, грибами и зелёным луком"
+            },
+            "zh": {
+              "name": "札幌蒜香芝麻拉面",
+              "description": "特制鸡汤拉面，配烤鸡肉、鸡蛋、蘑菇和葱花"
+            },
+            "id": {
+              "name": "Sapporo Garlic Sesame Ramen",
+              "description": "Ramen kuah kaldu ayam spesial dengan ayam panggang, telur, jamur, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-dry-ramen",
+          "name": "Dry Ramen",
+          "description": "Savory dry ramen with selection of topping, egg, mushroom, nori, and spring onion",
+          "price": 38000,
+          "options": [
+            {
+              "name": "Beef",
+              "price": 44000
+            },
+            {
+              "name": "Chicken",
+              "price": 38000
+            }
+          ],
+          "image": "images/dry-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Сухой рамен",
+              "description": "Рамен без бульона с начинкой на выбор, яйцом, грибами, нори и зелёным луком"
+            },
+            "zh": {
+              "name": "干拌拉面",
+              "description": "鲜香干拌拉面，可选配料，配鸡蛋、蘑菇、海苔和葱花"
+            },
+            "id": {
+              "name": "Ramen Kering",
+              "description": "Ramen kering gurih dengan pilihan topping, telur, jamur, nori, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-katsu-ramen",
+          "name": "Chicken Katsu Ramen",
+          "description": "Shoyu/curry soup with chicken katsu, egg, mushroom, corn, and spring onion",
+          "price": 43000,
+          "image": "images/chicken-katsu-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Рамен с курицей кацу",
+              "description": "Суп шою или карри с куриной котлетой кацу, яйцом, грибами, кукурузой и зелёным луком"
+            },
+            "zh": {
+              "name": "炸鸡排拉面",
+              "description": "酱油或咖喱汤底，配炸鸡排、鸡蛋、蘑菇、玉米和葱花"
+            },
+            "id": {
+              "name": "Ramen Chicken Katsu",
+              "description": "Kuah shoyu/kari dengan chicken katsu, telur, jamur, jagung, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-hotplate-ramen",
+          "name": "Hotplate Ramen",
+          "description": "Hotplate ramen with selection of topping, paprika, and onion",
+          "price": 43000,
+          "options": [
+            {
+              "name": "Beef",
+              "price": 48000
+            },
+            {
+              "name": "Chicken",
+              "price": 43000
+            }
+          ],
+          "image": "images/hotplate-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Рамен на горячей сковороде",
+              "description": "Рамен на горячей сковороде с начинкой на выбор, паприкой и луком"
+            },
+            "zh": {
+              "name": "铁板拉面",
+              "description": "铁板拉面，可选配料，配甜椒和洋葱"
+            },
+            "id": {
+              "name": "Ramen Hot Plate",
+              "description": "Ramen hot plate dengan pilihan topping, paprika, dan bawang"
+            }
+          }
+        },
+        {
+          "id": "i-beef-paitan-ramen",
+          "name": "Beef Paitan Ramen",
+          "description": "Special paitan broth ramen with beef teriyaki, egg, mushroom, corn, narutomaki, and spring onion",
+          "price": 51000,
+          "image": "images/beef-paitan-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Рамен пайтан с говядиной",
+              "description": "Рамен на фирменном бульоне пайтан с говядиной терияки, яйцом, грибами, кукурузой, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "白汤牛肉拉面",
+              "description": "特制白汤拉面，配照烧牛肉、鸡蛋、蘑菇、玉米、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Ramen Paitan Sapi",
+              "description": "Ramen kuah paitan spesial dengan sapi teriyaki, telur, jamur, jagung, narutomaki, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-shibuya-black-ramen",
+          "name": "Shibuya Black Ramen",
+          "description": "Special black garlic sesame broth ramen with marinated chicken, sautéed mushroom, and egg",
+          "price": 48000,
+          "image": "images/shibuya-black-ramen.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Сибуя блэк рамен",
+              "description": "Рамен на фирменном чёрном бульоне с чесноком и кунжутом, маринованной курицей, жареными грибами и яйцом"
+            },
+            "zh": {
+              "name": "涩谷黑蒜拉面",
+              "description": "特制黑蒜芝麻汤底拉面，配腌鸡肉、炒蘑菇和鸡蛋"
+            },
+            "id": {
+              "name": "Shibuya Black Ramen",
+              "description": "Ramen kuah bawang putih hitam & wijen spesial dengan ayam marinasi, jamur tumis, dan telur"
+            }
+          }
+        },
+        {
+          "id": "i-chizu-chicken-ramen",
+          "name": "Chizu Chicken Ramen",
+          "description": "Special cheese ramen with fried chicken, ajitama (egg), mushroom, corn, narutomaki, and spring onion",
+          "price": 49000,
+          "options": [
+            {
+              "name": "Original",
+              "price": 49000
+            },
+            {
+              "name": "Spicy",
+              "price": 50000
+            }
+          ],
+          "image": "images/chizu-chicken-ramen.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Сырный рамен с курицей",
+              "description": "Фирменный сырный рамен с жареной курицей, яйцом аджитама, грибами, кукурузой, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "芝士炸鸡拉面",
+              "description": "特制芝士拉面，配炸鸡、溏心蛋、蘑菇、玉米、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Ramen Ayam Keju",
+              "description": "Ramen keju spesial dengan ayam goreng, ajitama (telur), jamur, jagung, narutomaki, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-spicy-beef-paitan",
+          "name": "Spicy Beef Ramen with Tori Paitan",
+          "description": "Spicy paitan broth ramen with beef teriyaki, minced spicy chicken, egg, mushroom, narutomaki, and spring onion",
+          "price": 51000,
+          "image": "images/spicy-beef-paitan.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Острый рамен с говядиной на тори пайтан",
+              "description": "Рамен на остром бульоне пайтан с говядиной терияки, острым куриным фаршем, яйцом, грибами, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "香辣牛肉鸡白汤拉面",
+              "description": "香辣白汤拉面，配照烧牛肉、辣味鸡肉末、鸡蛋、蘑菇、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Ramen Sapi Pedas Tori Paitan",
+              "description": "Ramen kuah paitan pedas dengan sapi teriyaki, ayam cincang pedas, telur, jamur, narutomaki, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-spicy-miso-ramen",
+          "name": "Sapporo Spicy Miso Ramen",
+          "description": "Spicy miso ramen with crab stick tempura, egg, mushroom, narutomaki, and spring onion",
+          "price": 42000,
+          "image": "images/spicy-miso-ramen.jpg",
+          "available": true,
+          "tags": [
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Саппоро острый мисо-рамен",
+              "description": "Острый мисо-рамен с темпурой из крабовых палочек, яйцом, грибами, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "札幌香辣味噌拉面",
+              "description": "香辣味噌拉面，配蟹柳天妇罗、鸡蛋、蘑菇、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Sapporo Spicy Miso Ramen",
+              "description": "Ramen miso pedas dengan tempura crab stick, telur, jamur, narutomaki, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-spicy-dry-ramen",
+          "name": "Spicy Dry Ramen",
+          "description": "Spicy dry ramen with marinated chicken, egg, nori, fried shallot, and spring onion",
+          "price": 41000,
+          "image": "images/spicy-dry-ramen.jpg",
+          "available": true,
+          "tags": [
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Острый сухой рамен",
+              "description": "Острый рамен без бульона с маринованной курицей, яйцом, нори, жареным луком-шалотом и зелёным луком"
+            },
+            "zh": {
+              "name": "香辣干拌拉面",
+              "description": "香辣干拌拉面，配腌鸡肉、鸡蛋、海苔、炸红葱头和葱花"
+            },
+            "id": {
+              "name": "Ramen Kering Pedas",
+              "description": "Ramen kering pedas dengan ayam marinasi, telur, nori, bawang goreng, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-spicy-ramen",
+          "name": "Spicy Ramen",
+          "description": "Spicy shoyu/curry ramen with beef teriyaki, minced spicy chicken, egg, mushroom, corn, narutomaki, and spring onion",
+          "price": 50000,
+          "image": "images/spicy-ramen.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Острый рамен",
+              "description": "Острый рамен шою или карри с говядиной терияки, острым куриным фаршем, яйцом, грибами, кукурузой, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "香辣拉面",
+              "description": "香辣酱油或咖喱拉面，配照烧牛肉、辣味鸡肉末、鸡蛋、蘑菇、玉米、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Ramen Pedas",
+              "description": "Ramen shoyu/kari pedas dengan sapi teriyaki, ayam cincang pedas, telur, jamur, jagung, narutomaki, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-yokohama-ramen",
+          "name": "Yokohama Spicy Ramen",
+          "description": "Special mala ramen with steamed gyoza, mushroom, egg, and spring onion",
+          "price": 48000,
+          "image": "images/yokohama-ramen.jpg",
+          "available": true,
+          "tags": [
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Иокогама острый рамен",
+              "description": "Фирменный рамен мала с гёдза на пару, грибами, яйцом и зелёным луком"
+            },
+            "zh": {
+              "name": "横滨香辣拉面",
+              "description": "特制麻辣拉面，配蒸饺、蘑菇、鸡蛋和葱花"
+            },
+            "id": {
+              "name": "Yokohama Spicy Ramen",
+              "description": "Ramen mala spesial dengan gyoza kukus, jamur, telur, dan daun bawang"
+            }
+          }
+        },
+        {
+          "id": "i-curry-paitan-ramen",
+          "name": "Chicken Curry Paitan Ramen",
+          "description": "Special curry paitan ramen with marinated chicken, egg, mushroom, corn, narutomaki, and spring onion",
+          "price": 50000,
+          "image": "images/curry-paitan-ramen.jpg",
+          "available": true,
+          "tags": [
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Рамен карри пайтан с курицей",
+              "description": "Фирменный рамен на бульоне карри пайтан с маринованной курицей, яйцом, грибами, кукурузой, нарутомаки и зелёным луком"
+            },
+            "zh": {
+              "name": "咖喱白汤鸡肉拉面",
+              "description": "特制咖喱白汤拉面，配腌鸡肉、鸡蛋、蘑菇、玉米、鸣门卷和葱花"
+            },
+            "id": {
+              "name": "Ramen Kari Paitan Ayam",
+              "description": "Ramen kuah kari paitan spesial dengan ayam marinasi, telur, jamur, jagung, narutomaki, dan daun bawang"
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Рамен"
+        },
+        "zh": {
+          "name": "拉面"
+        },
+        "id": {
+          "name": "Ramen"
+        }
+      }
     },
     {
-      "id": "c-ramen-addons", "name": "Ramen Add-ons", "emoji": "➕", "visible": true,
+      "id": "c-ramen-addons",
+      "name": "Ramen Add-ons",
+      "emoji": "➕",
+      "visible": true,
       "items": [
-        { "id": "i-addon-sambal", "name": "Sambal Geprek", "description": "", "price": 6000, "image": "", "available": true, "tags": ["spicy"] },
-        { "id": "i-addon-nori", "name": "Crispy Nori (2 pcs)", "description": "", "price": 6000, "image": "", "available": true, "tags": [] },
-        { "id": "i-addon-egg", "name": "Telur 1/2 (Half Egg)", "description": "", "price": 8000, "image": "", "available": true, "tags": [] },
-        { "id": "i-addon-gyoza", "name": "Gyoza (2 pcs)", "description": "", "price": 14000, "image": "", "available": true, "tags": [] },
-        { "id": "i-addon-karaage", "name": "Tori Karaage (2 pcs)", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
-        { "id": "i-addon-charsiu", "name": "Chicken Charsiu (2 pcs)", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
-        { "id": "i-addon-beef", "name": "Beef Teriyaki", "description": "", "price": 16000, "image": "", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-addon-sambal",
+          "name": "Sambal Geprek",
+          "description": "",
+          "price": 6000,
+          "image": "",
+          "available": true,
+          "tags": [
+            "spicy"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Самбал гепрек",
+              "description": ""
+            },
+            "zh": {
+              "name": "印尼辣椒酱 Sambal Geprek",
+              "description": ""
+            },
+            "id": {
+              "name": "Sambal Geprek",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-nori",
+          "name": "Crispy Nori (2 pcs)",
+          "description": "",
+          "price": 6000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Хрустящий нори (2 шт)",
+              "description": ""
+            },
+            "zh": {
+              "name": "脆海苔（2片）",
+              "description": ""
+            },
+            "id": {
+              "name": "Nori Renyah (2 pcs)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-egg",
+          "name": "Telur 1/2 (Half Egg)",
+          "description": "",
+          "price": 8000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Половинка яйца",
+              "description": ""
+            },
+            "zh": {
+              "name": "半个鸡蛋",
+              "description": ""
+            },
+            "id": {
+              "name": "Telur 1/2",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-gyoza",
+          "name": "Gyoza (2 pcs)",
+          "description": "",
+          "price": 14000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Гёдза (2 шт)",
+              "description": ""
+            },
+            "zh": {
+              "name": "日式饺子（2个）",
+              "description": ""
+            },
+            "id": {
+              "name": "Gyoza (2 pcs)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-karaage",
+          "name": "Tori Karaage (2 pcs)",
+          "description": "",
+          "price": 15000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Тори караагэ (2 шт)",
+              "description": ""
+            },
+            "zh": {
+              "name": "日式炸鸡块（2块）",
+              "description": ""
+            },
+            "id": {
+              "name": "Tori Karaage (2 pcs)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-charsiu",
+          "name": "Chicken Charsiu (2 pcs)",
+          "description": "",
+          "price": 15000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Куриный чашу (2 шт)",
+              "description": ""
+            },
+            "zh": {
+              "name": "鸡肉叉烧（2片）",
+              "description": ""
+            },
+            "id": {
+              "name": "Chicken Charsiu (2 pcs)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-addon-beef",
+          "name": "Beef Teriyaki",
+          "description": "",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Говядина терияки",
+              "description": ""
+            },
+            "zh": {
+              "name": "照烧牛肉",
+              "description": ""
+            },
+            "id": {
+              "name": "Sapi Teriyaki",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Добавки к рамену"
+        },
+        "zh": {
+          "name": "拉面加料"
+        },
+        "id": {
+          "name": "Tambahan Ramen"
+        }
+      }
     },
     {
-      "id": "c-donburi", "name": "Donburi", "emoji": "🍚", "visible": true,
+      "id": "c-donburi",
+      "name": "Donburi",
+      "emoji": "🍚",
+      "visible": true,
       "items": [
-        { "id": "i-hokkaido-beef-don", "name": "Hokkaido Beef Donburi", "description": "Beef rice bowl with nanban sauce, sunny-side up egg, onion, and white sesame seed", "price": 43000, "image": "images/hokkaido-beef-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-hokkaido-chicken-don", "name": "Hokkaido Chicken Donburi", "description": "Chicken karaage rice bowl with nanban sauce, scrambled egg, nori, and white sesame seed", "price": 39000, "image": "images/hokkaido-chicken-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-hokkaido-dory-don", "name": "Hokkaido Dory Donburi", "description": "Dory katsu rice bowl with tartar sauce", "price": 38000, "image": "images/hokkaido-dory-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-dory-katsu-don", "name": "Dory Katsu Donburi", "description": "Dory katsu rice bowl with scrambled egg", "price": 39000, "image": "images/dory-katsu-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chicken-katsu-toji", "name": "Chicken Katsu Toji Donburi", "description": "Chicken katsu rice bowl with toji sauce and omelette", "price": 39000, "image": "images/chicken-katsu-toji.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-katsu-curry-don", "name": "Katsu Curry Donburi", "description": "Beef/chicken katsu rice bowl with curry sauce", "price": 44000, "options": [{ "name": "Beef", "price": 47000 }, { "name": "Chicken", "price": 44000 }], "image": "images/katsu-curry-don.jpg", "available": true, "tags": [] },
-        { "id": "i-ichi-mentai-don", "name": "Ichi Mentai Don", "description": "Mini rice bowl with salmon & crab stick, mentai sauce, cheese mayonnaise, and nori", "price": 35000, "image": "images/ichi-mentai-don.jpg", "available": true, "tags": [] },
-        { "id": "i-salmon-teriyaki-don", "name": "Salmon Teriyaki Donburi", "description": "", "price": 60000, "image": "images/salmon-teriyaki-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-beef-teriyaki-don", "name": "Beef Teriyaki Donburi", "description": "", "price": 45000, "image": "images/beef-teriyaki-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-namazu-don", "name": "Namazu Donburi", "description": "", "price": 43000, "image": "images/namazu-don.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-gyu-toji-don", "name": "Gyu Toji Donburi (Savory)", "description": "", "price": 45000, "image": "images/gyu-toji-don.jpg", "available": true, "tags": ["hit", "raw"] },
-        { "id": "i-chicken-teriyaki-don", "name": "Chicken Teriyaki Donburi", "description": "", "price": 39000, "image": "images/chicken-teriyaki-don.jpg", "available": true, "tags": [] },
-        { "id": "i-chicken-katsu-don", "name": "Chicken Katsu Donburi", "description": "", "price": 39000, "image": "images/chicken-katsu-don.jpg", "available": true, "tags": ["hit"] }
-      ]
+        {
+          "id": "i-hokkaido-beef-don",
+          "name": "Hokkaido Beef Donburi",
+          "description": "Beef rice bowl with nanban sauce, sunny-side up egg, onion, and white sesame seed",
+          "price": 43000,
+          "image": "images/hokkaido-beef-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Хоккайдо донбури с говядиной",
+              "description": "Рис с говядиной в соусе нанбан, яйцом глазунья, луком и белым кунжутом"
+            },
+            "zh": {
+              "name": "北海道牛肉盖饭",
+              "description": "牛肉盖饭配南蛮酱、太阳蛋、洋葱和白芝麻"
+            },
+            "id": {
+              "name": "Hokkaido Beef Donburi",
+              "description": "Nasi mangkuk sapi dengan saus nanban, telur mata sapi, bawang, dan wijen putih"
+            }
+          }
+        },
+        {
+          "id": "i-hokkaido-chicken-don",
+          "name": "Hokkaido Chicken Donburi",
+          "description": "Chicken karaage rice bowl with nanban sauce, scrambled egg, nori, and white sesame seed",
+          "price": 39000,
+          "image": "images/hokkaido-chicken-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Хоккайдо донбури с курицей",
+              "description": "Рис с курицей караагэ в соусе нанбан, омлетом-болтуньей, нори и белым кунжутом"
+            },
+            "zh": {
+              "name": "北海道鸡肉盖饭",
+              "description": "炸鸡块盖饭配南蛮酱、炒蛋、海苔和白芝麻"
+            },
+            "id": {
+              "name": "Hokkaido Chicken Donburi",
+              "description": "Nasi mangkuk chicken karaage dengan saus nanban, telur orak-arik, nori, dan wijen putih"
+            }
+          }
+        },
+        {
+          "id": "i-hokkaido-dory-don",
+          "name": "Hokkaido Dory Donburi",
+          "description": "Dory katsu rice bowl with tartar sauce",
+          "price": 38000,
+          "image": "images/hokkaido-dory-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Хоккайдо донбури с рыбой дори",
+              "description": "Рис с рыбой дори кацу и соусом тартар"
+            },
+            "zh": {
+              "name": "北海道多利鱼盖饭",
+              "description": "炸多利鱼排盖饭配塔塔酱"
+            },
+            "id": {
+              "name": "Hokkaido Dory Donburi",
+              "description": "Nasi mangkuk dory katsu dengan saus tartar"
+            }
+          }
+        },
+        {
+          "id": "i-dory-katsu-don",
+          "name": "Dory Katsu Donburi",
+          "description": "Dory katsu rice bowl with scrambled egg",
+          "price": 39000,
+          "image": "images/dory-katsu-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Донбури с дори кацу",
+              "description": "Рис с рыбой дори кацу и омлетом-болтуньей"
+            },
+            "zh": {
+              "name": "炸多利鱼排盖饭",
+              "description": "炸多利鱼排盖饭配炒蛋"
+            },
+            "id": {
+              "name": "Dory Katsu Donburi",
+              "description": "Nasi mangkuk dory katsu dengan telur orak-arik"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-katsu-toji",
+          "name": "Chicken Katsu Toji Donburi",
+          "description": "Chicken katsu rice bowl with toji sauce and omelette",
+          "price": 39000,
+          "image": "images/chicken-katsu-toji.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Тодзи донбури с курицей кацу",
+              "description": "Рис с куриной котлетой кацу, соусом тодзи и омлетом"
+            },
+            "zh": {
+              "name": "鸡排滑蛋盖饭",
+              "description": "炸鸡排盖饭配滑蛋酱汁和蛋卷"
+            },
+            "id": {
+              "name": "Chicken Katsu Toji Donburi",
+              "description": "Nasi mangkuk chicken katsu dengan saus toji dan omelet"
+            }
+          }
+        },
+        {
+          "id": "i-katsu-curry-don",
+          "name": "Katsu Curry Donburi",
+          "description": "Beef/chicken katsu rice bowl with curry sauce",
+          "price": 44000,
+          "options": [
+            {
+              "name": "Beef",
+              "price": 47000
+            },
+            {
+              "name": "Chicken",
+              "price": 44000
+            }
+          ],
+          "image": "images/katsu-curry-don.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Кацу карри донбури",
+              "description": "Рис с говяжьей или куриной котлетой кацу и соусом карри"
+            },
+            "zh": {
+              "name": "咖喱炸排盖饭",
+              "description": "炸牛排或炸鸡排盖饭配咖喱酱"
+            },
+            "id": {
+              "name": "Katsu Curry Donburi",
+              "description": "Nasi mangkuk katsu sapi/ayam dengan saus kari"
+            }
+          }
+        },
+        {
+          "id": "i-ichi-mentai-don",
+          "name": "Ichi Mentai Don",
+          "description": "Mini rice bowl with salmon & crab stick, mentai sauce, cheese mayonnaise, and nori",
+          "price": 35000,
+          "image": "images/ichi-mentai-don.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Ити ментай дон",
+              "description": "Мини-боул: рис с лососем и крабовыми палочками, соус ментай, сырный майонез и нори"
+            },
+            "zh": {
+              "name": "明太子迷你盖饭",
+              "description": "迷你盖饭配三文鱼和蟹柳、明太子酱、芝士蛋黄酱和海苔"
+            },
+            "id": {
+              "name": "Ichi Mentai Don",
+              "description": "Nasi mangkuk mini dengan salmon & crab stick, saus mentai, mayones keju, dan nori"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-teriyaki-don",
+          "name": "Salmon Teriyaki Donburi",
+          "description": "",
+          "price": 60000,
+          "image": "images/salmon-teriyaki-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Донбури с лососем терияки",
+              "description": ""
+            },
+            "zh": {
+              "name": "照烧三文鱼盖饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Salmon Teriyaki Donburi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-beef-teriyaki-don",
+          "name": "Beef Teriyaki Donburi",
+          "description": "",
+          "price": 45000,
+          "image": "images/beef-teriyaki-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Донбури с говядиной терияки",
+              "description": ""
+            },
+            "zh": {
+              "name": "照烧牛肉盖饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Beef Teriyaki Donburi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-namazu-don",
+          "name": "Namazu Donburi",
+          "description": "",
+          "price": 43000,
+          "image": "images/namazu-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Намадзу донбури",
+              "description": ""
+            },
+            "zh": {
+              "name": "鲶鱼盖饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Namazu Donburi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-gyu-toji-don",
+          "name": "Gyu Toji Donburi (Savory)",
+          "description": "",
+          "price": 45000,
+          "image": "images/gyu-toji-don.jpg",
+          "available": true,
+          "tags": [
+            "hit",
+            "raw"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Гю тодзи донбури (пикантный)",
+              "description": ""
+            },
+            "zh": {
+              "name": "牛肉滑蛋盖饭（咸香）",
+              "description": ""
+            },
+            "id": {
+              "name": "Gyu Toji Donburi (Gurih)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-chicken-teriyaki-don",
+          "name": "Chicken Teriyaki Donburi",
+          "description": "",
+          "price": 39000,
+          "image": "images/chicken-teriyaki-don.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Донбури с курицей терияки",
+              "description": ""
+            },
+            "zh": {
+              "name": "照烧鸡肉盖饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Chicken Teriyaki Donburi",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-chicken-katsu-don",
+          "name": "Chicken Katsu Donburi",
+          "description": "",
+          "price": 39000,
+          "image": "images/chicken-katsu-don.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Донбури с курицей кацу",
+              "description": ""
+            },
+            "zh": {
+              "name": "炸鸡排盖饭",
+              "description": ""
+            },
+            "id": {
+              "name": "Chicken Katsu Donburi",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Донбури"
+        },
+        "zh": {
+          "name": "盖饭"
+        },
+        "id": {
+          "name": "Donburi"
+        }
+      }
     },
     {
-      "id": "c-teppanyaki", "name": "Teppanyaki", "emoji": "🔥", "visible": true,
+      "id": "c-teppanyaki",
+      "name": "Teppanyaki",
+      "emoji": "🔥",
+      "visible": true,
       "items": [
-        { "id": "i-salmon-teppanyaki", "name": "Salmon Teppanyaki", "description": "Salmon teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 68000, "image": "images/salmon-teppanyaki.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-beef-teppanyaki", "name": "Beef Teppanyaki", "description": "Beef teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 65000, "image": "images/beef-teppanyaki.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chicken-teppanyaki", "name": "Chicken Teppanyaki", "description": "Chicken teppanyaki, tofu & vegetables mix stir fry, gohan (rice)", "price": 54000, "image": "images/chicken-teppanyaki.jpg", "available": true, "tags": ["hit"] }
-      ]
+        {
+          "id": "i-salmon-teppanyaki",
+          "name": "Salmon Teppanyaki",
+          "description": "Salmon teppanyaki, tofu & vegetables mix stir fry, gohan (rice)",
+          "price": 68000,
+          "image": "images/salmon-teppanyaki.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Теппаньяки с лососем",
+              "description": "Лосось теппаньяки, тофу и обжаренные овощи, рис гохан"
+            },
+            "zh": {
+              "name": "铁板三文鱼",
+              "description": "铁板三文鱼，配豆腐炒什锦蔬菜和白米饭"
+            },
+            "id": {
+              "name": "Salmon Teppanyaki",
+              "description": "Salmon teppanyaki, tahu & tumis sayuran, gohan (nasi)"
+            }
+          }
+        },
+        {
+          "id": "i-beef-teppanyaki",
+          "name": "Beef Teppanyaki",
+          "description": "Beef teppanyaki, tofu & vegetables mix stir fry, gohan (rice)",
+          "price": 65000,
+          "image": "images/beef-teppanyaki.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Теппаньяки с говядиной",
+              "description": "Говядина теппаньяки, тофу и обжаренные овощи, рис гохан"
+            },
+            "zh": {
+              "name": "铁板牛肉",
+              "description": "铁板牛肉，配豆腐炒什锦蔬菜和白米饭"
+            },
+            "id": {
+              "name": "Beef Teppanyaki",
+              "description": "Sapi teppanyaki, tahu & tumis sayuran, gohan (nasi)"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-teppanyaki",
+          "name": "Chicken Teppanyaki",
+          "description": "Chicken teppanyaki, tofu & vegetables mix stir fry, gohan (rice)",
+          "price": 54000,
+          "image": "images/chicken-teppanyaki.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Теппаньяки с курицей",
+              "description": "Курица теппаньяки, тофу и обжаренные овощи, рис гохан"
+            },
+            "zh": {
+              "name": "铁板鸡肉",
+              "description": "铁板鸡肉，配豆腐炒什锦蔬菜和白米饭"
+            },
+            "id": {
+              "name": "Chicken Teppanyaki",
+              "description": "Ayam teppanyaki, tahu & tumis sayuran, gohan (nasi)"
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Теппаньяки"
+        },
+        "zh": {
+          "name": "铁板烧"
+        },
+        "id": {
+          "name": "Teppanyaki"
+        }
+      }
     },
     {
-      "id": "c-bento", "name": "Bento", "emoji": "🍱", "visible": true,
+      "id": "c-bento",
+      "name": "Bento",
+      "emoji": "🍱",
+      "visible": true,
       "items": [
-        { "id": "i-beef-teriyaki-bento", "name": "Beef Teriyaki Bento", "description": "Beef teriyaki bento with sweet potato tempura and salad side dish", "price": 54000, "image": "images/beef-teriyaki-bento.jpg", "available": true, "tags": [] },
-        { "id": "i-tempura-karaage-bento", "name": "Tempura Karaage Bento", "description": "Ebi tempura & chicken karaage bento with sweet potato tempura and salad side dish", "price": 45000, "image": "images/tempura-karaage-bento.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chicken-goma-bento", "name": "Chicken Goma Bento", "description": "Sesame fried chicken bento with sweet potato tempura and salad side dish", "price": 44000, "image": "images/chicken-goma-bento.jpg", "available": true, "tags": [] },
-        { "id": "i-salmon-yakiniku-bento", "name": "Salmon Yakiniku Bento", "description": "Salmon yakiniku bento with sweet potato tempura and salad side dish", "price": 60000, "image": "images/salmon-yakiniku-bento.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-chicken-yakiniku-bento", "name": "Chicken Yakiniku Bento", "description": "Chicken yakiniku bento with sweet potato tempura and salad side dish", "price": 44000, "image": "images/chicken-yakiniku-bento.jpg", "available": true, "tags": [] },
-        { "id": "i-chicken-katsu-curry-bento", "name": "Chicken Katsu Curry Bento", "description": "Chicken katsu curry bento with sweet potato tempura and salad side dish", "price": 49000, "image": "images/chicken-katsu-curry-bento.jpg", "available": true, "tags": ["hit"] }
-      ]
+        {
+          "id": "i-beef-teriyaki-bento",
+          "name": "Beef Teriyaki Bento",
+          "description": "Beef teriyaki bento with sweet potato tempura and salad side dish",
+          "price": 54000,
+          "image": "images/beef-teriyaki-bento.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Бенто с говядиной терияки",
+              "description": "Говядина терияки, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "照烧牛肉便当",
+              "description": "照烧牛肉便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Beef Teriyaki Bento",
+              "description": "Bento sapi teriyaki dengan tempura ubi dan salad"
+            }
+          }
+        },
+        {
+          "id": "i-tempura-karaage-bento",
+          "name": "Tempura Karaage Bento",
+          "description": "Ebi tempura & chicken karaage bento with sweet potato tempura and salad side dish",
+          "price": 45000,
+          "image": "images/tempura-karaage-bento.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Бенто темпура и караагэ",
+              "description": "Креветка темпура и курица караагэ, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "天妇罗炸鸡便当",
+              "description": "炸虾天妇罗和日式炸鸡便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Tempura Karaage Bento",
+              "description": "Bento ebi tempura & chicken karaage dengan tempura ubi dan salad"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-goma-bento",
+          "name": "Chicken Goma Bento",
+          "description": "Sesame fried chicken bento with sweet potato tempura and salad side dish",
+          "price": 44000,
+          "image": "images/chicken-goma-bento.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Бенто с курицей в кунжуте",
+              "description": "Жареная курица в кунжуте, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "芝麻炸鸡便当",
+              "description": "芝麻炸鸡便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Chicken Goma Bento",
+              "description": "Bento ayam goreng wijen dengan tempura ubi dan salad"
+            }
+          }
+        },
+        {
+          "id": "i-salmon-yakiniku-bento",
+          "name": "Salmon Yakiniku Bento",
+          "description": "Salmon yakiniku bento with sweet potato tempura and salad side dish",
+          "price": 60000,
+          "image": "images/salmon-yakiniku-bento.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Бенто с лососем якинику",
+              "description": "Лосось якинику, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "烧肉三文鱼便当",
+              "description": "烧肉风味三文鱼便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Salmon Yakiniku Bento",
+              "description": "Bento salmon yakiniku dengan tempura ubi dan salad"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-yakiniku-bento",
+          "name": "Chicken Yakiniku Bento",
+          "description": "Chicken yakiniku bento with sweet potato tempura and salad side dish",
+          "price": 44000,
+          "image": "images/chicken-yakiniku-bento.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Бенто с курицей якинику",
+              "description": "Курица якинику, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "烧肉鸡肉便当",
+              "description": "烧肉风味鸡肉便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Chicken Yakiniku Bento",
+              "description": "Bento ayam yakiniku dengan tempura ubi dan salad"
+            }
+          }
+        },
+        {
+          "id": "i-chicken-katsu-curry-bento",
+          "name": "Chicken Katsu Curry Bento",
+          "description": "Chicken katsu curry bento with sweet potato tempura and salad side dish",
+          "price": 49000,
+          "image": "images/chicken-katsu-curry-bento.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Бенто с курицей кацу карри",
+              "description": "Куриная котлета кацу с карри, темпура из батата и салат"
+            },
+            "zh": {
+              "name": "咖喱炸鸡排便当",
+              "description": "咖喱炸鸡排便当，配红薯天妇罗和沙拉"
+            },
+            "id": {
+              "name": "Chicken Katsu Curry Bento",
+              "description": "Bento chicken katsu kari dengan tempura ubi dan salad"
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Бенто"
+        },
+        "zh": {
+          "name": "便当"
+        },
+        "id": {
+          "name": "Bento"
+        }
+      }
     },
     {
-      "id": "c-kids", "name": "Kids Menu", "emoji": "🧸", "visible": true,
+      "id": "c-kids",
+      "name": "Kids Menu",
+      "emoji": "🧸",
+      "visible": true,
       "items": [
-        { "id": "i-kids-amami", "name": "Mini Kuma Kids Meal", "description": "Kids-friendly meals: nori rice, fried salmon ball, fried tofu, and gyu amami", "price": 36000, "options": [{ "name": "Beef Amami", "price": 41000 }, { "name": "Chicken Amami", "price": 36000 }], "image": "images/kids-amami.jpg", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-kids-amami",
+          "name": "Mini Kuma Kids Meal",
+          "description": "Kids-friendly meals: nori rice, fried salmon ball, fried tofu, and gyu amami",
+          "price": 36000,
+          "options": [
+            {
+              "name": "Beef Amami",
+              "price": 41000
+            },
+            {
+              "name": "Chicken Amami",
+              "price": 36000
+            }
+          ],
+          "image": "images/kids-amami.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Детский набор Mini Kuma",
+              "description": "Детское меню: рис с нори, жареный шарик из лосося, жареный тофу и гю амами"
+            },
+            "zh": {
+              "name": "Mini Kuma 儿童套餐",
+              "description": "儿童餐：海苔饭、炸三文鱼丸、炸豆腐和甜味牛肉"
+            },
+            "id": {
+              "name": "Menu Anak Mini Kuma",
+              "description": "Menu ramah anak: nasi nori, bola salmon goreng, tahu goreng, dan gyu amami"
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Детское меню"
+        },
+        "zh": {
+          "name": "儿童餐"
+        },
+        "id": {
+          "name": "Menu Anak"
+        }
+      }
     },
     {
-      "id": "c-platter", "name": "Sushi Platter", "emoji": "🎁", "visible": true,
+      "id": "c-platter",
+      "name": "Sushi Platter",
+      "emoji": "🎁",
+      "visible": true,
       "items": [
-        { "id": "i-sushi-platter", "name": "Sushi Platter Ookiikuma", "description": "24 sushi: 4 Ebi Furai Mentai Roll, 4 Tori BBQ Roll, 4 Sakana Roll, 4 Tori Tsoboro Roll, 4 Tori Kawa Roll, 4 Nori Maki. Take away & online delivery only.", "price": 90000, "image": "images/sushi-platter.jpg", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-sushi-platter",
+          "name": "Sushi Platter Ookiikuma",
+          "description": "24 sushi: 4 Ebi Furai Mentai Roll, 4 Tori BBQ Roll, 4 Sakana Roll, 4 Tori Tsoboro Roll, 4 Tori Kawa Roll, 4 Nori Maki. Take away & online delivery only.",
+          "price": 90000,
+          "image": "images/sushi-platter.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Суши-сет Ookiikuma",
+              "description": "24 суши: по 4 шт. роллов Эби фурай ментай, Тори BBQ, Сакана, Тори цоборо, Тори кава и Нори маки. Только на вынос и для онлайн-доставки."
+            },
+            "zh": {
+              "name": "Ookiikuma 寿司拼盘",
+              "description": "共24个寿司：炸虾明太子卷、BBQ鸡肉卷、鱼肉卷、鸡肉松卷、鸡皮卷、海苔卷各4个。仅限外带及网上外卖。"
+            },
+            "id": {
+              "name": "Sushi Platter Ookiikuma",
+              "description": "Isi 24 sushi: 4 Ebi Furai Mentai Roll, 4 Tori BBQ Roll, 4 Sakana Roll, 4 Tori Tsoboro Roll, 4 Tori Kawa Roll, 4 Nori Maki. Berlaku untuk take away & online delivery."
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Суши-сет"
+        },
+        "zh": {
+          "name": "寿司拼盘"
+        },
+        "id": {
+          "name": "Sushi Platter"
+        }
+      }
     },
     {
-      "id": "c-coffee", "name": "Coffee Series", "emoji": "☕", "visible": true,
+      "id": "c-coffee",
+      "name": "Coffee Series",
+      "emoji": "☕",
+      "visible": true,
       "items": [
-        { "id": "i-yuzu-coffee", "name": "Yuzu Coffee", "description": "", "price": 26000, "image": "images/yuzu-coffee.jpg", "available": true, "tags": [] },
-        { "id": "i-peach-coffee", "name": "Peach Coffee", "description": "", "price": 26000, "image": "images/peach-coffee.jpg", "available": true, "tags": [] },
-        { "id": "i-matcha-latte", "name": "Matcha Brown Sugar Latte", "description": "", "price": 27000, "image": "images/matcha-latte.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-black-ping-coffee", "name": "Black Ping Coffee", "description": "", "price": 27000, "image": "images/black-ping-coffee.jpg", "available": true, "tags": [] },
-        { "id": "i-butterscotch-latte", "name": "Butterscotch Latte", "description": "", "price": 27000, "image": "images/butterscotch-latte.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-coffee-latte", "name": "Coffee Latte", "description": "", "price": 26000, "image": "images/coffee-latte.jpg", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-yuzu-coffee",
+          "name": "Yuzu Coffee",
+          "description": "",
+          "price": 26000,
+          "image": "images/yuzu-coffee.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Юдзу кофе",
+              "description": ""
+            },
+            "zh": {
+              "name": "柚子咖啡",
+              "description": ""
+            },
+            "id": {
+              "name": "Kopi Yuzu",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-peach-coffee",
+          "name": "Peach Coffee",
+          "description": "",
+          "price": 26000,
+          "image": "images/peach-coffee.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Персиковый кофе",
+              "description": ""
+            },
+            "zh": {
+              "name": "蜜桃咖啡",
+              "description": ""
+            },
+            "id": {
+              "name": "Kopi Peach",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-matcha-latte",
+          "name": "Matcha Brown Sugar Latte",
+          "description": "",
+          "price": 27000,
+          "image": "images/matcha-latte.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Матча латте с коричневым сахаром",
+              "description": ""
+            },
+            "zh": {
+              "name": "黑糖抹茶拿铁",
+              "description": ""
+            },
+            "id": {
+              "name": "Matcha Brown Sugar Latte",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-black-ping-coffee",
+          "name": "Black Ping Coffee",
+          "description": "",
+          "price": 27000,
+          "image": "images/black-ping-coffee.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Кофе Black Ping",
+              "description": ""
+            },
+            "zh": {
+              "name": "Black Ping 咖啡",
+              "description": ""
+            },
+            "id": {
+              "name": "Kopi Black Ping",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-butterscotch-latte",
+          "name": "Butterscotch Latte",
+          "description": "",
+          "price": 27000,
+          "image": "images/butterscotch-latte.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Латте баттерскотч",
+              "description": ""
+            },
+            "zh": {
+              "name": "奶油糖拿铁",
+              "description": ""
+            },
+            "id": {
+              "name": "Butterscotch Latte",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-coffee-latte",
+          "name": "Coffee Latte",
+          "description": "",
+          "price": 26000,
+          "image": "images/coffee-latte.jpg",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Кофе латте",
+              "description": ""
+            },
+            "zh": {
+              "name": "咖啡拿铁",
+              "description": ""
+            },
+            "id": {
+              "name": "Kopi Latte",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Кофе"
+        },
+        "zh": {
+          "name": "咖啡系列"
+        },
+        "id": {
+          "name": "Seri Kopi"
+        }
+      }
     },
     {
-      "id": "c-drinks", "name": "Drinks", "emoji": "🥤", "visible": true,
+      "id": "c-drinks",
+      "name": "Drinks",
+      "emoji": "🥤",
+      "visible": true,
       "items": [
-        { "id": "i-carafe", "name": "Carafe (1 Litre)", "description": "", "price": 40000, "options": [{ "name": "Lemonade", "price": 40000 }, { "name": "Orange", "price": 40000 }, { "name": "Blackcurrant", "price": 40000 }, { "name": "Milo", "price": 42000 }], "image": "images/lemonade-carafe.jpg", "available": true, "tags": ["hit"] },
-        { "id": "i-milo", "name": "Milo", "description": "", "price": 18000, "image": "", "available": true, "tags": [] },
-        { "id": "i-lemon-tea", "name": "Lemon Tea", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
-        { "id": "i-lemonade", "name": "Lemonade", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
-        { "id": "i-orange-juice", "name": "Orange Juice", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
-        { "id": "i-blackcurrant", "name": "Blackcurrant", "description": "", "price": 16000, "image": "", "available": true, "tags": [] },
-        { "id": "i-tehbotol", "name": "Tehbotol Sosro Kotak", "description": "", "price": 15000, "image": "", "available": true, "tags": [] },
-        { "id": "i-lychee-ocha", "name": "Lychee Ocha", "description": "Free refill Ocha Original", "price": 16000, "image": "", "available": true, "tags": [] },
-        { "id": "i-ocha", "name": "Ocha", "description": "", "price": 13000, "image": "", "available": true, "tags": [] },
-        { "id": "i-mineral-water", "name": "Mineral Water", "description": "", "price": 11000, "image": "", "available": true, "tags": [] }
-      ]
+        {
+          "id": "i-carafe",
+          "name": "Carafe (1 Litre)",
+          "description": "",
+          "price": 40000,
+          "options": [
+            {
+              "name": "Lemonade",
+              "price": 40000
+            },
+            {
+              "name": "Orange",
+              "price": 40000
+            },
+            {
+              "name": "Blackcurrant",
+              "price": 40000
+            },
+            {
+              "name": "Milo",
+              "price": 42000
+            }
+          ],
+          "image": "images/lemonade-carafe.jpg",
+          "available": true,
+          "tags": [
+            "hit"
+          ],
+          "i18n": {
+            "ru": {
+              "name": "Графин (1 л)",
+              "description": ""
+            },
+            "zh": {
+              "name": "大瓶装（1升）",
+              "description": ""
+            },
+            "id": {
+              "name": "Karaf (1 Liter)",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-milo",
+          "name": "Milo",
+          "description": "",
+          "price": 18000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Milo",
+              "description": ""
+            },
+            "zh": {
+              "name": "美禄",
+              "description": ""
+            },
+            "id": {
+              "name": "Milo",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-lemon-tea",
+          "name": "Lemon Tea",
+          "description": "",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Лимонный чай",
+              "description": ""
+            },
+            "zh": {
+              "name": "柠檬茶",
+              "description": ""
+            },
+            "id": {
+              "name": "Teh Lemon",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-lemonade",
+          "name": "Lemonade",
+          "description": "",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Лимонад",
+              "description": ""
+            },
+            "zh": {
+              "name": "柠檬水",
+              "description": ""
+            },
+            "id": {
+              "name": "Lemonade",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-orange-juice",
+          "name": "Orange Juice",
+          "description": "",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Апельсиновый сок",
+              "description": ""
+            },
+            "zh": {
+              "name": "橙汁",
+              "description": ""
+            },
+            "id": {
+              "name": "Jus Jeruk",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-blackcurrant",
+          "name": "Blackcurrant",
+          "description": "",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Чёрная смородина",
+              "description": ""
+            },
+            "zh": {
+              "name": "黑加仑",
+              "description": ""
+            },
+            "id": {
+              "name": "Blackcurrant",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-tehbotol",
+          "name": "Tehbotol Sosro Kotak",
+          "description": "",
+          "price": 15000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Tehbotol Sosro (в пакете)",
+              "description": ""
+            },
+            "zh": {
+              "name": "Teh Botol Sosro 盒装茶",
+              "description": ""
+            },
+            "id": {
+              "name": "Tehbotol Sosro Kotak",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-lychee-ocha",
+          "name": "Lychee Ocha",
+          "description": "Free refill Ocha Original",
+          "price": 16000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Личи отя",
+              "description": "Бесплатная добавка обычного отя"
+            },
+            "zh": {
+              "name": "荔枝日本绿茶",
+              "description": "原味绿茶免费续杯"
+            },
+            "id": {
+              "name": "Lychee Ocha",
+              "description": "Gratis isi ulang Ocha Original"
+            }
+          }
+        },
+        {
+          "id": "i-ocha",
+          "name": "Ocha",
+          "description": "",
+          "price": 13000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Отя (японский зелёный чай)",
+              "description": ""
+            },
+            "zh": {
+              "name": "日本绿茶",
+              "description": ""
+            },
+            "id": {
+              "name": "Ocha",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "i-mineral-water",
+          "name": "Mineral Water",
+          "description": "",
+          "price": 11000,
+          "image": "",
+          "available": true,
+          "tags": [],
+          "i18n": {
+            "ru": {
+              "name": "Минеральная вода",
+              "description": ""
+            },
+            "zh": {
+              "name": "矿泉水",
+              "description": ""
+            },
+            "id": {
+              "name": "Air Mineral",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "i18n": {
+        "ru": {
+          "name": "Напитки"
+        },
+        "zh": {
+          "name": "饮品"
+        },
+        "id": {
+          "name": "Minuman"
+        }
+      }
     }
   ]
 }

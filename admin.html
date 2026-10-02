@@ -103,6 +103,12 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
 .opts .orow input:first-child{flex:1.4}
 .opts .orow input:nth-child(2){flex:1}
 .opts .orow button{flex:0 0 40px}
+.trans{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.trans summary{font-weight:600;color:var(--text)}
+.trans .tl{margin-top:12px}
+.trans .tlh{font-weight:700;font-size:13.5px;margin-bottom:6px;color:var(--muted)}
+.trans input,.trans textarea{margin-bottom:6px}
+.trans textarea{min-height:60px}
 .mbtns{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
 .mbtns .grow{flex:1}
 .swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -233,6 +239,7 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
   'use strict';
   var LS = 'menuAdmin.v1', DRAFT = 'menuAdmin.draft';
   var TAGS = [['hit', '★ Favorite'], ['spicy', '🌶 Spicy'], ['raw', '🐟 Raw'], ['new', '✨ New'], ['veg', '🌱 Vegetarian']];
+  var TLANGS = [['ru', 'Русский'], ['zh', '中文'], ['id', 'Bahasa Indonesia']];
   var COLORS = ['#c8402f', '#b5562b', '#8a5a3c', '#2f6b4f', '#3a6ea5', '#5b4a8a', '#a23b6b', '#24201d'];
 
   var cfg = null;          // {owner, repo, branch, salt, iv, ct}
@@ -592,6 +599,7 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
     var m = modal(
       '<h2>' + (isNew ? 'New category' : 'Category') + '</h2>' +
       '<label class="f">Name</label><input type="text" id="mName" value="' + esc(c.name) + '" placeholder="e.g. Breakfast">' +
+      transFields(c, [['name', 'text', 'Name']]) +
       '<label class="f">Icon (optional)</label><input type="text" id="mEmoji" value="' + esc(c.emoji || '') + '" placeholder="🥐" maxlength="4" style="width:90px">' +
       '<div class="hint">An emoji shown next to the name, and in place of a photo when an item has none.</div>' +
       '<div class="swline"><label class="sw"><input type="checkbox" id="mVis"' + (c.visible !== false ? ' checked' : '') + '><span></span></label> Show this category on the menu</div>' +
@@ -606,6 +614,7 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
       c.name = name;
       c.emoji = m.querySelector('#mEmoji').value.trim();
       c.visible = m.querySelector('#mVis').checked;
+      readTrans(m, c);
       if (isNew) { c.id = uid('c-'); data.categories.push(c); openCats[c.id] = true; }
       closeModal(); changed();
     };
@@ -615,6 +624,31 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
       data.categories.splice(ci, 1);
       closeModal(); changed();
     };
+  }
+
+  // Translation fields: one block per language; empty fields fall back to English on the menu
+  function transFields(obj, fields) {
+    var x = obj.i18n || {};
+    return '<details class="trans"><summary>🌐 Translations: Русский · 中文 · Indonesia</summary>' +
+      '<div class="hint">If a translation is left empty, the English text is shown.</div>' +
+      TLANGS.map(function (l) {
+        var v = x[l[0]] || {};
+        return '<div class="tl"><div class="tlh">' + l[1] + '</div>' + fields.map(function (f) {
+          var val = esc(v[f[0]] || '');
+          return f[1] === 'area'
+            ? '<textarea data-tl="' + l[0] + '" data-tf="' + f[0] + '" placeholder="' + f[2] + '">' + val + '</textarea>'
+            : '<input type="text" data-tl="' + l[0] + '" data-tf="' + f[0] + '" placeholder="' + f[2] + '" value="' + val + '">';
+        }).join('') + '</div>';
+      }).join('') + '</details>';
+  }
+  function readTrans(m, obj) {
+    var out = {}, any = false;
+    m.querySelectorAll('[data-tl]').forEach(function (el) {
+      var v = el.value.trim(); if (!v) return;
+      var l = el.getAttribute('data-tl');
+      (out[l] = out[l] || {})[el.getAttribute('data-tf')] = v; any = true;
+    });
+    if (any) obj.i18n = out; else delete obj.i18n;
   }
 
   function optRow(o) {
@@ -635,6 +669,7 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
       '<button class="btn" id="mNoPhoto">Remove photo</button></div></div>' +
       '<label class="f">Name</label><input type="text" id="mName" value="' + esc(it.name) + '" placeholder="e.g. Salmon Sushi (2 pcs)">' +
       '<label class="f">Description</label><textarea id="mDesc" placeholder="Ingredients, how it is served">' + esc(it.description) + '</textarea>' +
+      transFields(it, [['name', 'text', 'Name'], ['description', 'area', 'Description']]) +
       '<label class="f">Price' + cur + '</label><input type="text" inputmode="decimal" id="mPrice" value="' + esc(it.price) + '" placeholder="35000">' +
       '<label class="f">Price options (optional)</label>' +
       '<div class="hint" style="margin:-2px 0 8px">For dishes with choices, e.g. Beef 47000 / Chicken 45000. Leave empty if there is one price.</div>' +
@@ -691,6 +726,7 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
       if (opts.length && price === '') price = Math.min.apply(null, opts.map(function (o) { return o.price; }));
       it.name = name;
       it.description = m.querySelector('#mDesc').value.trim();
+      readTrans(m, it);
       it.price = price;
       if (opts.length) it.options = opts; else delete it.options;
       it.image = img;
@@ -747,6 +783,12 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
     }).join('') +
       '<datalist id="curList"><option>Rp</option><option>IDR</option><option>$</option><option>€</option><option>₽</option></datalist>' +
       '<label class="f" for="cf_footer">Note at the bottom of the menu</label><textarea id="cf_footer" data-k="footer" placeholder="e.g. Prices are before tax and service charge.">' + esc(c.footer) + '</textarea>' +
+      '<details class="trans" style="margin-top:14px"><summary>🌐 Subtitle and note translations: Русский · 中文 · Indonesia</summary>' + TLANGS.map(function (l) {
+        var v = (c.i18n || {})[l[0]] || {};
+        return '<div class="tl"><div class="tlh">' + l[1] + '</div>' +
+          '<input type="text" data-cl="' + l[0] + '" data-ck="tagline" placeholder="Subtitle" value="' + esc(v.tagline || '') + '">' +
+          '<textarea data-cl="' + l[0] + '" data-ck="footer" placeholder="Note at the bottom">' + esc(v.footer || '') + '</textarea></div>';
+      }).join('') + '</details>' +
       '<label class="f">Theme colour</label><div class="swatches" id="swatches">' + COLORS.map(function (col) {
         return '<button style="background:' + col + '" data-col="' + col + '"' + (c.accent === col ? ' class="on"' : '') + ' title="' + col + '"></button>';
       }).join('') + '<input type="color" id="cf_accent" value="' + esc(c.accent || '#c8402f') + '" title="Custom colour"></div>' +
@@ -756,6 +798,15 @@ summary{cursor:pointer;color:var(--muted);font-size:14px}
   $('tabCafe').addEventListener('input', function (e) {
     var k = e.target.getAttribute('data-k');
     if (k) { data.cafe[k] = e.target.value; return changed(false); }
+    var cl = e.target.getAttribute('data-cl');
+    if (cl) {
+      var ck = e.target.getAttribute('data-ck'), v = e.target.value.trim(), i18n = data.cafe.i18n = data.cafe.i18n || {};
+      i18n[cl] = i18n[cl] || {};
+      if (v) i18n[cl][ck] = v; else delete i18n[cl][ck];
+      if (!Object.keys(i18n[cl]).length) delete i18n[cl];
+      if (!Object.keys(i18n).length) delete data.cafe.i18n;
+      return changed(false);
+    }
     if (e.target.id === 'cf_accent') { data.cafe.accent = e.target.value; markSwatch(); changed(false); }
   });
   $('tabCafe').addEventListener('change', function (e) { if (e.target.getAttribute('data-k') === 'currency') renderMenu(); });

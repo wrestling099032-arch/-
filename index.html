@@ -30,6 +30,9 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system
 .hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
 .pill.table{background:#fff;color:var(--accent)}
+.langs{display:flex;gap:6px;justify-content:flex-end;margin:-12px 0 12px;position:relative;z-index:1}
+.langs button{border:0;background:rgba(255,255,255,.18);color:#fff;font:inherit;font-size:13px;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.langs button.on{background:#fff;color:var(--accent)}
 
 /* Search + categories */
 .bar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
@@ -96,6 +99,7 @@ footer .note{margin-top:14px;font-size:12.5px}
 
 <header class="hero">
   <div class="wrap">
+    <div class="langs" id="langs" role="group" aria-label="Language"></div>
     <h1 id="name">&nbsp;</h1>
     <p id="tagline"></p>
     <div class="meta" id="meta"></div>
@@ -126,11 +130,63 @@ footer .note{margin-top:14px;font-size:12.5px}
 
 <script>
 (function () {
-  var TAGS = { hit: '★ Favorite', spicy: '🌶 Spicy', raw: '🐟 Raw', new: '✨ New', veg: '🌱 Vegetarian' };
+  var LANGS = [['en', 'EN'], ['ru', 'RU'], ['zh', '中文'], ['id', 'ID']];
+  var UI = {
+    en: { menu: 'Menu', search: 'Search the menu', table: 'Table', empty: 'Nothing found 🤷', close: 'Close',
+      err: 'Could not load the menu 😔<br>Please check your connection and refresh the page.',
+      raw: '🐟 Raw — contains raw ingredients. Please take care if you have allergies or are pregnant.',
+      tags: { hit: '★ Favorite', spicy: '🌶 Spicy', raw: '🐟 Raw', new: '✨ New', veg: '🌱 Vegetarian' } },
+    ru: { menu: 'Меню', search: 'Поиск по меню', table: 'Стол', empty: 'Ничего не найдено 🤷', close: 'Закрыть',
+      err: 'Не удалось загрузить меню 😔<br>Проверьте интернет и обновите страницу.',
+      raw: '🐟 Сырое — содержит сырые ингредиенты. Будьте осторожны при аллергии и во время беременности.',
+      tags: { hit: '★ Любимое', spicy: '🌶 Острое', raw: '🐟 Сырое', new: '✨ Новинка', veg: '🌱 Вегетарианское' } },
+    zh: { menu: '菜单', search: '搜索菜单', table: '桌号', empty: '未找到相关菜品 🤷', close: '关闭',
+      err: '菜单加载失败 😔<br>请检查网络后刷新页面。',
+      raw: '🐟 生食 — 含生的食材。过敏人士及孕妇请谨慎食用。',
+      tags: { hit: '★ 人气推荐', spicy: '🌶 辣', raw: '🐟 生食', new: '✨ 新品', veg: '🌱 素食' } },
+    id: { menu: 'Menu', search: 'Cari menu', table: 'Meja', empty: 'Tidak ditemukan 🤷', close: 'Tutup',
+      err: 'Menu gagal dimuat 😔<br>Periksa koneksi internet dan muat ulang halaman.',
+      raw: '🐟 Mentah — mengandung bahan mentah, harap berhati-hati bagi yang memiliki alergi dan ibu hamil.',
+      tags: { hit: '★ Favorit', spicy: '🌶 Pedas', raw: '🐟 Mentah', new: '✨ Baru', veg: '🌱 Vegetarian' } }
+  };
+  // Translations of common price-option names (Beef / Chicken / Spicy …)
+  var OPT = {
+    'original': { ru: 'Классический', zh: '原味', id: 'Original' },
+    'spicy': { ru: 'Острый', zh: '辣味', id: 'Pedas' },
+    'fried/steamed': { ru: 'Жареные / на пару', zh: '煎/蒸', id: 'Goreng/Kukus' },
+    'nori': { ru: 'С нори', zh: '海苔味', id: 'Nori' },
+    'beef': { ru: 'Говядина', zh: '牛肉', id: 'Sapi' },
+    'chicken': { ru: 'Курица', zh: '鸡肉', id: 'Ayam' },
+    'lemonade': { ru: 'Лимонад', zh: '柠檬水', id: 'Lemonade' },
+    'orange': { ru: 'Апельсин', zh: '橙汁', id: 'Jeruk' },
+    'blackcurrant': { ru: 'Чёрная смородина', zh: '黑加仑', id: 'Blackcurrant' },
+    'milo': { ru: 'Milo', zh: '美禄', id: 'Milo' },
+    'beef amami': { ru: 'Говядина амами', zh: '甜味牛肉', id: 'Sapi Amami' },
+    'chicken amami': { ru: 'Курица амами', zh: '甜味鸡肉', id: 'Ayam Amami' }
+  };
   var params = new URLSearchParams(location.search);
   var table = params.get('table') || params.get('t');
   var data, currency = '';
   var $ = function (id) { return document.getElementById(id); };
+
+  function pickLang() {
+    var ok = function (l) { return l && UI[l] ? l : null; };
+    var saved; try { saved = localStorage.getItem('menuLang'); } catch (e) {}
+    var nav = (navigator.languages || [navigator.language || '']).map(function (l) { return String(l).slice(0, 2).toLowerCase(); });
+    if (nav.indexOf('in') !== -1) nav.push('id');
+    return ok(params.get('lang')) || ok(saved) || nav.map(ok).filter(Boolean)[0] || 'en';
+  }
+  var lang = pickLang();
+  function T(k) { return UI[lang][k]; }
+  // Text of a dish / category in the chosen language, falling back to English
+  function tr(obj, field) {
+    var x = obj.i18n && obj.i18n[lang];
+    return lang !== 'en' && x && x[field] ? x[field] : obj[field];
+  }
+  function optName(n) {
+    var o = OPT[String(n).toLowerCase()];
+    return lang !== 'en' && o && o[lang] ? o[lang] : n;
+  }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -143,19 +199,20 @@ footer .note{margin-top:14px;font-size:12.5px}
   }
   function pic(item, emoji, cls) {
     if (item.image) {
-      return '<div class="' + cls + '" data-e="' + esc(emoji || '🍽️') + '"><img src="' + esc(item.image) + '" alt="' + esc(item.name) + '" loading="lazy" decoding="async" width="600" height="600" onload="this.classList.add(\'ok\')" onerror="this.parentNode.textContent=this.parentNode.dataset.e"></div>';
+      return '<div class="' + cls + '" data-e="' + esc(emoji || '🍽️') + '"><img src="' + esc(item.image) + '" alt="' + esc(tr(item, 'name')) + '" loading="lazy" decoding="async" width="600" height="600" onload="this.classList.add(\'ok\')" onerror="this.parentNode.textContent=this.parentNode.dataset.e"></div>';
     }
     return '<div class="' + cls + '" aria-hidden="true">' + esc(emoji || '🍽️') + '</div>';
   }
   function priceBlock(i) {
     var h = (i.options && i.options.length)
-      ? i.options.map(function (o) { return '<span class="popt">' + esc(o.name) + ' <b>' + price(o.price) + '</b></span>'; }).join('')
+      ? i.options.map(function (o) { return '<span class="popt">' + esc(optName(o.name)) + ' <b>' + price(o.price) + '</b></span>'; }).join('')
       : '<span class="price">' + price(i.price) + '</span>';
     return h + (i.weight ? '<span class="weight">' + esc(i.weight) + '</span>' : '');
   }
   function tags(t) {
     if (!t || !t.length) return '';
-    return '<div class="tags">' + t.map(function (k) { return TAGS[k] ? '<span class="tag ' + k + '">' + TAGS[k] + '</span>' : ''; }).join('') + '</div>';
+    var L = T('tags');
+    return '<div class="tags">' + t.map(function (k) { return L[k] ? '<span class="tag ' + k + '">' + L[k] + '</span>' : ''; }).join('') + '</div>';
   }
 
   function render() {
@@ -165,11 +222,19 @@ footer .note{margin-top:14px;font-size:12.5px}
       document.documentElement.style.setProperty('--accent', c.accent);
       document.querySelector('meta[name=theme-color]').content = c.accent;
     }
-    document.title = (c.name || 'Menu') + ' — Menu';
-    $('name').textContent = c.name || 'Menu';
-    $('tagline').textContent = c.tagline || '';
+    document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang;
+    document.title = (c.name || T('menu')) + ' — ' + T('menu');
+    $('langs').innerHTML = LANGS.map(function (l) {
+      return '<button data-lang="' + l[0] + '"' + (l[0] === lang ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + l[1] + '</button>';
+    }).join('');
+    $('q').placeholder = T('search');
+    $('q').setAttribute('aria-label', T('search'));
+    $('empty').textContent = T('empty');
+    document.querySelector('.x').setAttribute('aria-label', T('close'));
+    $('name').textContent = c.name || T('menu');
+    $('tagline').textContent = tr(c, 'tagline') || '';
     var meta = '';
-    if (table) meta += '<span class="pill table">🪑 Table ' + esc(table) + '</span>';
+    if (table) meta += '<span class="pill table">🪑 ' + T('table') + ' ' + esc(table) + '</span>';
     if (c.wifi) meta += '<span class="pill">📶 Wi-Fi: ' + esc(c.wifi) + '</span>';
     $('meta').innerHTML = meta;
 
@@ -177,14 +242,14 @@ footer .note{margin-top:14px;font-size:12.5px}
       return cat.visible !== false && (cat.items || []).some(function (i) { return i.available !== false; });
     });
     $('cats').innerHTML = cats.map(function (cat, n) {
-      return '<a href="#' + esc(cat.id) + '"' + (n === 0 ? ' class="on"' : '') + '>' + (cat.emoji ? esc(cat.emoji) + ' ' : '') + esc(cat.name) + '</a>';
+      return '<a href="#' + esc(cat.id) + '"' + (n === 0 ? ' class="on"' : '') + '>' + (cat.emoji ? esc(cat.emoji) + ' ' : '') + esc(tr(cat, 'name')) + '</a>';
     }).join('');
     $('menu').innerHTML = cats.map(function (cat) {
-      return '<section id="' + esc(cat.id) + '"><h2>' + esc(cat.name) + '</h2>' +
+      return '<section id="' + esc(cat.id) + '"><h2>' + esc(tr(cat, 'name')) + '</h2>' +
         cat.items.filter(function (i) { return i.available !== false; }).map(function (i) {
-          return '<article class="item" data-id="' + esc(i.id) + '" data-search="' + esc((i.name + ' ' + (i.description || '')).toLowerCase()) + '">' +
-            '<div class="txt"><h3>' + esc(i.name) + '</h3>' +
-            (i.description ? '<p class="desc">' + esc(i.description) + '</p>' : '') +
+          return '<article class="item" data-id="' + esc(i.id) + '" data-search="' + esc([i.name, i.description, tr(i, 'name'), tr(i, 'description')].join(' ').toLowerCase()) + '">' +
+            '<div class="txt"><h3>' + esc(tr(i, 'name')) + '</h3>' +
+            (tr(i, 'description') ? '<p class="desc">' + esc(tr(i, 'description')) + '</p>' : '') +
             tags(i.tags) +
             '<div class="bottom">' + priceBlock(i) + '</div></div>' +
             pic(i, cat.emoji, 'pic') + '</article>';
@@ -195,8 +260,8 @@ footer .note{margin-top:14px;font-size:12.5px}
     if (c.address) f += '<div class="row">📍 <span>' + esc(c.address) + '</span></div>';
     if (c.phone) f += '<div class="row">📞 <a href="tel:' + esc(c.phone.replace(/[^\d+]/g, '')) + '">' + esc(c.phone) + '</a></div>';
     var hasRaw = (data.categories || []).some(function (cat) { return (cat.items || []).some(function (i) { return (i.tags || []).indexOf('raw') !== -1; }); });
-    if (hasRaw) f += '<div class="note">🐟 Raw — contains raw ingredients. Please take care if you have allergies or are pregnant.</div>';
-    if (c.footer) f += '<div class="note">' + esc(c.footer) + '</div>';
+    if (hasRaw) f += '<div class="note">' + T('raw') + '</div>';
+    if (tr(c, 'footer')) f += '<div class="note">' + esc(tr(c, 'footer')) + '</div>';
     $('foot').innerHTML = f;
 
     spy();
@@ -218,6 +283,18 @@ footer .note{margin-top:14px;font-size:12.5px}
     }, { rootMargin: '-130px 0px -65% 0px' });
     document.querySelectorAll('#menu section').forEach(function (s) { io.observe(s); });
   }
+
+  // Language switch
+  $('langs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-lang]'); if (!b || b.getAttribute('data-lang') === lang) return;
+    lang = b.getAttribute('data-lang');
+    try { localStorage.setItem('menuLang', lang); } catch (x) {}
+    var y = window.scrollY;
+    $('q').value = '';
+    $('empty').style.display = 'none';
+    render();
+    window.scrollTo(0, y);
+  });
 
   // Search
   $('q').addEventListener('input', function () {
@@ -246,8 +323,8 @@ footer .note{margin-top:14px;font-size:12.5px}
     var r = find(id); if (!r) return;
     var i = r.i;
     $('sheetBody').innerHTML = pic(i, r.cat.emoji, 'big') +
-      '<div class="in"><h3>' + esc(i.name) + '</h3>' + tags(i.tags) +
-      (i.description ? '<p>' + esc(i.description) + '</p>' : '') +
+      '<div class="in"><h3>' + esc(tr(i, 'name')) + '</h3>' + tags(i.tags) +
+      (tr(i, 'description') ? '<p>' + esc(tr(i, 'description')) + '</p>' : '') +
       '<div class="bottom">' + priceBlock(i) + '</div></div>';
     var img = $('sheetBody').querySelector('img'); if (img) { img.loading = 'eager'; img.classList.add('ok'); }
     $('sheet').classList.add('open');
@@ -273,7 +350,7 @@ footer .note{margin-top:14px;font-size:12.5px}
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (d) { data = d; render(); })
     .catch(function () {
-      $('menu').innerHTML = '<div class="err">Could not load the menu 😔<br>Please check your connection and refresh the page.</div>';
+      $('menu').innerHTML = '<div class="err">' + T('err') + '</div>';
     });
 })();
 </script>
