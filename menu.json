@@ -1476,34 +1476,6 @@
       "visible": true,
       "items": [
         {
-          "id": "i-addon-sambal",
-          "name": "Sambal Geprek",
-          "description": "dfdfgd",
-          "price": 25000,
-          "image": "images/muqu6xl8u3zk.jpg",
-          "available": true,
-          "tags": [
-            "spicy"
-          ],
-          "i18n": {
-            "ru": {
-              "name": "Самбал гепрек"
-            },
-            "zh": {
-              "name": "印尼辣椒酱 Sambal Geprek"
-            },
-            "id": {
-              "name": "Sambal Geprek"
-            }
-          },
-          "options": [
-            {
-              "name": "ljhlhlj",
-              "price": 36000
-            }
-          ]
-        },
-        {
           "id": "i-addon-nori",
           "name": "Crispy Nori (2 pcs)",
           "description": "",
